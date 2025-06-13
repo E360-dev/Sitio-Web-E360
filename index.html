@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tailwind Funcional</title>
+  </head>
+  <body class="preload bg-white text-gray-800 font-sans">
+
+    <!-- Pantalla de carga -->
+    <div id="preloader" class="fixed inset-0 bg-black flex items-center justify-center z-[9999]">
+      <img src="/logo.png" alt="E360 Logo" class="w-32 h-auto animate-pulse" />
+    </div>
+
+    <!-- Barra de navegación -->
+<header>
+<nav class="fixed top-4 left-0 w-full z-50 py-3 bg-transparent text-white">
+  <div class="relative w-full flex items-center justify-center">
+
+    <!-- Logo centrado -->
+    <a href="/" class="absolute left-1/2 transform -translate-x-1/2">
+      <img src="/logo.png" alt="E360 Logo" class="h-16 w-auto" />
+    </a>
+
+    <!-- Botón hamburguesa a la derecha -->
+    <button id="menu-toggle" class="absolute right-4 text-3xl hover:text-[#2e527f] transition" aria-label="Abrir menú">
+      ☰
+    </button>
+
+  </div>
+</nav>
+
+  <!-- Overlay y Panel del Menú -->
+  <div id="hamburger-overlay" class="fixed inset-0 bg-black/70 z-40 hidden"></div>
+
+  <div id="hamburger-menu" class="fixed inset-y-0 left-0 w-full max-w-3xl flex z-50 transition-transform duration-300 -translate-x-full">
+
+    <!-- Columna Izquierda -->
+    <div class="w-1/3 min-w-[10rem] bg-[#181818] flex flex-col justify-center px-6 py-12 space-y-6 text-white text-lg font-semibold sm:w-1/2">
+      <nav class="flex flex-col gap-4 mt-6">
+        <button class="text-left hover:text-[#7fa1c7] transition" data-section="inicio">Inicio</button>
+        <button class="text-left hover:text-[#7fa1c7] transition" data-section="nosotros">Nosotros</button>
+        <button class="text-left hover:text-[#7fa1c7] transition" data-section="servicios">Servicios</button>
+        <button class="text-left hover:text-[#7fa1c7] transition" data-section="mercado">Mercado y Credenciales</button>
+        <button class="text-left hover:text-[#7fa1c7] transition" data-section="publicaciones">Publicaciones</button>
+        <button class="text-left hover:text-[#7fa1c7] transition" data-section="contacto">Contacto</button>
+      </nav>
+    </div>
+
+    <!-- Columna Derecha -->
+    <div class="w-2/3 bg-[#111] relative flex flex-col justify-center px-8 py-6 text-white text-lg font-semibold">
+      <!-- Botón cerrar en esquina superior derecha -->
+      <button id="menu-close" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl transition" aria-label="Cerrar menú">
+        &times;
+      </button>
+
+      <!-- Contenido del submenú -->
+      <div id="submenu-content" class="flex flex-col gap-4 mt-6 animate-fade-in">
+        <!-- contenido dinámico desde JS -->
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main>
+      <section id="video-hero" class="relative w-full h-screen pt-[64px] overflow-hidden bg-black">
+  <video
+    id="video-player"
+    class="absolute inset-0 w-full h-full object-cover z-0"
+    autoplay
+    muted
+    playsinline
+    loop
+  ></video>
+
+  <!-- Overlay + CTA + Indicadores -->
+  <div class="absolute inset-0 z-10 flex flex-col justify-end items-center text-center text-white px-6 pb-12 bg-gradient-to-t from-black/60 via-transparent">
+    <a href="#servicios" id="cta-button" class="mb-6 px-6 py-2 bg-white text-black font-semibold text-sm rounded-full hover:bg-gray-100 transition">
+      Conoce nuestros servicios →
+    </a>
+
+    <!-- Indicadores circulares -->
+    <div class="flex justify-center gap-4">
+  <svg class="circle-indicator w-6 h-6 cursor-pointer" viewBox="0 0 36 36" data-index="0">
+    <circle class="bg" cx="18" cy="18" r="16" stroke-width="3" />
+    <circle class="progress" cx="18" cy="18" r="16" stroke-width="3" />
+  </svg>
+  <svg class="circle-indicator w-6 h-6 cursor-pointer" viewBox="0 0 36 36" data-index="1">
+    <circle class="bg" cx="18" cy="18" r="16" stroke-width="3" />
+    <circle class="progress" cx="18" cy="18" r="16" stroke-width="3" />
+  </svg>
+  <svg class="circle-indicator w-6 h-6 cursor-pointer" viewBox="0 0 36 36" data-index="2">
+    <circle class="bg" cx="18" cy="18" r="16" stroke-width="3" />
+    <circle class="progress" cx="18" cy="18" r="16" stroke-width="3" />
+  </svg>
+</div>
+  </div>
+</section>
+
+      <!-- Diferenciadores -->
+      <section id="diferenciadores" class="py-16 bg-white text-gray-800">
+      <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <!-- Tarjeta 1 -->
+        <div class="relative h-80 overflow-hidden rounded-xl shadow-lg">
+          <img src="/img/consultores.jpg" alt="Consultores senior" class="absolute inset-0 w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-6">
+            <h3 class="text-white text-2xl font-bold mb-2">Consultores Senior</h3>
+            <p class="text-white text-sm">Amplia experiencia en dirección financiera y estratégica.</p>
+            <a href="#servicios" class="mt-4 inline-block px-5 py-2 bg-white text-black text-sm font-semibold rounded-full hover:bg-gray-100 transition">
+              Saber más →
+            </a>
+          </div>
+        </div>
+
+        <!-- Tarjeta 2 -->
+        <div class="relative h-80 overflow-hidden rounded-xl shadow-lg">
+          <img src="/img/personalizacion.jpg" alt="Soluciones personalizadas" class="absolute inset-0 w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-6">
+            <h3 class="text-white text-2xl font-bold mb-2">Soluciones Personalizadas</h3>
+            <p class="text-white text-sm">Cada cliente es único. Nuestro enfoque también.</p>
+            <a href="#servicios" class="mt-4 inline-block px-5 py-2 bg-white text-black text-sm font-semibold rounded-full hover:bg-gray-100 transition">
+              Conocer más →
+            </a>
+          </div>
+        </div>
+
+        <!-- Tarjeta 3 -->
+        <div class="relative h-80 overflow-hidden rounded-xl shadow-lg md:col-span-2">
+          <img src="/img/tecnologia.jpg" alt="Tecnología avanzada" class="absolute inset-0 w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-6">
+            <h3 class="text-white text-2xl font-bold mb-2">Tecnología Avanzada</h3>
+            <p class="text-white text-sm">Aplicamos IA y automatización en nuestras soluciones financieras.</p>
+            <a href="#tecnologia" class="mt-4 inline-block px-5 py-2 bg-white text-black text-sm font-semibold rounded-full hover:bg-gray-100 transition">
+              Ver tecnología →
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+<!-- Carrusel de Impacto -->
+<section id="impacto" class="py-16 bg-gray-900 text-white">
+  <div class="max-w-7xl mx-auto px-4 text-center">
+    <h2 class="text-2xl font-bold mb-8 text-[#2e527f]">Nuestro Impacto</h2>
+
+    <div class="relative flex items-center justify-center">
+      <!-- Botones -->
+      <button id="prevImpacto" class="absolute left-0 z-10 bg-white text-black p-2 rounded-full shadow hover:bg-[#2e527f] transition">
+        ‹
+      </button>
+      <button id="nextImpacto" class="absolute right-0 z-10 bg-white text-black p-2 rounded-full shadow hover:bg-[#2e527f] transition">
+        ›
+      </button>
+
+      <!-- Carrusel -->
+      <div class="flex w-full max-w-5xl overflow-hidden">
+        <div id="impacto-carousel" class="flex w-full items-center justify-center gap-4">
+          <!-- Slides -->
+          <div class="impacto-slide w-1/3 transition-all duration-500 relative">
+            <img src="/img/impacto-1.jpg" class="w-full h-[400px] object-cover rounded-xl" alt="Impacto 1" />
+          </div>
+
+          <div class="impacto-slide w-1/3 transition-all duration-500 relative">
+            <img src="/img/impacto-2.jpg" class="w-full h-[400px] object-cover rounded-xl" alt="Impacto 2" />
+            <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-4 rounded-xl text-center">
+              <h3 class="text-xl font-bold bg-black/50 px-4 py-2 rounded">+80 Clientes Nacionales</h3>
+              <p class="text-sm bg-black/40 mt-2 px-3 py-1 rounded">Confían en nuestras soluciones financieras.</p>
+            </div>
+          </div>
+
+          <div class="impacto-slide w-1/3 transition-all duration-500 relative">
+            <img src="/img/impacto-3.jpg" class="w-full h-[400px] object-cover rounded-xl" alt="Impacto 3" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+      <!-- Presencia nacional -->
+      <section id="presencia" class="py-12 px-4 bg-white text-center">
+        <div class="max-w-7xl mx-auto">
+          <h2 class="text-2xl font-bold mb-6 text-[#2e527f]">Presencia en México</h2>
+          <ul class="flex flex-wrap justify-center gap-4 text-lg">
+            <li>📍 CDMX</li>
+            <li>📍 Guadalajara</li>
+            <li>📍 Monterrey</li>
+            <li>📍 Querétaro</li>
+            <li>📍 Cancún</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+    <style>
+      @keyframes fade-in {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in-active {
+        animation: fade-in 1s ease-out forwards;
+      }
+      .video-label-active {
+        background-color: #2e527f;
+        color: white !important;
+        font-weight: 600;
+        box-shadow: 0 0 0 2px white inset;
+        transition: all 0.3s ease;
+        text-decoration: underline;
+      }
+      /* Evita que el contenido se muestre antes de que el preloader se quite */
+      body.preload > *:not(#preloader) {
+        visibility: hidden;
+      }
+    </style>
+  </body>
+</html>

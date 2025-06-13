@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Oculta el contenido mientras el preloader está activo */
+body.preload > *:not(#preloader) {
+  visibility: hidden;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+.fade-out {
+  animation: fadeOut 0.5s ease forwards;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.video-label-active {
+  background-color: #2e527f;
+  color: white;
+}
+
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.indicator {
+  transition: all 0.3s ease;
+}
+
+.circle-indicator .bg {
+  fill: none;
+  stroke: #ffffff40;
+}
+
+.circle-indicator .progress {
+  fill: none;
+  stroke: #ef4444; /* Tailwind red-500 */
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transition: stroke-dashoffset linear;
+}
+.circle-indicator .progress {
+  fill: none;
+  stroke: #ef4444;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transition: stroke-dashoffset linear;
+}
+
+.circle-indicator.active .progress {
+  stroke: #ef4444;
+  stroke-width: 3;
+}
+
+.circle-indicator.active {
+  transform: scale(1.15);
+}
