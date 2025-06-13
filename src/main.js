@@ -71,5 +71,5 @@ document.getElementById('nextImpacto').addEventListener('click', () => rotateImp
 // Inicializar visibilidad correcta
 rotateImpacto(0);
 
-import '../js/menuhamburguesa.js';
-import '../js/herobanner.js';
+import './js/menuhamburguesa.js';
+import './js/herobanner.js';
