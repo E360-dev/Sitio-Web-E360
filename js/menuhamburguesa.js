@@ -77,6 +77,7 @@ if (overlay) overlay.addEventListener('click', closeMenu);
 document.querySelectorAll('[data-section]').forEach(btn => {
   btn.addEventListener('click', () => {
     const section = btn.getAttribute('data-section');
+    openMenu();
     loadSubmenu(section);
   });
 });

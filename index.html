@@ -22,8 +22,18 @@
       <img src="/logo.png" alt="E360 Logo" class="h-16 w-auto" />
     </a>
 
-    <!-- Botón hamburguesa a la derecha -->
-    <button id="menu-toggle" class="absolute right-4 text-3xl hover:text-[#2e527f] transition" aria-label="Abrir menú">
+    <!-- Menú de navegación (visible en escritorio) -->
+    <div class="hidden md:flex gap-6 absolute right-4 items-center">
+      <button class="hover:text-[#7fa1c7] transition" data-section="inicio">Inicio</button>
+      <button class="hover:text-[#7fa1c7] transition" data-section="nosotros">Nosotros</button>
+      <button class="hover:text-[#7fa1c7] transition" data-section="servicios">Servicios</button>
+      <button class="hover:text-[#7fa1c7] transition" data-section="mercado">Mercado y Credenciales</button>
+      <button class="hover:text-[#7fa1c7] transition" data-section="publicaciones">Publicaciones</button>
+      <button class="hover:text-[#7fa1c7] transition" data-section="contacto">Contacto</button>
+    </div>
+
+    <!-- Botón hamburguesa (solo móvil) -->
+    <button id="menu-toggle" class="md:hidden absolute right-4 text-3xl hover:text-[#2e527f] transition" aria-label="Abrir menú">
       ☰
     </button>
 
