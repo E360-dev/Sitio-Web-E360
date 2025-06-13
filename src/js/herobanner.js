@@ -4,9 +4,9 @@ const indicators = document.querySelectorAll('.circle-indicator .progress');
 const ctaButton = document.getElementById('cta-button');
 
 const videos = [
-  { src: '/videos/proposit.mp4', cta: 'Conoce nuestros servicios →', link: '#servicios' },
-  { src: '/videos/producto.mp4', cta: 'Descubre nuestro enfoque →', link: '#nosotros' },
-  { src: '/videos/experienci.mp4', cta: 'Ver credenciales →', link: '#mercado' }
+  { src: './videos/proposito.mp4', cta: 'Conoce nuestros servicios →', link: '#servicios' },
+  { src: './videos/productos.mp4', cta: 'Descubre nuestro enfoque →', link: '#nosotros' },
+  { src: './videos/experiencia.mp4', cta: 'Ver credenciales →', link: '#mercado' }
 ];
 
 let currentIndex = 0;
