@@ -4,18 +4,21 @@ import HeroBanner from './components/HeroBanner'
 import KeyDifferentiators from './components/KeyDifferentiators'
 import ImpactCarousel from './components/ImpactCarousel'
 import MapaPresencia from './components/MapaPresencia'
+import Preloader from './components/Preloader'
 // puedes importar más páginas aquí
-
 function App() {
   return (
-    <BrowserRouter>
-      <Navbar />
-      <HeroBanner />
-      <KeyDifferentiators />
-      <ImpactCarousel />
-      <MapaPresencia />
-      {/* puedes agregar <Routes><Route /></Routes> si usas páginas */}
-    </BrowserRouter>
+    <div className="bg-white text-gray-800 font-sans">
+      <BrowserRouter>
+        <Navbar />
+        <HeroBanner />
+        <KeyDifferentiators />
+        <ImpactCarousel />
+        <MapaPresencia />
+        <Preloader />
+        {/* puedes agregar <Routes><Route /></Routes> si usas páginas */}
+      </BrowserRouter>
+    </div>
   )
 }
 
