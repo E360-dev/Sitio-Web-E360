@@ -7,6 +7,16 @@
 body.preload > *:not(#preloader) {
   visibility: hidden;
 }
+/* Preloader */
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+.animate-fade-out {
+  animation: fadeOut 0.5s ease forwards;
+}
 
 /* Animaciones */
 @keyframes fadeOut {
@@ -25,6 +35,13 @@ body.preload > *:not(#preloader) {
 }
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
+}
+
+@layer components {
+  .btn-e360 {
+    @apply px-5 py-2 rounded-full font-semibold text-sm transition;
+    @apply bg-e360-primary text-white hover:bg-e360-dark;
+  }
 }
 
 /* Indicadores circulares */
