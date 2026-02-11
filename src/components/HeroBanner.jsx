@@ -1,107 +1,114 @@
-import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 
-const videos = [
-  { src: '/videos/proposito.mp4', cta: 'Conoce nuestros servicios →', link: '#servicios' },
-  { src: '/videos/productos.mp4', cta: 'Descubre nuestro enfoque →', link: '#nosotros' },
-  { src: '/videos/experiencia.mp4', cta: 'Ver credenciales →', link: '#mercado' }
-]
+// Updated video data without icon property
+const videoData = [
+  { src: '/videos/video1.mp4', cta: 'Conoce nuestros servicios →', link: '/servicios' },
+  { src: '/videos/video2.mp4', cta: 'Descubre nuestro enfoque →', link: '/nosotros' },
+  { src: '/videos/video3.mp4', cta: 'Explora nuestro impacto →', link: '/#impacto' }
+];
 
 export default function HeroBanner() {
-  const videoRef = useRef(null)
-  const [index, setIndex] = useState(0)
-  const [duration, setDuration] = useState(5)
-  const [loaded, setLoaded] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [videoDuration, setVideoDuration] = useState(0);
+  const videoRef = useRef(null);
 
+  // Handles the video transition
+  const handleVideoEnded = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % videoData.length);
+  };
+
+  // Sets the video duration once the video metadata is loaded
   useEffect(() => {
-    const videoEl = videoRef.current
-    if (videoEl) {
-      videoEl.load()
-    }
-  }, [index])
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
 
-  useEffect(() => {
-    const videoEl = videoRef.current
-    if (!videoEl) return
+    const handleLoadedMetadata = () => {
+      setVideoDuration(videoElement.duration);
+    };
 
-    const handleCanPlay = () => {
-      const dur = videoEl.duration || 5
-      setDuration(dur)
-      videoEl.play()
-    }
+    videoElement.addEventListener('loadedmetadata', handleLoadedMetadata);
 
-    const handleEnded = () => {
-      const next = (index + 1) % videos.length
-      setIndex(next)
-    }
-
-    videoEl.addEventListener('canplay', handleCanPlay)
-    videoEl.addEventListener('ended', handleEnded)
-
+    // Cleanup
     return () => {
-      videoEl.removeEventListener('canplay', handleCanPlay)
-      videoEl.removeEventListener('ended', handleEnded)
-    }
-  }, [index])
+      videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata);
+    };
+  }, [currentIndex]); // Re-run when video changes
 
   return (
-    <section id="video-hero" className="relative w-full h-screen pt-[64px] overflow-hidden bg-black">
+    <section id="video-hero" className="relative w-full h-[calc(100vh-80px)] overflow-hidden bg-e360-dark mt-20">
       <video
+        key={currentIndex} // Force re-mount on video change
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover z-0"
         autoPlay
         muted
         playsInline
-        loop={false}
+        onEnded={handleVideoEnded}
       >
-        <source src={videos[index].src} type="video/mp4" />
+        <source src={videoData[currentIndex].src} type="video/mp4" />
+        Tu navegador no soporta videos HTML5.
       </video>
 
-      {/* Overlay + CTA + Indicadores */}
-      <div className="absolute inset-0 z-10 flex flex-col justify-end items-center text-center text-white px-6 pb-12 bg-gradient-to-t from-black/60 via-transparent">
-        <a
-          href={videos[index].link}
-          id="cta-button"
-          className="mb-6 px-6 py-2 bg-white text-black font-semibold text-sm rounded-full hover:bg-gray-100 transition"
+      <div className="absolute inset-0 z-10 flex flex-col justify-end items-center text-center text-white px-6 pb-8 bg-gradient-to-t from-black/70 via-transparent">
+        {/* CTA Button */}
+        <Link
+          to={videoData[currentIndex].link}
+          className="mb-4 px-6 py-2 bg-gradient-to-r from-e360-cyan to-e360-accent text-white font-bold text-sm rounded-full hover:bg-e360-dark transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
         >
-          {videos[index].cta}
-        </a>
+          {videoData[currentIndex].cta}
+        </Link>
 
-        {/* Indicadores circulares */}
-        <div className="flex justify-center gap-4">
-          {videos.map((_, i) => (
-            <svg
-              key={i}
-              className={`circle-indicator w-6 h-6 cursor-pointer ${i === index ? 'video-label-active' : ''}`}
-              viewBox="0 0 36 36"
-              onClick={() => setIndex(i)}
+        {/* Progress Indicators */}
+        <div className="flex justify-center items-center gap-4">
+          {videoData.map((video, index) => (
+            <div
+              key={index}
+              className="flex flex-col items-center cursor-pointer"
+              onClick={() => setCurrentIndex(index)}
             >
-              <circle
-                className="bg"
-                cx="18"
-                cy="18"
-                r="16"
-                stroke="white"
-                strokeWidth="3"
-                fill="none"
-              />
-              <circle
-                className="progress"
-                cx="18"
-                cy="18"
-                r="16"
-                stroke="#7fa1c7"
-                strokeWidth="3"
-                fill="none"
-                strokeDasharray="100"
-                strokeDashoffset={i === index ? 0 : 100}
-                style={{
-                  transition: `stroke-dashoffset ${i === index ? duration : 0}s linear`
-                }}
-              />
-            </svg>
+              <svg className="w-6 h-6" viewBox="0 0 36 36">
+                <circle
+                  cx="18"
+                  cy="18"
+                  r="16"
+                  fill="none"
+                  stroke="rgba(255, 255, 255, 0.3)"
+                  strokeWidth="2"
+                />
+                {index === currentIndex && (
+                  <circle
+                    cx="18"
+                    cy="18"
+                    r="16"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeDasharray="100"
+                    strokeDashoffset="100"
+                    transform="rotate(-90 18 18)"
+                    style={{
+                      animation: `fill-circle ${videoDuration}s linear forwards`
+                    }}
+                  />
+                )}
+              </svg>
+            </div>
           ))}
         </div>
       </div>
+      <style>
+        {`
+          @keyframes fill-circle {
+            from {
+              stroke-dashoffset: 100;
+            }
+            to {
+              stroke-dashoffset: 0;
+            }
+          }
+        `}
+      </style>
     </section>
-  )
+  );
 }

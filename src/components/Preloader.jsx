@@ -1,25 +1,24 @@
-// src/components/Preloader.jsx
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 export default function Preloader() {
-  const [hide, setHide] = useState(false)
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const handleLoad = () => {
-      setTimeout(() => setHide(true), 1000) // espera antes de ocultar
-    }
-    window.addEventListener('load', handleLoad)
-    return () => window.removeEventListener('load', handleLoad)
-  }, [])
+    const timer = setTimeout(() => {
+      setVisible(false);
+    }, 1500); // El preloader se ocultará después de 1.5 segundos
 
-  if (hide) return null
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!visible) return null;
 
   return (
     <div
       id="preloader"
-      className="fixed inset-0 bg-black flex items-center justify-center z-[9999] animate-fade-out"
+      className="fixed inset-0 bg-black flex items-center justify-center z-[9999]"
     >
-      <img src="/img/logo.png" alt="E360 Logo" className="w-32 h-auto animate-pulse" />
+      <img src="/img/logo1.png" alt="E360 Logo" className="w-32 h-auto animate-pulse" />
     </div>
-  )
+  );
 }

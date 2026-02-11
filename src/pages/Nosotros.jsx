@@ -1,7 +1,19 @@
-import React from 'react';
+import AboutHero from '../components/AboutHero';
+import PurposeAndValues from '../components/PurposeAndValues';
+import OurTeam from '../components/OurTeam';
+import AboutCTA from '../components/AboutCTA';
 
-function Nosotros() {
-  return <h1>Nosotros</h1>;
+export default function Nosotros() {
+  return (
+    <>
+      <AboutHero />
+      <div id="proposito">
+        <PurposeAndValues />
+      </div>
+      <div id="equipo">
+        <OurTeam />
+      </div>
+      <AboutCTA />
+    </>
+  );
 }
-
-export default Nosotros;
