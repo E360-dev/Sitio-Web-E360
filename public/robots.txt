@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Rutas privadas o transaccionales
+Disallow: /admin
+Disallow: /cliente
+Disallow: /documento
+Disallow: /login
+Disallow: /registro
+Disallow: /pendiente
+
+Sitemap: https://e360.pro/sitemap.xml

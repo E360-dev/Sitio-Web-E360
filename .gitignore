@@ -3,6 +3,9 @@ node_modules/
 
 # Build output
 /dist
+
+# Videos originales sin comprimir: respaldo local, no se despliegan
+/_assets-originales
 .vscode/
 .env
 .env.local

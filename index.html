@@ -1,10 +1,35 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>E360</title>
-    <link rel="icon" type="image/jpeg" href="/img/LogoPagina.png" />
+    <meta name="theme-color" content="#2e527f" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ES9G6HERFS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      // send_page_view: false — los page_view los envía usePageTracking en cada
+      // cambio de ruta, para no contar dos veces la carga inicial de la SPA.
+      gtag('config', 'G-ES9G6HERFS', { send_page_view: false });
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+    <link rel="icon" type="image/png" href="/img/logo1.png" />
+    <link rel="apple-touch-icon" href="/img/logo1.png" />
+
+    <!-- Valores por defecto: el componente Seo los sobrescribe en cada página. -->
+    <title>E360 | Consultoría financiera, auditoría y financiamiento</title>
+    <meta name="description" content="Boutique estratégica con ADN Big Four y cercanía humana. Consultoría financiera e impuestos, auditoría y estructuración de financiamiento para empresas en México." />
+    <meta property="og:site_name" content="E360" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_MX" />
   </head>
   <body>
     <div id="root"></div>

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import Seo from '../components/Seo';
 import ServiceHero from '../components/ServiceHero';
-import { FaBalanceScale, FaChartLine, FaLaptopCode, FaShieldAlt, FaUsers, FaBullseye, FaLightbulb, FaWhatsapp } from 'react-icons/fa';
+import { FaChartLine, FaShieldAlt, FaUsers, FaBullseye, FaCheckCircle } from 'react-icons/fa';
+import GmailFloatingButton from '../components/GmailFloatingButton';
 
 // --- Datos de los Servicios ---
 const servicesData = [
@@ -9,34 +11,47 @@ const servicesData = [
     id: 'consultoria',
     name: 'Consultoría Financiera e Impuestos',
     description: 'Optimización de cierres, valuaciones y estrategias tributarias con impacto real.',
-    details: 'Optimización de cierres complejos, consolidación, valuaciones, planeación fiscal y estrategias tributarias con impacto real en liquidez y rentabilidad.',
+    details: 'Optimizamos tu operación financiera y fiscal para mejorar liquidez, rentabilidad y toma de decisiones.\nDesde cierres complejos hasta estrategias fiscales, convertimos la complejidad en claridad accionable.',
     icon: FaChartLine,
     enfoque: {
-      humano: 'Asesoría personalizada que se adapta a tu realidad operativa y comercial.',
-      estrategico: 'Planificación fiscal proactiva que respalda el crecimiento de la empresa.',
-      claridad: 'Explicamos las implicaciones de cada estrategia de forma clara y sencilla.',
+      humano: 'Trabajamos contigo, no sobre ti.\nEntendemos tu operación y adaptamos cada solución a tu realidad financiera y comercial.',
+      estrategico: 'No solo cumplimos, optimizamos.\nDiseñamos estrategias fiscales y financieras que impactan directamente en liquidez, estructura y crecimiento.',
+      claridad: 'Hablamos claro.\nTraducimos lo técnico en decisiones entendibles para que avances con seguridad y sin incertidumbre.',
     },
     leader: 'Fernando Vázquez',
   },
   {
-    id: 'financiamiento',
-    name: 'Financiamiento y Estructuración',
-    description: 'Preparación integral para fondeo y capital con modelos financieros robustos.',
-    details: 'Preparación integral para fondeo y capital con modelos financieros robustos, expedientes bancarios y acompañamiento en negociaciones con bancos y fondos.',
+    id: 'auditoria',
+    name: 'Auditoría y Aseguramiento',
+    description: 'Damos certeza técnica y regulatoria para decisiones confiables.',
+    details: 'Damos certeza técnica y regulatoria para que tomes decisiones confiables y accedas a financiamiento sin fricción.\nAuditorías claras, ágiles y diseñadas para generar valor, no solo cumplimiento.',
     icon: FaShieldAlt,
     enfoque: {
-      humano: 'Entendemos tus metas de capital y te acompañamos en cada negociación.',
-      estrategico: 'Estructuramos el financiamiento que se alinea a tus objetivos a largo plazo.',
-      claridad: 'Traducimos términos complejos en acuerdos favorables y comprensibles.',
+      humano: 'Socios involucrados desde el inicio.\nSin capas innecesarias: trabajas con especialistas que entienden el impacto real del proyecto.',
+      estrategico: 'La auditoría es un medio, no el fin.\nPreparamos tu información financiera para bancos, inversionistas y decisiones clave.',
+      claridad: 'Sin sorpresas al final.\nProcesos estructurados, comunicación constante y resultados que generan confianza.',
+    },
+    leader: 'Belén Arias',
+  },
+  {
+    id: 'financiamiento',
+    name: 'Financiamiento y Estructuración',
+    description: 'Preparamos y acompañamos a tu empresa para levantar capital.',
+    details: 'Preparamos y acompañamos a tu empresa para obtener financiamiento o levantar capital con éxito.\nDesde el diagnóstico hasta la negociación, estructuramos todo para que el fondeo sí suceda.',
+    icon: FaShieldAlt,
+    enfoque: {
+      humano: 'Acompañamiento real en todo el proceso.\nNo te dejamos solo frente al banco o inversionista.',
+      estrategico: 'Estructuramos para cerrar.\nModelos financieros, expedientes y vehículos diseñados para maximizar probabilidad de éxito.',
+      claridad: 'Sabes dónde estás y qué sigue.\nTe damos visibilidad total del proceso, riesgos y decisiones clave en cada etapa.',
     },
     leader: 'Arturo Barrios',
   },
 ];
 
 const enfoqueData = [
-  { title: 'Humano', icon: FaUsers, key: 'humano' },
-  { title: 'Estratégico', icon: FaBullseye, key: 'estrategico' },
-  { title: 'Claridad', icon: FaLightbulb, key: 'claridad' },
+  { title: 'HUMANO', icon: FaUsers, key: 'humano', image: '/img/servicios1.png' },
+  { title: 'ESTRATÉGICO', icon: FaBullseye, key: 'estrategico', image: '/img/servicios2.png' },
+  { title: 'CLARIDAD', icon: FaCheckCircle, key: 'claridad', image: '/img/servicios3.png' },
 ];
 
 // --- Componente de Pestañas de Servicios ---
@@ -49,27 +64,22 @@ function ServicesTabs() {
     const hash = location.hash.replace('#', '');
     if (hash && servicesData.some(s => s.id === hash)) {
       setActiveTab(hash);
-      // Opcional: Scroll a la sección de tabs
-      const element = document.getElementById('services-tabs-section');
-      if (element) {
-        
-      }
     }
   }, [location]);
 
   return (
-    <div id="services-tabs-section" className="bg-white text-gray-900 py-24 sm:py-32"> {/* Changed background to white, text to gray-900 */}
+    <div id="services-tabs-section" className="bg-white text-gray-900 py-24 sm:py-32">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Pestañas */}
-        <div className="mb-12 flex flex-wrap justify-center gap-x-4 gap-y-2 border-b border-gray-200 pb-4"> {/* Changed border color */}
+        <div className="mb-20 flex flex-wrap justify-center gap-x-4 gap-y-2 border-b border-gray-100 pb-6">
           {servicesData.map((service) => (
             <button
               key={service.id}
               onClick={() => setActiveTab(service.id)}
-              className={`px-4 py-2 text-sm sm:text-base font-semibold rounded-full transition-all duration-300 ${
+              className={`px-6 py-2 text-sm sm:text-base font-bold rounded-full transition-all duration-300 ${
                 activeTab === service.id
-                  ? 'bg-gradient-to-r from-[#365e91] to-[#4a7ab8] text-white shadow-lg shadow-[#365e91]/30' // Applied blue gradient to active tab button
-                  : 'text-gray-600 hover:bg-gray-100' // Adjusted text and hover background for inactive tab
+                  ? 'bg-[#2e527f] text-white shadow-xl shadow-[#2e527f]/20'
+                  : 'text-gray-400 hover:text-gray-600'
               }`}
             >
               {service.name}
@@ -79,39 +89,66 @@ function ServicesTabs() {
 
         {/* Contenido de la Pestaña Activa */}
         {activeService && (
-          <div className="relative isolate bg-white border border-gray-200 rounded-3xl shadow-lg shadow-gray-200 p-8 md:p-12"> {/* Changed background to white, border and shadow */}
-            <div className="flex flex-col md:flex-row items-start gap-x-8 gap-y-6 mb-8">
-              <div className="flex-shrink-0 text-[#365e91]"> {/* Changed icon color */}
-                <activeService.icon className="text-5xl" />
-              </div>
-              <div className="flex-grow">
-                <h2 className="text-3xl font-bold text-gray-900 mb-3"> {/* Reverted to solid dark text color */}
-                  {activeService.name}
-                </h2>
-                <p className="text-lg text-gray-700 mb-3"> {/* Changed text color */}
-                  {activeService.details}
+          <div className="transition-all duration-500 animate-fade-in">
+            {/* Header del servicio alineado a la izquierda */}
+            <div className="w-full text-left mb-20 space-y-6">
+              <h2 className="text-4xl md:text-5xl font-extrabold text-black flex items-center justify-start gap-4">
+                <span className="text-black">✓</span> {activeService.name}
+              </h2>
+              <p className="text-xl text-gray-600 leading-relaxed w-full">
+                {activeService.details}
+              </p>
+              <div className="pt-2">
+                <p className="text-base font-bold text-[#2e527f] tracking-wider">
+                  Líder: {activeService.leader}
                 </p>
-                <p className="text-[#365e91] font-semibold">Líder: {activeService.leader}</p>
               </div>
             </div>
 
-            <div className="border-t border-gray-200 pt-8"> {/* Changed border color */}
-              <h3 className="text-xl font-semibold mb-6 text-center md:text-left text-gray-900"> {/* Changed text color */}
-                Nuestro Enfoque:
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Sección NUESTRO ENFOQUE */}
+            <div className="mt-16">
+              <div className="text-center mb-16 relative">
+                {/* Línea decorativa segmentada */}
+                <div className="h-1 w-[36rem] mx-auto mb-6 flex rounded-full overflow-hidden">
+                  <div className="h-full w-1/3 bg-black"></div>
+                  <div className="h-full w-1/3 bg-[#25c6e3]"></div>
+                  <div className="h-full w-1/3 bg-[#E91E63]"></div>
+                </div>
+                <h3 className="text-2xl font-black text-[#2e527f] tracking-[0.2em] uppercase">
+                  Nuestro Enfoque:
+                </h3>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
                 {enfoqueData.map((item) => (
-                  <div key={item.key} className="group relative p-8 text-center bg-gray-50 border border-gray-200 rounded-3xl shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1"> {/* Adjusted card styles for white background */}
-                     <div className="absolute top-0 left-0 w-full h-full rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                       style={{background: 'radial-gradient(circle at center, rgba(59, 130, 246, 0.1), transparent 70%)'}}> {/* Changed hover gradient to a blueish one for white background */}
+                  <div key={item.key} className="flex flex-col items-center">
+                    {/* Icono superior sólido */}
+                    <div className="text-[#2e527f] mb-8">
+                      <item.icon className="text-6xl" />
                     </div>
-                    <div className="relative z-10 flex flex-col items-center">
-                      <div className="inline-block text-gray-900 transition-transform duration-300 group-hover:scale-110 mb-3"> {/* Changed icon color */}
-                        <item.icon className="text-3xl" />
+
+                    {/* Imagen con Overlay y Título */}
+                    <div 
+                      className="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
+                      style={{ 
+                        backgroundImage: `url('${item.image}')`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center'
+                      }}
+                    >
+                      {/* Overlay azul corporativo */}
+                      <div className="absolute inset-0 bg-[#2e527f]/70 flex items-center justify-center">
+                        <h4 className="text-3xl font-black text-white tracking-widest text-center px-4">
+                          {item.title}
+                        </h4>
                       </div>
-                      <h4 className="font-bold text-lg text-gray-900">{item.title}</h4> {/* Changed text color */}
-                      <div className="h-0.5 w-12 mx-auto mt-1 bg-gradient-to-r from-[#e80554] to-[#e80554] rounded-full"></div>
-                      <p className="mt-2 text-gray-600 text-sm">{activeService.enfoque[item.key]}</p> {/* Changed text color */}
+                    </div>
+
+                    {/* Descripción debajo */}
+                    <div className="mt-8 text-center max-w-[280px]">
+                      <p className="text-gray-700 font-medium leading-relaxed whitespace-pre-line">
+                        {activeService.enfoque[item.key]}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -123,11 +160,15 @@ function ServicesTabs() {
     </div>
   );
 }
-import GmailFloatingButton from '../components/GmailFloatingButton';
 
 export default function Servicios() {
   return (
     <>
+      <Seo
+        title="Servicios | Consultoría, auditoría y financiamiento — E360"
+        description="Consultoría financiera e impuestos, auditoría y aseguramiento, y estructuración de financiamiento. Soluciones diseñadas para el crecimiento y la certidumbre de tu empresa."
+        path="/servicios"
+      />
       <ServiceHero />
       <div id="servicios">
         <ServicesTabs />

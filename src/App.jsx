@@ -13,19 +13,38 @@ import Login from './pages/Login';
 import ClienteDashboard from './pages/ClienteDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import DocumentoPublico from './pages/DocumentoPublico'; // <-- NUEVA IMPORTACIÓN
+import NotFoundPage from './pages/NotFoundPage'; // <-- IMPORTACIÓN AÑADIDA
 import ProtectedRoute from './components/ProtectedRoute';
 
 import ScrollToAnchor from './components/ScrollToAnchor';
+import usePageTracking from './hooks/usePageTracking';
 
 // Componente que envuelve las rutas y decide si mostrar Navbar/Footer
 const AppContent = () => {
   const location = useLocation();
+  usePageTracking();
   // Ahora comprobamos si la ruta COMIENZA con los prefijos del dashboard o es la página del documento
   const isDashboardRoute = location.pathname.startsWith('/cliente') || location.pathname.startsWith('/admin') || location.pathname.startsWith('/documento'); // <-- ACTUALIZADO
   const showNavAndFooter = !isDashboardRoute;
 
+  // Rutas privadas o transaccionales que no deben indexarse. Se resuelve aquí y
+  // no en cada página porque varias tienen múltiples returns (carga, error, ok).
+  const noindexPrefixes = ['/cliente', '/admin', '/documento', '/login', '/registro', '/pendiente'];
+  const isNoindexRoute = noindexPrefixes.some((prefix) => location.pathname.startsWith(prefix));
+
+  // Título de pestaña para las rutas sin componente Seo, que si no heredarían
+  // el de index.html. /documento se omite: lo define el nombre del documento.
+  const privateTitles = {
+    '/login': 'Iniciar sesión | E360',
+    '/registro': 'Crear cuenta | E360',
+    '/pendiente': 'Registro recibido | E360',
+  };
+  const privateTitle = privateTitles[location.pathname];
+
   return (
     <>
+      {isNoindexRoute && <meta name="robots" content="noindex, nofollow" />}
+      {privateTitle && <title>{privateTitle}</title>}
       <ScrollToAnchor />
       {showNavAndFooter && <Navbar />}
       <Preloader />
@@ -39,7 +58,14 @@ const AppContent = () => {
         <Route path="/registro" element={<Registro />} />
         <Route path="/pendiente" element={<Pendiente />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/documento/:uuid" element={<DocumentoPublico />} /> {/* <-- NUEVA RUTA */}
+        <Route 
+          path="/documento/:uuid" 
+          element={
+            <ProtectedRoute>
+              <DocumentoPublico />
+            </ProtectedRoute>
+          } 
+        />
 
         {/* Rutas Protegidas */}
         <Route 
@@ -60,7 +86,7 @@ const AppContent = () => {
         />
 
         {/* Ruta para cualquier otra URL no encontrada */}
-        <Route path="*" element={<div>Página no encontrada</div>} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       {showNavAndFooter && <Footer />}
     </>

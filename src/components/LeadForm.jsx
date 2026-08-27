@@ -49,9 +49,9 @@ export default function LeadForm() {
   return (
     <div className="max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <div className="text-center">
-        <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+        <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
           Contáctanos
-        </h2>
+        </h1>
         <p className="mt-4 text-lg leading-6 text-gray-500">
           ¿Listo para empezar? Completa el formulario y nos pondremos en contacto contigo.
         </p>
