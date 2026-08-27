@@ -1,26 +1,25 @@
 import React from 'react';
-import { FaLightbulb, FaHandshake, FaHeart, FaSearch } from 'react-icons/fa';
 
 const values = [
   {
     name: 'Claridad',
-    description: 'Traducimos lo complejo. Entregamos información que permite decidir sin margen de duda.',
-    Icon: FaLightbulb,
+    description: 'Hacemos entendible lo complejo.\nEntregamos información que permite decidir con certeza, sin ambigüedades ni ruido innecesario.',
+    image: '/img/principios1.jpg',
   },
   {
     name: 'Confianza',
-    description: 'Actuamos con transparencia y cumplimiento, entendiendo que la confianza es un activo financiero.',
-    Icon: FaHandshake,
+    description: 'Cumplimos lo que prometemos.\nActuamos con transparencia y consistencia, entendiendo que la confianza se construye en cada entrega.',
+    image: '/img/principios2.jpg',
   },
   {
     name: 'Empatía',
-    description: 'Escuchamos, entendemos y nos alineamos al contexto real del cliente antes de actuar.',
-    Icon: FaHeart,
+    description: 'Antes de proponer, entendemos.\nEscuchamos el contexto del cliente y alineamos cada solución a su realidad operativa y estratégica.',
+    image: '/img/principios3.jpg',
   },
   {
     name: 'Rigor',
-    description: 'Aplicamos metodologías probadas, control de calidad técnico y revisión senior en cada entrega.',
-    Icon: FaSearch,
+    description: 'La técnica no es negociable.\nAplicamos metodologías probadas, control de calidad y participación senior para asegurar resultados sólidos.',
+    image: '/img/principios4.jpg',
   },
 ];
 
@@ -28,28 +27,49 @@ export default function PurposeAndValues() {
   return (
     <section id="purpose-values" className="bg-white text-gray-900 overflow-hidden py-24 sm:py-32">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="text-center">
-          <h2 className="text-base font-semibold leading-7 text-e360-cyan">El ADN de E360</h2>
-          <p className="mt-2 text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
+        {/* Encabezado */}
+        <div className="text-center mb-20">
+          <h2 className="text-base font-semibold uppercase tracking-wider text-[#25c6e3]">EL ADN DE E360</h2>
+          <p className="mt-2 text-4xl md:text-5xl font-extrabold tracking-tight text-[#2e527f]">
             Nuestros Principios
           </p>
-          <p className="mt-6 max-w-3xl mx-auto text-lg leading-8 text-gray-700">
-            Resolver lo complejo con claridad, acompañar lo técnico con criterio y mantener la confianza como principio operativo. Creemos que la inteligencia financiera no se mide en reportes, sino en la capacidad de transformar decisiones en resultados tangibles.
-          </p>
+          <div className="mt-8 max-w-3xl mx-auto text-lg leading-8 text-gray-600 space-y-4">
+            <p>En E360 resolvemos lo complejo con claridad, acompañamos lo técnico con criterio y construimos confianza en cada decisión.</p>
+            <p>Creemos que el valor no está en los reportes, sino en la capacidad de transformar información en resultados reales y sostenibles.</p>
+          </div>
         </div>
 
-        <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* Grid de Principios */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {values.map((value) => (
             <div 
               key={value.name} 
-              className="group relative p-8 text-center bg-gray-50 border border-gray-200 rounded-3xl shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1"
+              className="flex flex-col bg-[#2e527f] rounded-2xl overflow-hidden shadow-xl transition-all duration-300 hover:-translate-y-2 h-full"
             >
-              <div className="relative z-10 flex flex-col items-center">
-                <div className="inline-block text-[#365e91] transition-transform duration-300 group-hover:scale-110 mb-4">
-                  <value.Icon className="h-10 w-10" />
+              {/* Imagen Superior (Contenida) */}
+              <div className="w-full aspect-video overflow-hidden">
+                <img 
+                  src={value.image} 
+                  alt={value.name} 
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                />
+              </div>
+
+              {/* Contenido del bloque (Texto debajo) */}
+              <div className="flex flex-col flex-grow p-8 text-center">
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  {value.name}
+                </h3>
+                <p className="text-white/80 text-sm leading-relaxed mb-8 flex-grow whitespace-pre-line">
+                  {value.description}
+                </p>
+
+                {/* Barra inferior decorativa segmentada */}
+                <div className="mt-auto pt-4 flex gap-1 items-center">
+                  <div className="h-1 flex-1 bg-white/30 rounded-full"></div>
+                  <div className="h-1 flex-1 bg-[#25c6e3] rounded-full"></div>
+                  <div className="h-1 flex-1 bg-[#E91E63] rounded-full"></div>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">{value.name}</h3>
-                <p className="mt-2 text-gray-600 text-sm">{value.description}</p>
               </div>
             </div>
           ))}

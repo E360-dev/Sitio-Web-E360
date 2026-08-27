@@ -391,3 +391,25 @@ entrypoint = "./functions/monday-contact/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/monday-contact/*.html" ]
+
+[functions.server-control]
+enabled = true
+verify_jwt = true
+import_map = "./functions/server-control/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/server-control/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/server-control/*.html" ]
+
+[functions.enviar-correo-manual]
+enabled = true
+verify_jwt = true
+import_map = "./functions/enviar-correo-manual/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/enviar-correo-manual/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/enviar-correo-manual/*.html" ]

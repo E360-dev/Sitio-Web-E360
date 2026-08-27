@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PdfViewer from '../../components/PdfViewer';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { obtenerDocumentoPorUuid, generarUrlTemporalPdf } from '../../lib/documentosApi';
@@ -116,9 +117,9 @@ const VistaDocumentoAdmin = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <div className="bg-white shadow-md rounded-lg h-[80vh]">
+            <div className="bg-white shadow-md rounded-lg h-[80vh] overflow-hidden">
               {pdfUrl ? (
-                <iframe src={pdfUrl} title={documento.nombre_documento} className="w-full h-full rounded-lg" />
+                <PdfViewer url={pdfUrl} title={documento.nombre_documento} />
               ) : (
                 <div className="flex justify-center items-center h-full text-gray-500">Este documento no tiene un PDF asociado.</div>
               )}

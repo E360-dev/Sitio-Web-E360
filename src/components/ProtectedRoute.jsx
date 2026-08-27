@@ -18,10 +18,10 @@ export default function ProtectedRoute({ children, requiredRole }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (rol !== requiredRole) {
+  if (requiredRole && rol !== requiredRole) {
     // Si el rol no es el requerido, redirige a una página por defecto o de error
     // Por ejemplo, si un cliente intenta acceder a /admin-dashboard
-    const redirectTo = rol === 'admin' ? '/admin-dashboard' : '/cliente-dashboard';
+    const redirectTo = rol === 'admin' ? '/admin/dashboard' : '/cliente/dashboard';
     return <Navigate to={redirectTo} replace />;
   }
 

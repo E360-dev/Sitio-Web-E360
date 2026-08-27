@@ -4,5 +4,8 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: './', // si necesitas rutas relativas para SiteGround
+  base: '/', // Configuración para despliegue en la raíz del dominio
+  optimizeDeps: {
+    exclude: ['pdfjs-dist'],
+  },
 });

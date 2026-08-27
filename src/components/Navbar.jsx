@@ -78,11 +78,15 @@ export default function Navbar() {
 
   const getNavLinkClass = (path) => {
     const isActive = location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
-    return `relative text-gray-900 font-bold hover:text-e360-highlight transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:h-[2px] after:bg-e360-highlight after:transition-all after:duration-300 ${isActive ? 'after:w-full text-e360-highlight' : 'after:w-0'}`;
+    return `relative px-3 py-1 font-bold hover:text-[rgb(138,218,233)] transition-all duration-300 rounded-md border-2 [text-shadow:0px_0px_1px_rgba(0,0,0,0.2)] ${
+      isActive 
+        ? 'text-[rgb(138,218,233)] border-[rgb(138,218,233)]' 
+        : 'text-[rgb(74,74,76)] border-transparent'
+    }`;
   };
 
   const isHomePage = location.pathname === '/';
-  const navBarClass = `fixed top-0 left-0 w-full z-50 transition-all duration-300 ${mobileMenuOpen ? 'bg-white' : 'bg-white shadow-lg'}`;
+  const navBarClass = `fixed top-0 left-0 w-full z-50 transition-all duration-300 ${mobileMenuOpen ? 'bg-[rgb(239,239,239)]' : 'bg-[rgb(239,239,239)] shadow-[0_30px_50px_-25px_rgba(0,0,0,0.5)]'}`;
 
   return (
     <header className={navBarClass}>
@@ -93,9 +97,8 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-8">
             {mainMenuItems.map((item) => (
               <div key={item.name} className="relative" onMouseEnter={() => setOpenDropdown(item.name.toLowerCase())} onMouseLeave={() => setOpenDropdown('')}>
-                <NavLink to={item.href} className={`${getNavLinkClass(item.href)} flex items-center gap-1`}>
+                <NavLink to={item.href} className={getNavLinkClass(item.href)}>
                   {item.name}
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
                 </NavLink>
                 
                 <div className={`absolute top-full origin-top-right transition-all duration-300 ease-out ${openDropdown === item.name.toLowerCase() ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>

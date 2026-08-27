@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import logo from '/public/img/logo.png'; // Import the E360 logo
 
 export default function GmailFloatingButton() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,7 +57,7 @@ export default function GmailFloatingButton() {
               >
                 <div className="flex items-center gap-4" onClick={openGmail}>
                   <div className="h-14 w-14 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
-                    <img src={logo} alt="E360 Logo" className="h-10 w-auto object-cover" />
+                    <img src="/img/logo.png" alt="E360 Logo" className="h-10 w-auto object-cover" />
                   </div>
                   <div className="flex flex-col items-start">
                     <span className="font-bold text-gray-800 text-xl">E360</span>

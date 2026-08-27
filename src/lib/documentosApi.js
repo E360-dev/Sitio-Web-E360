@@ -20,7 +20,7 @@ export const obtenerClientes = async () => {
 /**
  * Crea un nuevo documento en estado 'borrador'.
  * @param {string} nombreDocumento - El nombre interno del documento.
- * @param {string} idClienteAsignado - El ID del cliente al que se le asigna.
+ * @param {number} idClienteAsignado - El ID interno del cliente al que se le asigna.
  * @returns {Promise<Object>} El nuevo registro de documento creado.
  */
 export const crearDocumentoBorrador = async (nombreDocumento, idClienteAsignado) => {
@@ -101,6 +101,78 @@ export const subirPdfYAsociar = async (documentoId, documentoUuid, archivo, hash
 };
 
 /**
+ * Sube un PDF de reemplazo para un documento ya emitido sin publicarlo todavía.
+ * @param {number} documentoId
+ * @param {string} documentoUuid
+ * @param {File} archivo
+ * @param {string} hashDocumento
+ * @param {string|null} rutaPendienteActual
+ * @returns {Promise<Object>}
+ */
+export const subirPdfReemplazoPendiente = async (
+  documentoId,
+  documentoUuid,
+  archivo,
+  hashDocumento,
+  rutaPendienteActual = null
+) => {
+  if (!documentoId || !documentoUuid || !archivo || !hashDocumento) {
+    throw new Error('Faltan parámetros requeridos para subir el reemplazo pendiente.');
+  }
+
+  const rutaArchivoPendiente = `${documentoUuid}/pendiente-${Date.now()}.pdf`;
+
+  const { error: uploadError } = await supabase.storage
+    .from('documentos_privados')
+    .upload(rutaArchivoPendiente, archivo, {
+      upsert: true,
+    });
+
+  if (uploadError) {
+    console.error('Error detallado de Supabase Storage al subir reemplazo pendiente:', uploadError);
+    const errorMessage = `Storage Error: ${uploadError.message} (Status: ${uploadError.statusCode || 'N/A'})`;
+    throw new Error(errorMessage);
+  }
+
+  try {
+    const { data, error: updateError } = await supabase
+      .from('documentos')
+      .update({
+        ruta_storage_pdf_pendiente: rutaArchivoPendiente,
+        hash_documento_pendiente: hashDocumento,
+      })
+      .eq('id', documentoId)
+      .select()
+      .single();
+
+    if (updateError) throw updateError;
+
+    if (rutaPendienteActual && rutaPendienteActual !== rutaArchivoPendiente) {
+      const { error: removeOldPendingError } = await supabase.storage
+        .from('documentos_privados')
+        .remove([rutaPendienteActual]);
+
+      if (removeOldPendingError) {
+        console.error('No se pudo eliminar el reemplazo pendiente anterior:', removeOldPendingError);
+      }
+    }
+
+    return { success: true, ...data };
+  } catch (error) {
+    console.error('Error al actualizar el reemplazo pendiente. Iniciando rollback de Storage...', error);
+    const { error: removeError } = await supabase.storage
+      .from('documentos_privados')
+      .remove([rutaArchivoPendiente]);
+
+    if (removeError) {
+      console.error('No se pudo eliminar el archivo pendiente huérfano:', removeError);
+    }
+
+    throw new Error(`Error al asociar el reemplazo pendiente: ${error.message || error.toString()}`);
+  }
+};
+
+/**
  * Invoca la RPC para emitir un documento de forma definitiva.
  * @param {number} documentoId - El ID (bigint) del documento a emitir.
  * @param {string} hashDocumento - El hash SHA-256 del archivo PDF.
@@ -129,12 +201,84 @@ export const emitirDocumento = async (documentoId, hashDocumento) => {
  * @param {string} uuid - El UUID del documento.
  * @returns {Promise<Object>} Los detalles del documento.
  */
+export const confirmarReemplazoDocumento = async (documento) => {
+  if (!documento?.id || !documento?.ruta_storage_pdf_pendiente || !documento?.hash_documento_pendiente) {
+    throw new Error('El documento no tiene un reemplazo pendiente listo para confirmar.');
+  }
+
+  const rutaAnterior = documento.ruta_storage_pdf;
+
+  const { data, error } = await supabase
+    .from('documentos')
+    .update({
+      ruta_storage_pdf: documento.ruta_storage_pdf_pendiente,
+      hash_documento: documento.hash_documento_pendiente,
+      ruta_storage_pdf_pendiente: null,
+      hash_documento_pendiente: null,
+    })
+    .eq('id', documento.id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error al confirmar el reemplazo del documento:', error);
+    throw new Error(error.message || 'No se pudo confirmar el reemplazo del documento.');
+  }
+
+  if (rutaAnterior && rutaAnterior !== data.ruta_storage_pdf) {
+    const { error: removeError } = await supabase.storage
+      .from('documentos_privados')
+      .remove([rutaAnterior]);
+
+    if (removeError) {
+      console.error('No se pudo eliminar el PDF vigente anterior:', removeError);
+    }
+  }
+
+  return { success: true, ...data };
+};
+
+export const cancelarReemplazoDocumento = async (documento) => {
+  if (!documento?.id) {
+    throw new Error('El documento es obligatorio para cancelar el reemplazo.');
+  }
+
+  const rutaPendiente = documento.ruta_storage_pdf_pendiente;
+
+  const { data, error } = await supabase
+    .from('documentos')
+    .update({
+      ruta_storage_pdf_pendiente: null,
+      hash_documento_pendiente: null,
+    })
+    .eq('id', documento.id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error al cancelar el reemplazo del documento:', error);
+    throw new Error(error.message || 'No se pudo cancelar el reemplazo del documento.');
+  }
+
+  if (rutaPendiente) {
+    const { error: removeError } = await supabase.storage
+      .from('documentos_privados')
+      .remove([rutaPendiente]);
+
+    if (removeError) {
+      console.error('No se pudo eliminar el PDF pendiente cancelado:', removeError);
+    }
+  }
+
+  return { success: true, ...data };
+};
+
 export const obtenerDocumentoPorUuid = async (uuid) => {
   if (!uuid) throw new Error('El UUID es obligatorio.');
 
   const { data, error } = await supabase
     .from('documentos')
-    .select(`*`) // Selecciona solo las columnas directas de 'documentos'
+    .select(`*, clientes(nombre, empresa)`) // Selecciona columnas del documento y del cliente relacionado
     .eq('uuid', uuid)
     .single();
 
@@ -143,6 +287,28 @@ export const obtenerDocumentoPorUuid = async (uuid) => {
     throw new Error('No se pudo encontrar el documento.');
   }
   return data;
+};
+
+/**
+ * Obtiene el ID interno de la tabla `clientes` usando el `user_id` de Supabase (auth.uid()).
+ * @param {string} supabaseUserId - El user_id de Supabase (auth.uid()).
+ * @returns {Promise<number|null>} El id interno del cliente o null si no se encuentra.
+ */
+export const obtenerClienteIdPorUserId = async (supabaseUserId) => {
+  if (!supabaseUserId) throw new Error('El ID de usuario de Supabase es obligatorio.');
+
+  const { data, error } = await supabase
+    .from('clientes')
+    .select('id')
+    .eq('user_id', supabaseUserId)
+    .single();
+
+  if (error && error.code !== 'PGRST116') { // PGRST116 es 'No rows found'
+    console.error('Error al obtener el ID del cliente por user_id:', error);
+    throw new Error('No se pudo obtener el ID del cliente.');
+  }
+
+  return data ? data.id : null;
 };
 
 /**
@@ -166,7 +332,7 @@ export const generarUrlTemporalPdf = async (rutaArchivo) => {
 
 /**
  * Obtiene todos los documentos emitidos para un cliente específico.
- * @param {string} idCliente - El UUID del cliente.
+ * @param {number} idCliente - El ID interno (bigint) del cliente.
  * @returns {Promise<Array>} Lista de documentos emitidos.
  */
 export const obtenerDocumentosPorCliente = async (idCliente) => {
@@ -184,6 +350,58 @@ export const obtenerDocumentosPorCliente = async (idCliente) => {
     throw new Error('No se pudieron obtener los documentos del cliente.');
   }
   return data;
+};
+
+/**
+ * Actualiza el nombre de un documento.
+ * @param {number} documentoId - El ID del documento a actualizar.
+ * @param {string} nuevoNombre - El nuevo nombre del documento.
+ * @returns {Promise<Object>} El registro del documento actualizado.
+ */
+export const actualizarNombreDocumento = async (documentoId, nuevoNombre) => {
+  if (!documentoId || !nuevoNombre) {
+    throw new Error('El ID del documento y el nuevo nombre son obligatorios.');
+  }
+
+  const { data, error } = await supabase
+    .from('documentos')
+    .update({ nombre_documento: nuevoNombre })
+    .eq('id', documentoId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error al actualizar el nombre del documento:', error);
+    throw error;
+  }
+
+  return { success: true, ...data };
+};
+
+/**
+ * Actualiza la fecha de emisión de un documento.
+ * @param {number} documentoId - El ID del documento a actualizar.
+ * @param {string} nuevaFecha - La nueva fecha en formato YYYY-MM-DD.
+ * @returns {Promise<Object>} El registro del documento actualizado.
+ */
+export const actualizarFechaEmision = async (documentoId, nuevaFecha) => {
+  if (!documentoId || !nuevaFecha) {
+    throw new Error('El ID del documento y la nueva fecha son obligatorios.');
+  }
+
+  const { data, error } = await supabase
+    .from('documentos')
+    .update({ fecha_emision: nuevaFecha })
+    .eq('id', documentoId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error al actualizar la fecha de emisión:', error);
+    throw error;
+  }
+
+  return { success: true, ...data };
 };
 
 /**

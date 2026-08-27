@@ -1,70 +1,77 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
-import { useState, useEffect } from 'react';
-import { HomeIcon, UserGroupIcon, DocumentChartBarIcon, ArrowLeftOnRectangleIcon, ClipboardDocumentListIcon, ClipboardDocumentCheckIcon, ArrowTopRightOnSquareIcon, DocumentDuplicateIcon } from '@heroicons/react/24/solid';
+import {
+  HomeIcon,
+  ArrowLeftOnRectangleIcon,
+  ArrowTopRightOnSquareIcon,
+  DocumentDuplicateIcon,
+  EnvelopeIcon
+} from '@heroicons/react/24/solid';
 
 export default function AdminSidebar() {
-  const [user, setUser] = useState(null);
+  const location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    fetchUser();
-  }, []);
+  const navLinks = [
+    { name: 'Dashboard', href: '/admin/dashboard', icon: HomeIcon },
+    { name: 'Gesti\u00f3n de Documentos', href: '/admin/documentos', icon: DocumentDuplicateIcon },
+    { name: 'Enviar Notificaci\u00f3n', href: '/admin/enviar-correo', icon: EnvelopeIcon },
+  ];
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/login');
   };
 
-  const navLinks = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: HomeIcon },
-    { name: 'Gestión de Documentos', href: '/admin/documentos', icon: DocumentDuplicateIcon },
-  ];
-
   return (
-    <aside className="w-64 flex flex-col bg-gray-900 text-white">
-      <div className="h-28 flex items-center justify-center border-b border-gray-800 px-4">
-        <img src="/img/logo.png" alt="E360" className="h-20" />
+    <aside className="sticky top-0 h-screen w-72 shrink-0 flex flex-col bg-white border-r border-gray-200 text-gray-700 shadow-xl z-20">
+      <div className="flex flex-col items-center px-6 pt-8 pb-6 text-center">
+        <p className="text-sm font-black tracking-[0.28em] text-[rgb(53,92,143)] uppercase">
+          Panel de Control
+        </p>
+        <div className="mt-4 h-1 w-32 rounded-full bg-gradient-to-r from-[#e80554] to-[#25c6e3]"></div>
       </div>
 
-      <nav className="flex-1 px-4 py-6 space-y-2">
-        {navLinks.map((link) => (
-          <Link
-            key={link.name}
-            to={link.href}
-            className="flex items-center px-4 py-2 text-gray-300 rounded-md hover:bg-gray-700 hover:text-white transition-colors"
+      <nav className="flex-1 flex flex-col justify-center px-4 py-6 space-y-3">
+        {navLinks.map((link) => {
+          const isActive = location.pathname === link.href;
+          return (
+            <Link
+              key={link.name}
+              to={link.href}
+              className={`group flex items-center justify-center px-4 py-3 text-sm rounded-xl transition-all duration-200 border-l-4 ${
+                isActive
+                  ? 'bg-[rgb(53,92,143)]/10 border-[rgb(53,92,143)] text-[rgb(53,92,143)] font-bold'
+                  : 'border-transparent text-gray-500 hover:bg-gray-50 hover:text-[#1a2f4e] font-semibold'
+              }`}
+            >
+              <link.icon className={`h-5 w-5 mr-4 transition-colors ${isActive ? 'text-[rgb(53,92,143)]' : 'text-gray-400 group-hover:text-[#1a2f4e]'}`} />
+              <span className="tracking-wide">{link.name}</span>
+            </Link>
+          );
+        })}
+
+        <div className="pt-4 border-t border-gray-200">
+          <a
+            href="http://3.151.184.227:8501"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center justify-center px-4 py-3 text-sm font-bold text-[#e80554] hover:bg-gray-50 rounded-xl transition-all border-l-4 border-transparent"
           >
-            <link.icon className="h-6 w-6 mr-3" />
-            {link.name}
-          </Link>
-        ))}
-        {/* Enlace a la App externa */}
-        <a
-          href="http://3.151.184.227:8501"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center px-4 py-2 text-gray-300 rounded-md hover:bg-gray-700 hover:text-white transition-colors"
-        >
-          <ArrowTopRightOnSquareIcon className="h-6 w-6 mr-3" />
-          Abrir App UNC
-        </a>
+            <ArrowTopRightOnSquareIcon className="h-5 w-5 mr-4 text-[#e80554]" />
+            <span className="tracking-wide text-xs">Abrir App UNC</span>
+          </a>
+        </div>
       </nav>
 
-      <div className="px-4 py-6 border-t border-gray-800">
-        <div className="mb-4">
-          <p className="text-sm font-medium text-white">{user?.email}</p>
-          <p className="text-xs text-yellow-400">Administrador</p>
-        </div>
+      <div className="flex flex-col items-center gap-5 p-6 border-t border-gray-200 text-center">
+        <img src="/img/logo1.png" alt="E360" className="h-20 w-auto opacity-95" />
         <button
           onClick={handleLogout}
-          className="w-full flex items-center px-4 py-2 text-left text-red-400 rounded-md hover:bg-red-500 hover:text-white transition-colors"
+          className="w-full max-w-56 flex items-center justify-center gap-3 px-4 py-3 bg-[#e80554] hover:bg-[#c70448] text-white text-xs font-black rounded-xl transition-all shadow-sm uppercase tracking-widest"
         >
-          <ArrowLeftOnRectangleIcon className="h-6 w-6 mr-3" />
-          Cerrar Sesión
+          <ArrowLeftOnRectangleIcon className="h-5 w-5" />
+          {'Cerrar Sesi\u00f3n'}
         </button>
       </div>
     </aside>
