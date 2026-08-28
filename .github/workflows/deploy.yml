@@ -53,6 +53,18 @@ jobs:
           chmod 600 ~/.ssh/id_despliegue
           ssh-keyscan -p "${{ secrets.SSH_PORT }}" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
 
+      - name: Comprobar la ruta de destino
+        # DEPLOY_PATH mal puesto significaría escribir el sitio en el sitio
+        # equivocado. Aquí se verifica que el destino existe y que parece el
+        # directorio público del sitio, antes de transferir un solo archivo.
+        run: |
+          SSH="ssh -i ~/.ssh/id_despliegue -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes"
+          DESTINO="${{ secrets.DEPLOY_PATH }}"
+          $SSH "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "test -d '$DESTINO' || { echo 'ERROR: la ruta no existe en el servidor'; exit 1; }
+             test -f '$DESTINO/index.html' || { echo 'ERROR: la ruta existe pero no contiene index.html; revisa DEPLOY_PATH'; exit 1; }
+             echo 'Destino verificado:'; ls -la '$DESTINO' | head -12"
+
       - name: Sincronizar el sitio
         # --checksum compara contenido en lugar de fecha: el build reescribe los
         # videos e imágenes con mtime nuevo aunque no hayan cambiado, y sin esto
