@@ -5,7 +5,8 @@ import {
   ArrowLeftOnRectangleIcon,
   ArrowTopRightOnSquareIcon,
   DocumentDuplicateIcon,
-  EnvelopeIcon
+  EnvelopeIcon,
+  NewspaperIcon
 } from '@heroicons/react/24/solid';
 
 export default function AdminSidebar() {
@@ -15,6 +16,7 @@ export default function AdminSidebar() {
   const navLinks = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: HomeIcon },
     { name: 'Gesti\u00f3n de Documentos', href: '/admin/documentos', icon: DocumentDuplicateIcon },
+    { name: 'E360 Comunica', href: '/admin/comunica', icon: NewspaperIcon },
     { name: 'Enviar Notificaci\u00f3n', href: '/admin/enviar-correo', icon: EnvelopeIcon },
   ];
 

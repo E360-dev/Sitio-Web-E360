@@ -66,3 +66,69 @@
   transition: all 0.3s ease;
   text-decoration: underline;
 }
+/* ---------------------------------------------------------------------------
+   Tipografía de los artículos de E360 Comunica.
+   Se aplica tanto al editor del panel como al artículo publicado, para que
+   quien escribe vea exactamente el resultado final.
+   --------------------------------------------------------------------------- */
+.prose-e360 {
+  color: #374151;
+  font-size: 1.125rem;
+  line-height: 1.85;
+}
+.prose-e360 > * + * { margin-top: 1.35em; }
+.prose-e360 h2 {
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: #2e527f;
+  line-height: 1.25;
+  margin-top: 2.5em;
+  margin-bottom: 0.6em;
+}
+.prose-e360 h3 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+.prose-e360 strong { color: #111827; font-weight: 700; }
+.prose-e360 a {
+  color: #2e527f;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-e360 a:hover { color: #25c6e3; }
+.prose-e360 ul, .prose-e360 ol { padding-left: 1.5rem; }
+.prose-e360 ul { list-style: disc; }
+.prose-e360 ol { list-style: decimal; }
+.prose-e360 li { margin-top: 0.5em; }
+.prose-e360 li::marker { color: #25c6e3; }
+.prose-e360 blockquote {
+  border-left: 4px solid #25c6e3;
+  padding-left: 1.5rem;
+  font-style: italic;
+  color: #4b5563;
+}
+.prose-e360 img {
+  border-radius: 0.75rem;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  max-width: 100%;
+  height: auto;
+}
+.prose-e360 code {
+  background: #f3f4f6;
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+}
+.prose-e360 hr { border-color: #e5e7eb; margin: 3em 0; }
+
+/* Limita el resumen a tres líneas en las tarjetas del feed. */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

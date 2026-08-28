@@ -35,6 +35,8 @@ jobs:
         run: npm ci
 
       - name: Compilar
+        # npm run build encadena tres pasos: descarga los artículos publicados
+        # de Supabase, compila, y prerenderiza cada ruta a HTML con Puppeteer.
         run: npm run build
 
       - name: Comprobar que el build es válido
@@ -43,6 +45,15 @@ jobs:
           test -f dist/index.html || { echo "ERROR: no se generó dist/index.html"; exit 1; }
           test -d dist/assets   || { echo "ERROR: no se generó dist/assets"; exit 1; }
           test -f dist/.htaccess || echo "AVISO: no hay .htaccess en el build; se conservará el del servidor"
+          test -f dist/sitemap.xml || { echo "ERROR: no se generó el sitemap"; exit 1; }
+
+          # Las páginas prerenderizadas deben llevar contenido real, no solo el
+          # esqueleto de la SPA: es lo único que ven Google y LinkedIn.
+          grep -q "E360 Comunica" dist/comunica/index.html \
+            || { echo "ERROR: /comunica no se prerenderizó con contenido"; exit 1; }
+
+          echo "Rutas prerenderizadas:"
+          find dist -name index.html | sed "s|dist||;s|/index.html|/|"
           echo "Contenido a desplegar:"
           du -sh dist
 

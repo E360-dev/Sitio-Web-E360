@@ -6,6 +6,8 @@ import Inicio from './pages/Inicio';
 import Nosotros from './pages/Nosotros';
 import Servicios from './pages/Servicios';
 import Contacto from './pages/Contacto';
+import Comunica from './pages/Comunica';
+import Articulo from './pages/Articulo';
 
 import Preloader from './components/Preloader';
 import Registro from './pages/Registro';
@@ -66,6 +68,8 @@ const AppContent = () => {
         <Route path="/nosotros" element={<Nosotros />} />
         <Route path="/servicios" element={<Servicios />} />
         <Route path="/contacto" element={<Contacto />} />
+        <Route path="/comunica" element={<Comunica />} />
+        <Route path="/comunica/:slug" element={<Articulo />} />
         
         <Route path="/registro" element={<Registro />} />
         <Route path="/pendiente" element={<Pendiente />} />

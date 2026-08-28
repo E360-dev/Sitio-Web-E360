@@ -19,6 +19,18 @@
   RewriteRule ^(.*)$ https://e360.pro/$1 [R=301,L]
 
   # -------------------------------------------------------------------------
+  # Páginas prerenderizadas
+  #
+  # El build genera un index.html por ruta (/comunica/mi-articulo/index.html).
+  # Sin esta regla, Apache detectaría el directorio y mod_dir redirigiría a
+  # /comunica/mi-articulo/ con barra final — una URL distinta de la que declara
+  # la etiqueta canónica. Aquí se sirve el archivo directamente, sin redirigir.
+  # -------------------------------------------------------------------------
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME}/index.html -f
+  RewriteRule ^(.+?)/?$ /$1/index.html [L]
+
+  # -------------------------------------------------------------------------
   # Rutas de la SPA — reglas originales del servidor, sin cambios.
   # Sin esto, entrar directo a /servicios devuelve 404.
   # -------------------------------------------------------------------------

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import AdminSidebar from '../components/admin/AdminSidebar.jsx';
 import GestionDocumentos from '../components/admin/GestionDocumentos.jsx';
+import GestionArticulos from '../components/admin/GestionArticulos.jsx';
+import EdicionArticulo from '../components/admin/EdicionArticulo.jsx';
 import AdminDocumentDetail from '../components/admin/AdminDocumentDetail.jsx';
 import EnviarCorreoManual from '../components/admin/EnviarCorreoManual.jsx';
 import ServerControlButton from '../components/admin/ServerControlButton.jsx';
@@ -145,6 +147,8 @@ const AdminDashboardContent = ({ user }) => (
     <Routes>
       <Route path="documentos" element={<GestionDocumentos />} />
       <Route path="documentos/:uuid" element={<AdminDocumentDetail />} />
+      <Route path="comunica" element={<GestionArticulos />} />
+      <Route path="comunica/:id" element={<EdicionArticulo />} />
       <Route path="enviar-correo" element={<EnviarCorreoManual />} />
       <Route path="dashboard" element={<AdminDashboardHome user={user} />} />
       <Route index element={<AdminDashboardHome user={user} />} />
