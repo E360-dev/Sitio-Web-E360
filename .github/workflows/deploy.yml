@@ -75,13 +75,70 @@ jobs:
             -e "ssh -i ~/.ssh/id_despliegue -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" \
             dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/"
 
-      - name: Limpiar assets obsoletos
-        # assets/ es 100% salida del build y sus nombres llevan hash, así que aquí
-        # --delete sí es seguro: elimina los chunks de compilaciones anteriores.
+      - name: Limpiar assets de despliegues antiguos
+        # Se conservan los assets del despliegue ANTERIOR además de los del actual.
+        #
+        # Motivo: borrarlos en el mismo despliegue que sube los nuevos deja una
+        # ventana en la que un navegador con la página ya abierta —o con el HTML
+        # aún cacheado— pide un chunk que acaba de desaparecer, y ve una pantalla
+        # en blanco. Pasó en el primer despliegue.
+        #
+        # Se lleva un manifiesto en el servidor con la lista de cada despliegue;
+        # se borra solo lo que no está ni en el actual ni en el anterior.
         run: |
-          rsync -avz --checksum --delete \
-            -e "ssh -i ~/.ssh/id_despliegue -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" \
-            dist/assets/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/assets/"
+          SSH="ssh -i ~/.ssh/id_despliegue -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes"
+          DESTINO="${{ secrets.DEPLOY_PATH }}"
+          SERVIDOR="${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}"
+
+          # El manifiesto del despliegue anterior pasa a ser el histórico.
+          $SSH "$SERVIDOR" "cd '$DESTINO/assets' && { [ -f .manifiesto ] && mv .manifiesto .manifiesto-anterior; } || true"
+
+          # Manifiesto del despliegue actual.
+          ls dist/assets > manifiesto.txt
+          scp -i ~/.ssh/id_despliegue -P "${{ secrets.SSH_PORT }}" -o StrictHostKeyChecking=yes \
+            manifiesto.txt "$SERVIDOR:$DESTINO/assets/.manifiesto"
+
+          # Borrar lo que no aparece en ninguno de los dos.
+          $SSH "$SERVIDOR" "
+            cd '$DESTINO/assets' || exit 1
+            cat .manifiesto .manifiesto-anterior 2>/dev/null | sort -u > .conservar
+            borrados=0
+            for f in *; do
+              [ -f \"\$f\" ] || continue
+              if ! grep -qxF \"\$f\" .conservar; then
+                rm -f \"\$f\" && borrados=\$((borrados+1))
+              fi
+            done
+            rm -f .conservar
+            echo \"Assets eliminados de despliegues antiguos: \$borrados\"
+            echo \"Assets en el servidor: \$(ls | wc -l)\"
+          "
+
+      - name: Comprobar que el sitio publicado sirve el build nuevo
+        # En el primer despliegue, la caché dinámica de SiteGround siguió
+        # sirviendo el HTML viejo, que apuntaba a un asset ya borrado: pantalla
+        # en blanco sin que nada fallara. Este paso convierte ese fallo
+        # silencioso en un error visible.
+        #
+        # El .htaccess ya envía Cache-Control: no-cache en el HTML, así que no
+        # debería repetirse. Si vuelve a pasar, aquí se verá.
+        run: |
+          ESPERADO=$(ls dist/assets/index-*.js | head -1 | xargs basename)
+          echo "Esperando en producción: $ESPERADO"
+
+          for intento in 1 2 3 4 5; do
+            SERVIDO=$(curl -s --max-time 20 "https://e360.pro/?despliegue=$GITHUB_RUN_ID" \
+                      | grep -o 'assets/index-[^"]*\.js' | head -1 | xargs -r basename)
+            echo "  intento $intento: $SERVIDO"
+            [ "$SERVIDO" = "$ESPERADO" ] && { echo "OK: producción sirve el build recién desplegado."; exit 0; }
+            sleep 10
+          done
+
+          echo ""
+          echo "ERROR: producción sigue sirviendo '$SERVIDO' en lugar de '$ESPERADO'."
+          echo "Los archivos se subieron bien, pero algo devuelve HTML cacheado."
+          echo "Solución inmediata: Site Tools -> Velocidad -> Caché -> vaciar la caché dinámica."
+          exit 1
 
       - name: Borrar la clave
         if: always()
