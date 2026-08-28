@@ -1,0 +1,63 @@
+# Configuración de Apache para e360.pro
+#
+# Este archivo se despliega con el sitio (Vite copia public/ a dist/).
+# Antes vivía únicamente en el servidor, sin copia ni historial.
+
+# ---------------------------------------------------------------------------
+# Redirección de www al dominio principal
+#
+# https://www.e360.pro y https://e360.pro servían el mismo contenido con
+# código 200 y sin redirección, así que para Google eran dos sitios distintos
+# con contenido idéntico y la autoridad se repartía entre ambos. Va antes que
+# las reglas de la SPA para que redirija también los archivos existentes.
+# ---------------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  RewriteCond %{HTTP_HOST} ^www\.e360\.pro$ [NC]
+  RewriteRule ^(.*)$ https://e360.pro/$1 [R=301,L]
+
+  # -------------------------------------------------------------------------
+  # Rutas de la SPA — reglas originales del servidor, sin cambios.
+  # Sin esto, entrar directo a /servicios devuelve 404.
+  # -------------------------------------------------------------------------
+
+  # Si el archivo o carpeta existe, servirlo normalmente
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Si no existe, redirigir a index.html
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# Caché
+#
+# Es lo que elimina el purgado manual después de cada despliegue.
+# ---------------------------------------------------------------------------
+<IfModule mod_headers.c>
+  # El HTML se revalida siempre: es el único archivo que puede quedar obsoleto,
+  # porque es quien apunta a los assets con hash.
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+
+  # Los assets llevan hash en el nombre: si cambia el contenido, cambia la URL.
+  # Pueden cachearse indefinidamente sin riesgo de servir algo viejo.
+  <FilesMatch "\.(js|css|woff2?)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # Imágenes y video no llevan hash, así que un año sería arriesgado si se
+  # reemplaza un archivo conservando el nombre. Treinta días es el equilibrio.
+  <FilesMatch "\.(webp|png|jpe?g|svg|mp4|ico)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+
+  # Deben poder actualizarse el mismo día en que se publican.
+  <FilesMatch "^(robots\.txt|sitemap\.xml)$">
+    Header set Cache-Control "public, max-age=3600"
+  </FilesMatch>
+</IfModule>
