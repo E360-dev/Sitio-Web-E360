@@ -1,4 +1,5 @@
 import React from 'react';
+import Imagen from './Imagen';
 
 const values = [
   {
@@ -48,9 +49,9 @@ export default function PurposeAndValues() {
             >
               {/* Imagen Superior (Contenida) */}
               <div className="w-full aspect-video overflow-hidden">
-                <img 
-                  src={value.image} 
-                  alt={value.name} 
+                <Imagen
+                  src={value.image}
+                  alt={value.name}
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                 />
               </div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { fondoWebp } from './Imagen';
 
 // Hook para detectar cuando el componente está en pantalla
 const useOnScreen = (options) => {
@@ -62,7 +63,7 @@ export default function KeyDifferentiators() {
       <div 
         ref={ref}
         className="relative bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/img/keydifferentiators.jpg')" }}
+        style={{ backgroundImage: fondoWebp('/img/keydifferentiators.jpg') }}
       >
         {/* Overlay oscuro (azul/negro azulado ~70%) */}
         <div className="absolute inset-0 bg-[#0a1e3c]/70"></div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Seo from '../components/Seo';
+import { fondoWebp } from '../components/Imagen';
 import ServiceHero from '../components/ServiceHero';
 import { FaChartLine, FaShieldAlt, FaUsers, FaBullseye, FaCheckCircle } from 'react-icons/fa';
 import GmailFloatingButton from '../components/GmailFloatingButton';
@@ -130,8 +131,8 @@ function ServicesTabs() {
                     {/* Imagen con Overlay y Título */}
                     <div 
                       className="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
-                      style={{ 
-                        backgroundImage: `url('${item.image}')`,
+                      style={{
+                        backgroundImage: fondoWebp(item.image),
                         backgroundSize: 'cover',
                         backgroundPosition: 'center'
                       }}

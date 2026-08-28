@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Imagen from './Imagen';
 import { Link } from 'react-router-dom';
 
 const useOnScreen = (options) => {
@@ -66,15 +67,19 @@ export default function CallToAction() {
 
               {/* Imagen - Ocupa 4/12 del espacio */}
               <div className="flex flex-col items-center lg:col-span-4 relative">
-                <img 
-                  src="/img/adnbigfour.jpg" 
-                  alt="ADN Big Four" 
+                <Imagen
+                  src="/img/adnbigfour.jpg"
+                  alt="ADN Big Four"
                   className="w-full max-w-sm h-auto max-h-[320px] object-cover shadow-2xl"
+                  width={900}
+                  height={514}
                 />
-                <img 
-                  src="/img/logo.png" 
-                  alt="Logo E360" 
+                <Imagen
+                  src="/img/logo.png"
+                  alt="Logo E360"
                   className="mt-4 w-16 h-auto self-end opacity-90"
+                  width={400}
+                  height={400}
                 />
               </div>
             </div>

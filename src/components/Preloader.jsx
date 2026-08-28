@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Imagen from './Imagen';
 
 export default function Preloader() {
   const [visible, setVisible] = useState(true);
@@ -6,7 +7,7 @@ export default function Preloader() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
-    }, 1500); // El preloader se ocultará después de 1.5 segundos
+    }, 600); // Suficiente para el guiño de marca sin castigar el tiempo de carga
 
     return () => clearTimeout(timer);
   }, []);
@@ -18,7 +19,7 @@ export default function Preloader() {
       id="preloader"
       className="fixed inset-0 bg-black flex items-center justify-center z-[9999]"
     >
-      <img src="/img/logo1.png" alt="E360 Logo" className="w-32 h-auto animate-pulse" />
+      <Imagen src="/img/logo1.png" alt="E360 Logo" className="w-32 h-auto animate-pulse" lazy={false} width={400} height={257} />
     </div>
   );
 }

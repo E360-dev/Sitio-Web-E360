@@ -3,17 +3,24 @@ import { useEffect, useRef, useState } from 'react';
 
 // Updated video data with optimized names
 const desktopVideos = [
-  { src: '/videos/Video_1_Optimized.mp4', cta: 'Conoce nuestros servicios →', link: '/servicios' },
-  { src: '/videos/Video_2_Optimized.mp4', cta: 'Descubre nuestro enfoque →', link: '/nosotros' },
-  { src: '/videos/Video_3_Optimized.mp4', cta: 'Explora nuestro impacto →', link: '/#impacto' }
+  { src: '/videos/Video_1_Optimized.mp4', poster: '/img/posters/Video_1_Optimized.webp', cta: 'Conoce nuestros servicios →', link: '/servicios' },
+  { src: '/videos/Video_2_Optimized.mp4', poster: '/img/posters/Video_2_Optimized.webp', cta: 'Descubre nuestro enfoque →', link: '/nosotros' },
+  { src: '/videos/Video_3_Optimized.mp4', poster: '/img/posters/Video_3_Optimized.webp', cta: 'Explora nuestro impacto →', link: '/#impacto' }
 ];
 
-const mobileVideo = { src: '/videos/Video_Mobile_Optimized.mp4', cta: 'Conoce e360 →', link: '/servicios' };
+const mobileVideo = { src: '/videos/Video_Mobile_Optimized.mp4', poster: '/img/posters/Video_Mobile_Optimized.webp', cta: 'Conoce e360 →', link: '/servicios' };
 
 export default function HeroBanner() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  // Inicializador perezoso: se evalúa antes del primer render. Con useState(false)
+  // + useEffect, el móvil montaba el video de escritorio y lo reemplazaba después,
+  // descargando ambos.
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== 'undefined' && window.innerWidth < 768
+  );
+  // Difiere la descarga del video hasta que el resto de la página haya cargado.
+  const [arrancarVideo, setArrancarVideo] = useState(false);
   const videoRef = useRef(null);
 
   // Check for mobile screen size
@@ -21,9 +28,18 @@ export default function HeroBanner() {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (document.readyState === 'complete') {
+      setArrancarVideo(true);
+      return;
+    }
+    const alCargar = () => setArrancarVideo(true);
+    window.addEventListener('load', alCargar);
+    return () => window.removeEventListener('load', alCargar);
   }, []);
 
   // Handles the video transition (only for desktop)
@@ -63,13 +79,20 @@ export default function HeroBanner() {
         key={isMobile ? 'mobile' : currentIndex} // Force re-mount on video change or mode change
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover z-0"
+        // El poster se pinta de inmediato (decenas de KB) en lugar de esperar al
+        // video: es lo que mide Google como LCP.
+        poster={currentVideo.poster}
+        // El src solo se asigna cuando la página ya cargó. Hasta entonces el
+        // navegador pinta el poster y no descarga megabytes de video, que es lo
+        // que hundía el LCP. preload="none" por sí solo no sirve: autoPlay lo anula.
+        src={arrancarVideo ? currentVideo.src : undefined}
+        preload="none"
         autoPlay
         muted
         playsInline
         loop={isMobile} // Loop the single mobile video
         onEnded={handleVideoEnded}
       >
-        <source src={currentVideo.src} type="video/mp4" />
         Tu navegador no soporta videos HTML5.
       </video>
 

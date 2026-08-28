@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Imagen from './Imagen';
 
 const teamMembers = [
   {
@@ -62,7 +63,7 @@ export default function OurTeam() {
               
               {/* Columna Izquierda: Imagen Grande */}
               <div className="w-full lg:w-1/2 relative h-[400px] lg:h-auto overflow-hidden rounded-3xl shadow-2xl">
-                <img
+                <Imagen
                   className="absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-700 ease-in-out"
                   src={member.imageUrl}
                   alt={member.name}

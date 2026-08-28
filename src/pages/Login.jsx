@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient.js';
+import Imagen, { fondoWebp } from '../components/Imagen';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ export default function Login() {
   return (
     <div 
       className="relative min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat overflow-hidden"
-      style={{ backgroundImage: "url('/img/fondologin.jpg')" }}
+      style={{ backgroundImage: fondoWebp('/img/fondologin.jpg') }}
     >
       {/* Overlay azul corporativo al 70% */}
       <div className="absolute inset-0 bg-[#143c64]/70"></div>
@@ -144,10 +145,10 @@ export default function Login() {
 
         {/* Logo inferior separado */}
         <div className="mt-16">
-          <img 
-            className="h-16 w-auto opacity-90 brightness-0 invert" 
-            src="/img/logo.png" 
-            alt="Logo E360" 
+          <Imagen
+            className="h-16 w-auto opacity-90 brightness-0 invert"
+            src="/img/logo.png"
+            alt="Logo E360"
           />
         </div>
       </div>

@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import Imagen from './Imagen';
 
 const comunicaItems = [
   { imageUrl: '/img/Comunica1.jpg', alt: 'La Auditoría', cta: 'La Auditoría' },
@@ -65,7 +66,7 @@ export default function E360Comunica() {
                   {/* Contenedor de Imagen (con overflow-hidden para la imagen) */}
                   <div className="relative w-full aspect-square">
                     <div className="w-full h-full rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
-                      <img
+                      <Imagen
                         className="w-full h-full object-cover"
                         src={item.imageUrl}
                         alt={item.alt}

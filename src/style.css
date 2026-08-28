@@ -3,10 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Oculta el contenido mientras el preloader está activo */
-body.preload > *:not(#preloader) {
-  visibility: hidden;
-}
 /* Preloader */
 @keyframes fadeOut {
   to {

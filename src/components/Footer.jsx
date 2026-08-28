@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '/img/logo1.png';
+import Imagen from './Imagen';
+
+const logo = '/img/logo1.png';
 
 // --- Iconos de Redes Sociales (SVGs) ---
 const LinkedInIcon = () => (
@@ -20,7 +22,7 @@ export default function Footer() {
           
           {/* Columna Izquierda: Logo y Páginas */}
           <div className="space-y-6">
-            <img className="h-16 w-auto" src={logo} alt="Logo E360" />
+            <Imagen className="h-16 w-auto" src={logo} alt="Logo E360" />
             <nav>
               <ul className="flex flex-col space-y-3">
                 <li><Link to="/" className="text-gray-600 hover:text-[#2e527f] font-medium transition-colors">Inicio</Link></li>

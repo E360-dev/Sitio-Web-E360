@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import logo from '/img/logo1.png';
+import Imagen from './Imagen';
+
+const logo = '/img/logo1.png';
 
 // --- Iconos para TODOS los Menús ---
 const DiferenciadoresIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.562L16.5 21.75l-.398-1.188a3.375 3.375 0 00-2.924-2.924l-1.188-.398 1.188-.398a3.375 3.375 0 002.924-2.924l.398-1.188.398 1.188a3.375 3.375 0 002.924 2.924l1.188.398-1.188.398a3.375 3.375 0 00-2.924 2.924z" /></svg>;
@@ -92,7 +94,7 @@ export default function Navbar() {
     <header className={navBarClass}>
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex-shrink-0"><img className={`w-auto transition-all duration-300 transform origin-left ${scrolled ? 'scale-100 h-16' : 'scale-150 h-16'}`} src={logo} alt="Logo E360" /></Link>
+          <Link to="/" className="flex-shrink-0"><Imagen className={`w-auto transition-all duration-300 transform origin-left ${scrolled ? 'scale-100 h-16' : 'scale-150 h-16'}`} src={logo} alt="Logo E360" lazy={false} /></Link>
 
           <div className="hidden md:flex items-center space-x-8">
             {mainMenuItems.map((item) => (
@@ -140,7 +142,7 @@ export default function Navbar() {
         <div className="absolute inset-0 bg-white" onClick={() => setMobileMenuOpen(false)}></div>
           <div className={`relative h-full w-4/5 max-w-sm bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <Link to="/" onClick={() => setMobileMenuOpen(false)}><img className="h-12 w-auto" src={logo} alt="Logo E322" /></Link>
+              <Link to="/" onClick={() => setMobileMenuOpen(false)}><Imagen className="h-12 w-auto" src={logo} alt="Logo E360" /></Link>
               <button onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-md text-e360-text-dark hover:text-e360-accent"><svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
             </div>
           <div className="py-6 px-4 space-y-2">

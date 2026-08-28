@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -10,11 +11,21 @@ import Preloader from './components/Preloader';
 import Registro from './pages/Registro';
 import Pendiente from './pages/Pendiente';
 import Login from './pages/Login';
-import ClienteDashboard from './pages/ClienteDashboard';
-import AdminDashboard from './pages/AdminDashboard';
-import DocumentoPublico from './pages/DocumentoPublico'; // <-- NUEVA IMPORTACIÓN
 import NotFoundPage from './pages/NotFoundPage'; // <-- IMPORTACIÓN AÑADIDA
 import ProtectedRoute from './components/ProtectedRoute';
+
+// Carga diferida de las áreas privadas: arrastran react-pdf y pdfjs-dist, que
+// pesan más que todo el sitio público junto y solo hacen falta tras iniciar sesión.
+const ClienteDashboard = lazy(() => import('./pages/ClienteDashboard'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const DocumentoPublico = lazy(() => import('./pages/DocumentoPublico'));
+
+// Ocupa la pantalla completa para que el cambio de ruta no provoque un salto de layout.
+const CargandoPantalla = () => (
+  <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="h-10 w-10 rounded-full border-4 border-gray-200 border-t-[#2e527f] animate-spin" />
+  </div>
+);
 
 import ScrollToAnchor from './components/ScrollToAnchor';
 import usePageTracking from './hooks/usePageTracking';
@@ -48,6 +59,7 @@ const AppContent = () => {
       <ScrollToAnchor />
       {showNavAndFooter && <Navbar />}
       <Preloader />
+      <Suspense fallback={<CargandoPantalla />}>
       <Routes>
         {/* Rutas Públicas */}
         <Route path="/" element={<Inicio />} />
@@ -88,6 +100,7 @@ const AppContent = () => {
         {/* Ruta para cualquier otra URL no encontrada */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      </Suspense>
       {showNavAndFooter && <Footer />}
     </>
   );

@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
+
+// El mapa es lo último de la home y arrastra leaflet entero. Se carga solo
+// cuando el usuario se acerca a esta sección; el contenedor tiene altura fija,
+// así que la aparición no desplaza nada.
+const MapaLeaflet = lazy(() => import('./MapaLeaflet'));
 
 // Hook para detectar cuando el componente está en pantalla
 const useOnScreen = (options) => {
@@ -20,32 +22,11 @@ const useOnScreen = (options) => {
   return [ref, isVisible];
 };
 
-const sedes = [
-  { nombre: 'CDMX', coords: [19.4326, -99.1332] },
-  { nombre: 'Guadalajara', coords: [20.6597, -103.3496] },
-  { nombre: 'Monterrey', coords: [25.6866, -100.3161] },
-  { nombre: 'Querétaro', coords: [20.5888, -100.3899] },
-  { nombre: 'Cancún', coords: [21.1619, -86.8515] }
-];
-
-// Forzar redimensionamiento en montaje
-function ResizeHandler() {
-  const map = useMap();
-  useEffect(() => {
-    map.invalidateSize();
-  }, [map]);
-  return null;
-}
-
-const customIcon = new L.Icon({
-  iconUrl: '/img/pin-e360.svg',
-  iconSize: [30, 40],
-  iconAnchor: [15, 40],
-  popupAnchor: [0, -40]
-});
-
 export default function MapaPresencia() {
   const [ref, isVisible] = useOnScreen({ threshold: 0.2 });
+  // rootMargin adelanta la descarga del mapa: para cuando la sección entra en
+  // pantalla, el chunk ya suele estar listo y no se ve el placeholder.
+  const [precargaRef, cercaDeVerse] = useOnScreen({ rootMargin: '400px' });
 
   return (
     <section id="presencia" className="bg-white text-gray-900 overflow-hidden py-24 sm:py-32">
@@ -67,25 +48,12 @@ export default function MapaPresencia() {
         >
           {/* Contenedor con efecto glassmorphism */}
           <div className="relative p-4 sm:p-6 bg-white/40 backdrop-blur-sm border border-gray-200 rounded-3xl shadow-2xl shadow-gray-300/40">
-            <div className="w-full h-[500px] rounded-xl overflow-hidden">
-              <MapContainer
-                center={[23.6345, -102.5528]}
-                zoom={5}
-                scrollWheelZoom={true}
-                className="w-full h-full z-10 map-dark-blue"
-              >
-                <ResizeHandler />
-                {/* TileLayer con tema oscuro de CartoDB */}
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                {sedes.map((sede, i) => (
-                  <Marker key={i} position={sede.coords} icon={customIcon}>
-                    <Popup>{sede.nombre}</Popup>
-                  </Marker>
-                ))}
-              </MapContainer>
+            <div ref={precargaRef} className="w-full h-[500px] rounded-xl overflow-hidden bg-gray-100">
+              {cercaDeVerse && (
+                <Suspense fallback={<div className="w-full h-full bg-gray-100" />}>
+                  <MapaLeaflet />
+                </Suspense>
+              )}
             </div>
           </div>
         </div>
