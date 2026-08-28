@@ -1,0 +1,76 @@
+name: Desplegar a SiteGround
+
+on:
+  # Despliegue de producción al integrar cambios en main.
+  push:
+    branches: [main]
+  # Botón manual, para volver a desplegar sin cambios de código.
+  workflow_dispatch:
+  # Lo usará la Fase 3: al publicar un artículo, Supabase dispara este evento
+  # para que el sitio se reconstruya con el contenido nuevo.
+  repository_dispatch:
+    types: [contenido-actualizado]
+
+# Tres publicaciones seguidas producen una sola compilación, no tres.
+concurrency:
+  group: despliegue-produccion
+  cancel-in-progress: true
+
+jobs:
+  desplegar:
+    name: Compilar y sincronizar
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar
+        run: npm run build
+
+      - name: Comprobar que el build es válido
+        # Evita desplegar un directorio vacío o a medias si algo falló en silencio.
+        run: |
+          test -f dist/index.html || { echo "ERROR: no se generó dist/index.html"; exit 1; }
+          test -d dist/assets   || { echo "ERROR: no se generó dist/assets"; exit 1; }
+          test -f dist/.htaccess || echo "AVISO: no hay .htaccess en el build; se conservará el del servidor"
+          echo "Contenido a desplegar:"
+          du -sh dist
+
+      - name: Configurar la clave SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_despliegue
+          chmod 600 ~/.ssh/id_despliegue
+          ssh-keyscan -p "${{ secrets.SSH_PORT }}" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Sincronizar el sitio
+        # --checksum compara contenido en lugar de fecha: el build reescribe los
+        # videos e imágenes con mtime nuevo aunque no hayan cambiado, y sin esto
+        # se resubirían 25 MB en cada despliegue.
+        # Sin --delete: en la raíz puede haber archivos que no gestiona el repo.
+        run: |
+          rsync -avz --checksum --human-readable \
+            -e "ssh -i ~/.ssh/id_despliegue -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" \
+            dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/"
+
+      - name: Limpiar assets obsoletos
+        # assets/ es 100% salida del build y sus nombres llevan hash, así que aquí
+        # --delete sí es seguro: elimina los chunks de compilaciones anteriores.
+        run: |
+          rsync -avz --checksum --delete \
+            -e "ssh -i ~/.ssh/id_despliegue -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" \
+            dist/assets/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/assets/"
+
+      - name: Borrar la clave
+        if: always()
+        run: rm -f ~/.ssh/id_despliegue
