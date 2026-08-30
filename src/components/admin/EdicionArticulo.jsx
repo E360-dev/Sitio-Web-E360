@@ -8,7 +8,10 @@ import {
   obtenerArticulo,
   guardarArticulo,
   subirPortada,
+  eliminarPortada,
+  pesoDeImagen,
   generarSlug,
+  LIMITE_PORTADA_BYTES,
 } from '../../lib/articulosApi';
 
 // Los nombres deben coincidir con los de OurTeam.jsx para poder enlazar cada
@@ -31,6 +34,11 @@ const Campo = ({ etiqueta, ayuda, children }) => (
 const entrada =
   'w-full py-2.5 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2e527f]/30 focus:border-[#2e527f]';
 
+const formatearPeso = (bytes) =>
+  bytes >= 1024 * 1024
+    ? `${(bytes / 1024 / 1024).toFixed(1)} MB`
+    : `${Math.round(bytes / 1024)} KB`;
+
 export default function EdicionArticulo() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -39,6 +47,7 @@ export default function EdicionArticulo() {
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
   const [subiendoPortada, setSubiendoPortada] = useState(false);
+  const [pesoPortada, setPesoPortada] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -52,6 +61,16 @@ export default function EdicionArticulo() {
       }
     })();
   }, [id, navigate]);
+
+  // Se consulta el peso de la portada ya subida para poder avisar también de
+  // las imágenes que se cargaron antes de que existiera esta comprobación.
+  useEffect(() => {
+    if (!articulo?.portada_url) {
+      setPesoPortada(null);
+      return;
+    }
+    pesoDeImagen(articulo.portada_url).then(setPesoPortada);
+  }, [articulo?.portada_url]);
 
   const actualizar = (campos) => setArticulo((a) => ({ ...a, ...campos }));
 
@@ -67,11 +86,34 @@ export default function EdicionArticulo() {
     try {
       const url = await subirPortada(articulo.slug, archivo);
       actualizar({ portada_url: url });
-      toast.success('Portada subida. Recuerda guardar.');
+      setPesoPortada(archivo.size);
+
+      if (archivo.size > LIMITE_PORTADA_BYTES) {
+        toast(
+          `La imagen pesa ${formatearPeso(archivo.size)}. Conviene comprimirla ` +
+            'antes de publicar: revisa el aviso de abajo.',
+          { duration: 9000, icon: '⚠️' }
+        );
+      } else {
+        toast.success('Portada subida. Recuerda guardar.');
+      }
     } catch (error) {
       toast.error('No se pudo subir la portada.');
     } finally {
       setSubiendoPortada(false);
+    }
+  };
+
+  const alQuitarPortada = async () => {
+    if (!window.confirm('¿Quitar la portada de este artículo?')) return;
+    try {
+      await eliminarPortada(articulo.slug);
+      await guardarArticulo(articulo.id, { portada_url: null });
+      actualizar({ portada_url: null });
+      setPesoPortada(null);
+      toast.success('Portada eliminada.');
+    } catch (error) {
+      toast.error('No se pudo quitar la portada.');
     }
   };
 
@@ -186,12 +228,59 @@ export default function EdicionArticulo() {
 
       <Campo etiqueta="Portada" ayuda="Se usa en el listado y en la tarjeta al compartir. Ideal 1200×630 píxeles.">
         {articulo.portada_url && (
-          <img
-            src={articulo.portada_url}
-            alt="Portada del artículo"
-            className="w-full max-w-md h-48 object-cover rounded-lg mb-3 border border-gray-200"
-          />
+          <div className="mb-3">
+            <img
+              src={articulo.portada_url}
+              alt="Portada del artículo"
+              className="w-full max-w-md h-48 object-cover rounded-lg border border-gray-200"
+            />
+            <div className="flex items-center gap-4 mt-2">
+              {pesoPortada !== null && (
+                <span
+                  className={`text-xs font-semibold ${
+                    pesoPortada > LIMITE_PORTADA_BYTES ? 'text-amber-700' : 'text-green-700'
+                  }`}
+                >
+                  {formatearPeso(pesoPortada)}
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={alQuitarPortada}
+                className="text-xs font-semibold text-red-600 hover:text-red-800 hover:underline"
+              >
+                Quitar portada
+              </button>
+            </div>
+          </div>
         )}
+
+        {pesoPortada !== null && pesoPortada > LIMITE_PORTADA_BYTES && (
+          <div className="mb-3 max-w-md rounded-lg border border-amber-300 bg-amber-50 p-4">
+            <p className="text-sm font-bold text-amber-900">
+              Esta imagen pesa {formatearPeso(pesoPortada)} y puede afectar al rendimiento
+            </p>
+            <p className="text-xs text-amber-800 mt-1.5 leading-relaxed">
+              Las imágenes pesadas ralentizan la carga del artículo, y la velocidad es uno de
+              los factores que Google usa para posicionar. Por encima de 200 KB conviene
+              comprimirla.
+            </p>
+            <p className="text-xs text-amber-800 mt-2 leading-relaxed">
+              Pásala por{' '}
+              <a
+                href="https://squoosh.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold underline"
+              >
+                squoosh.app
+              </a>{' '}
+              eligiendo formato <b>WebP</b>, calidad <b>82</b> y ancho <b>1200 px</b>. Suele
+              quedar por debajo de 150 KB sin diferencia visible, y luego la vuelves a subir aquí.
+            </p>
+          </div>
+        )}
+
         <input
           type="file"
           accept="image/*"

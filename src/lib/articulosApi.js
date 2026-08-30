@@ -154,6 +154,51 @@ export const subirPortada = async (slug, archivo) => {
   return data.publicUrl;
 };
 
+/** Tamaño a partir del cual una portada empieza a penalizar la carga. */
+export const LIMITE_PORTADA_BYTES = 200 * 1024;
+
+/**
+ * Borra los archivos de portada de un artículo en Storage.
+ * No toca el registro: quien llama decide cuándo guardar portada_url a null.
+ * @param {string} slug
+ */
+export const eliminarPortada = async (slug) => {
+  const { data: archivos, error } = await supabase.storage
+    .from(BUCKET_PORTADAS)
+    .list(slug);
+
+  if (error) {
+    console.error('Error al listar la portada:', error);
+    throw error;
+  }
+
+  if (archivos?.length) {
+    const { error: errorBorrado } = await supabase.storage
+      .from(BUCKET_PORTADAS)
+      .remove(archivos.map((a) => `${slug}/${a.name}`));
+
+    if (errorBorrado) {
+      console.error('Error al borrar la portada:', errorBorrado);
+      throw errorBorrado;
+    }
+  }
+};
+
+/**
+ * Consulta el peso de una imagen ya subida, sin descargarla.
+ * @param {string} url
+ * @returns {Promise<number|null>} Bytes, o null si no se pudo averiguar.
+ */
+export const pesoDeImagen = async (url) => {
+  try {
+    const respuesta = await fetch(url, { method: 'HEAD' });
+    const longitud = respuesta.headers.get('content-length');
+    return longitud ? Number(longitud) : null;
+  } catch {
+    return null;
+  }
+};
+
 /**
  * Elimina un artículo y, si tenía portada, también su carpeta en Storage.
  * @param {Object} articulo
