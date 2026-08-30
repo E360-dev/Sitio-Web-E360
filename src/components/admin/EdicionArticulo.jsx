@@ -10,6 +10,7 @@ import {
   subirPortada,
   eliminarPortada,
   pesoDeImagen,
+  solicitarDespliegue,
   generarSlug,
   LIMITE_PORTADA_BYTES,
 } from '../../lib/articulosApi';
@@ -111,7 +112,11 @@ export default function EdicionArticulo() {
       await guardarArticulo(articulo.id, { portada_url: null });
       actualizar({ portada_url: null });
       setPesoPortada(null);
-      toast.success('Portada eliminada.');
+      toast.success(
+        articulo.publicado
+          ? 'Portada eliminada. Guarda para enviar el cambio al sitio.'
+          : 'Portada eliminada.'
+      );
     } catch (error) {
       toast.error('No se pudo quitar la portada.');
     }
@@ -130,10 +135,21 @@ export default function EdicionArticulo() {
         // inyectado en el sitio público.
         contenido_html: DOMPurify.sanitize(articulo.contenido_html || ''),
       });
+
+      if (!articulo.publicado) {
+        toast.success('Guardado como borrador.');
+        return;
+      }
+
+      // Si el artículo ya está publicado, guardar implica actualizar el sitio.
+      // Antes había que retirarlo y volver a publicarlo desde el listado, lo
+      // que lo dejaba fuera del sitio unos minutos por un simple cambio.
+      const disparado = await solicitarDespliegue();
       toast.success(
-        articulo.publicado
-          ? 'Guardado. Publica de nuevo desde el listado para que los cambios salgan al sitio.'
-          : 'Guardado.'
+        disparado
+          ? 'Guardado. Los cambios estarán en el sitio en unos minutos.'
+          : 'Guardado, pero no se pudo actualizar el sitio automáticamente. Avisa a soporte técnico.',
+        { duration: 7000 }
       );
     } catch (error) {
       toast.error(error.message || 'No se pudo guardar.');
@@ -158,13 +174,30 @@ export default function EdicionArticulo() {
       </button>
 
       <div className="flex items-start justify-between mb-8 gap-6">
-        <h1 className="text-3xl font-bold text-gray-800">Editar artículo</h1>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">Editar artículo</h1>
+          <p className="text-sm mt-1">
+            {articulo.publicado ? (
+              <span className="text-green-700 font-semibold">
+                Publicado · los cambios que guardes se enviarán al sitio
+              </span>
+            ) : (
+              <span className="text-amber-700 font-semibold">
+                Borrador · todavía no es visible en el sitio
+              </span>
+            )}
+          </p>
+        </div>
         <button
           onClick={guardar}
           disabled={guardando}
           className="shrink-0 px-6 py-3 bg-[#2e527f] text-white font-bold rounded-xl hover:bg-[#1e3a5f] disabled:bg-gray-400"
         >
-          {guardando ? 'Guardando…' : 'Guardar'}
+          {guardando
+            ? 'Guardando…'
+            : articulo.publicado
+              ? 'Guardar y actualizar sitio'
+              : 'Guardar borrador'}
         </button>
       </div>
 
