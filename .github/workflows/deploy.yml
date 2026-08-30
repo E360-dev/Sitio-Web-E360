@@ -138,17 +138,27 @@ jobs:
           echo "Esperando en producción: $ESPERADO"
 
           for intento in 1 2 3 4 5; do
-            SERVIDO=$(curl -s --max-time 20 "https://e360.pro/?despliegue=$GITHUB_RUN_ID" \
-                      | grep -o 'assets/index-[^"]*\.js' | head -1 | xargs -r basename)
-            echo "  intento $intento: $SERVIDO"
+            # -L sigue redirecciones: durante el reemplazo del .htaccess la
+            # respuesta puede ser un 301 momentáneo, y sin esto el cuerpo llega
+            # vacío y el fallo resulta imposible de diagnosticar.
+            CUERPO=$(curl -sL --max-time 20 -w '\nCODIGO:%{http_code}' \
+                     "https://e360.pro/?despliegue=$GITHUB_RUN_ID" || true)
+            CODIGO=$(printf '%s' "$CUERPO" | tail -1 | cut -d: -f2)
+            SERVIDO=$(printf '%s' "$CUERPO" | grep -o 'assets/index-[^"]*\.js' | head -1 | xargs -r basename)
+
+            echo "  intento $intento: HTTP ${CODIGO:-?} · ${SERVIDO:-(sin referencia al bundle)}"
             [ "$SERVIDO" = "$ESPERADO" ] && { echo "OK: producción sirve el build recién desplegado."; exit 0; }
             sleep 10
           done
 
           echo ""
-          echo "ERROR: producción sigue sirviendo '$SERVIDO' en lugar de '$ESPERADO'."
-          echo "Los archivos se subieron bien, pero algo devuelve HTML cacheado."
-          echo "Solución inmediata: Site Tools -> Velocidad -> Caché -> vaciar la caché dinámica."
+          echo "ERROR: producción no sirve el build recién desplegado."
+          echo "  esperado: $ESPERADO"
+          echo "  servido:  ${SERVIDO:-(nada)} con HTTP ${CODIGO:-?}"
+          echo ""
+          echo "Si el código es 200 y el bundle es otro, es la caché:"
+          echo "  Site Tools -> Velocidad -> Caché -> vaciar la caché dinámica."
+          echo "Si el código es 3xx, 4xx o 5xx, revisa el .htaccess desplegado."
           exit 1
 
       - name: Borrar la clave
