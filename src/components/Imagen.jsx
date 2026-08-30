@@ -10,7 +10,13 @@
 //
 // Requisito: la imagen debe tener su .webp generado en public/img.
 
-export const rutaWebp = (ruta) => ruta.replace(/\.(png|jpe?g)$/i, '.webp');
+// Solo las imágenes de public/img tienen una versión .webp generada por el
+// script de optimización. Las portadas de los artículos viven en Supabase con
+// su extensión original, así que reescribirlas pedía un archivo inexistente.
+export const rutaWebp = (ruta) => {
+  if (typeof ruta !== 'string' || !ruta.startsWith('/img/')) return ruta;
+  return ruta.replace(/\.(png|jpe?g)$/i, '.webp');
+};
 
 export default function Imagen({ src, alt, className, width, height, lazy = true, ...resto }) {
   return (
