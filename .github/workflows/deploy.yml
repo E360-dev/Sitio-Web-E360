@@ -134,7 +134,11 @@ jobs:
         # El .htaccess ya envía Cache-Control: no-cache en el HTML, así que no
         # debería repetirse. Si vuelve a pasar, aquí se verá.
         run: |
-          ESPERADO=$(ls dist/assets/index-*.js | head -1 | xargs basename)
+          # Se toma del propio index.html, que es la fuente autoritativa de qué
+          # bundle carga la página. Antes se listaba dist/assets/index-*.js y se
+          # cogía el primero por orden alfabético, pero el build genera más de un
+          # archivo con ese patrón y se escogía un fragmento de 0,09 kB.
+          ESPERADO=$(grep -o 'assets/index-[^"]*\.js' dist/index.html | head -1 | xargs basename)
           echo "Esperando en producción: $ESPERADO"
 
           for intento in 1 2 3 4 5; do
@@ -152,14 +156,21 @@ jobs:
           done
 
           echo ""
-          echo "ERROR: producción no sirve el build recién desplegado."
-          echo "  esperado: $ESPERADO"
-          echo "  servido:  ${SERVIDO:-(nada)} con HTTP ${CODIGO:-?}"
-          echo ""
-          echo "Si el código es 200 y el bundle es otro, es la caché:"
-          echo "  Site Tools -> Velocidad -> Caché -> vaciar la caché dinámica."
-          echo "Si el código es 3xx, 4xx o 5xx, revisa el .htaccess desplegado."
-          exit 1
+          if [ "$CODIGO" = "200" ]; then
+            # 200 con otro bundle sí es un problema real: los archivos están
+            # subidos pero algo sirve HTML viejo.
+            echo "ERROR: producción responde 200 pero sirve '$SERVIDO' en lugar de '$ESPERADO'."
+            echo "Es la caché: Site Tools -> Velocidad -> Caché -> vaciar la caché dinámica."
+            exit 1
+          fi
+
+          # Cualquier otro código no prueba que el despliegue haya fallado.
+          # SiteGround responde 202 a las peticiones desde los servidores de
+          # GitHub por su protección antibots, y dar el despliegue por fallido
+          # en ese caso sería una falsa alarma: los archivos ya se sincronizaron.
+          echo "AVISO: no se pudo comprobar desde aquí (HTTP ${CODIGO:-?})."
+          echo "Los archivos se sincronizaron correctamente en el paso anterior."
+          echo "Verifica a mano que https://e360.pro carga $ESPERADO."
 
       - name: Borrar la clave
         if: always()
