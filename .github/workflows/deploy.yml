@@ -62,7 +62,21 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_despliegue
           chmod 600 ~/.ssh/id_despliegue
-          ssh-keyscan -p "${{ secrets.SSH_PORT }}" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+          # ssh-keyscan falla de vez en cuando porque SiteGround limita las
+          # peticiones que llegan desde los servidores de GitHub. Como el paso
+          # corre con `bash -e`, un fallo puntual tumbaba todo el despliegue.
+          # Se reintenta, y el error se muestra en lugar de silenciarse.
+          for intento in 1 2 3; do
+            if ssh-keyscan -T 15 -p "${{ secrets.SSH_PORT }}" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts; then
+              echo "Clave del servidor obtenida en el intento $intento."
+              break
+            fi
+            echo "Intento $intento fallido al obtener la clave del servidor."
+            [ "$intento" = "3" ] && { echo "ERROR: no se pudo contactar con el servidor SSH."; exit 1; }
+            sleep 15
+          done
+
+          test -s ~/.ssh/known_hosts || { echo "ERROR: known_hosts quedó vacío."; exit 1; }
 
       - name: Comprobar la ruta de destino
         # DEPLOY_PATH mal puesto significaría escribir el sitio en el sitio
