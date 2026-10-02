@@ -21,15 +21,15 @@ const useOnScreen = (options) => {
 const differentiators = [
   {
     title: 'Consultores Senior',
-    text: 'Acceso directo a especialistas con trayectoria Big Four y experiencia en escenarios críticos.\nAquí no hay capas innecesarias: desde el primer día trabajas con quien entiende el problema y lo resuelve.\nDecisiones más rápidas, análisis más preciso y ejecución con responsabilidad real.',
+    text: 'Tienes acceso cercano a socios y especialistas en distintas disciplinas, con trayectoria en firmas Big Four.\nTrabajan contigo para entender el problema, conectar sus implicaciones y ofrecerte una respuesta bien sustentada.',
   },
   {
     title: 'Soluciones a la Medida',
-    text: 'No aplicamos recetas. Diseñamos soluciones específicas según tu contexto, urgencia y objetivos.\nDesde auditorías y cierres complejos hasta estructuración para fondos, adaptamos cada estrategia para que funcione en la práctica, no solo en papel.',
+    text: 'Diseñamos el trabajo alrededor de tu negocio, tus prioridades y la decisión que necesitas tomar.\nDesde una auditoría hasta un cierre o una transacción compleja, combinamos profundidad técnica y sentido práctico para ofrecer soluciones que puedas llevar a tu operación.',
   },
   {
     title: 'Inteligencia Financiera',
-    text: 'Convertimos datos en decisiones.\nIntegramos tecnología, analítica e inteligencia financiera para anticipar riesgos, optimizar procesos y generar claridad en momentos críticos.\nMás información no es la solución. La claridad sí.',
+    text: 'Dale sentido a los números de tu negocio.\nConectamos resultados, flujo de caja y variaciones para entender qué está pasando, dónde están los riesgos y qué decisiones requieren atención.',
   }
 ];
 
@@ -46,16 +46,15 @@ export default function KeyDifferentiators() {
         </h2>
         
         {/* Línea decorativa segmentada */}
-        <div className="h-1 w-[36rem] mx-auto mt-4 flex rounded-full overflow-hidden">
+        <div className="h-1 w-full max-w-[36rem] mx-auto mt-4 flex rounded-full overflow-hidden">
           <div className="h-full w-1/3 bg-black"></div>
           <div className="h-full w-1/3 bg-[#25c6e3]"></div>
           <div className="h-full w-1/3 bg-[#E91E63]"></div>
         </div>
         
         <div className="mt-8 text-lg leading-8 text-gray-700 max-w-4xl mx-auto space-y-4">
-          <p>En E360 no competimos por volumen, competimos por resolver lo complejo.</p>
-          <p>Creamos una categoría propia entre las firmas tradicionales y las Big Four: una boutique estratégica donde la precisión técnica, la velocidad de ejecución y la cercanía humana trabajan juntas.</p>
-          <p>Transformamos auditorías, revisiones y decisiones financieras en resultados claros, medibles y accionables. Porque no se trata solo de cumplir, sino de avanzar con certeza.</p>
+          <p>La especialización hace la diferencia cuando una decisión es compleja. Reunimos experiencia técnica, visión de negocio y la agilidad de una boutique para trabajar contigo en los asuntos que más importan.</p>
+          <p>Integramos tecnología e inteligencia artificial con criterio profesional, metodologías estructuradas y revisión técnica. El propósito es claro: elevar la calidad del trabajo y ayudarte a identificar y reducir riesgos.</p>
         </div>
       </div>
 

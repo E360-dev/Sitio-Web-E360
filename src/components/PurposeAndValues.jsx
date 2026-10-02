@@ -4,7 +4,7 @@ import Imagen from './Imagen';
 const values = [
   {
     name: 'Claridad',
-    description: 'Hacemos entendible lo complejo.\nEntregamos información que permite decidir con certeza, sin ambigüedades ni ruido innecesario.',
+    description: 'Hacemos entendible lo complejo.\nHacemos comprensible la información y explicamos sus implicaciones para que puedas decidir con mayor claridad.',
     image: '/img/principios1.jpg',
   },
   {
@@ -19,7 +19,7 @@ const values = [
   },
   {
     name: 'Rigor',
-    description: 'La técnica no es negociable.\nAplicamos metodologías probadas, control de calidad y participación senior para asegurar resultados sólidos.',
+    description: 'La técnica no es negociable.\nCombinamos metodologías estructuradas, tecnología, revisión técnica y participación senior para fortalecer la calidad de cada entrega.',
     image: '/img/principios4.jpg',
   },
 ];
@@ -36,7 +36,7 @@ export default function PurposeAndValues() {
           </p>
           <div className="mt-8 max-w-3xl mx-auto text-lg leading-8 text-gray-600 space-y-4">
             <p>En E360 resolvemos lo complejo con claridad, acompañamos lo técnico con criterio y construimos confianza en cada decisión.</p>
-            <p>Creemos que el valor no está en los reportes, sino en la capacidad de transformar información en resultados reales y sostenibles.</p>
+            <p>Creemos en información sólida que se convierte en claridad para actuar. Nuestro trabajo conecta el rigor técnico con las decisiones y prioridades de tu negocio.</p>
           </div>
         </div>
 

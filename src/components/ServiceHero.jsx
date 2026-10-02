@@ -11,7 +11,7 @@ export default function ServiceHero() {
         </h1>
         <div className="h-1 w-96 mx-auto mt-4 bg-gradient-to-r from-e360-highlight via-e360-cyan to-e360-accent rounded-full"></div>
         <p className="mt-6 max-w-2xl mx-auto text-lg leading-8 text-white">
-          Diseñados para potenciar el crecimiento, la eficiencia y la certidumbre de su negocio en un entorno complejo.
+          Especialización, agilidad y visión de negocio en Auditoría, Consultoría y Outsourcing contable. Resolvemos lo complejo y damos claridad a tus decisiones.
         </p>
         <div className="mt-16 flex justify-center">
           <a

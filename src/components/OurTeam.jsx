@@ -28,6 +28,24 @@ const teamMembers = [
   },
 ];
 
+const capacidades = [
+  {
+    titulo: 'Especialización a tu alcance',
+    parrafos: [
+      'Acercamos a tu empresa experiencia técnica en auditoría, contabilidad, fiscal, riesgo y control interno, respaldada por trayectorias en firmas Big Four.',
+      'Combinamos estas capacidades para abordar tus asuntos con profundidad técnica y una visión integral del negocio.',
+    ],
+  },
+  {
+    titulo: 'Tecnología y criterio profesional',
+    parrafos: [
+      'Integramos tecnología e inteligencia artificial con criterio profesional para elevar la calidad de nuestro trabajo y ayudar a identificar y reducir riesgos en tu negocio.',
+      'Su uso se incorpora a metodologías estructuradas, revisión técnica y controles de calidad. Nuestros profesionales revisan el trabajo y mantienen la responsabilidad sobre los criterios y conclusiones.',
+      'Evolucionamos gradualmente como firma tecnológica, orientando esa evolución a lo que aporta valor al cliente: calidad, claridad y mejor atención a sus riesgos.',
+    ],
+  },
+];
+
 export default function OurTeam() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -48,11 +66,23 @@ export default function OurTeam() {
         <div className="text-center mb-20">
           <h2 className="text-base font-semibold uppercase tracking-wider text-[#25c6e3]">NUESTROS LÍDERES</h2>
           <p className="mt-2 text-4xl md:text-5xl font-extrabold tracking-tight text-[#2e527f]">
-            El talento que hace posible la transformación
+            Un equipo de especialistas cerca de tu negocio
           </p>
-          <p className="mt-6 max-w-3xl mx-auto text-lg leading-8 text-gray-700">
-            Conoce a los expertos que guían a nuestros clientes hacia el éxito financiero y operativo con una visión estratégica y humana.
-          </p>
+          <div className="mt-6 max-w-3xl mx-auto text-lg leading-8 text-gray-700 space-y-4">
+            <p>Cuenta con un equipo multidisciplinario de socios y especialistas con amplia experiencia en auditoría, contabilidad, fiscal, finanzas, riesgo y control interno.</p>
+            <p>Trabajamos cerca de tu equipo y conectamos estas perspectivas para darte la especialización que cada asunto necesita.</p>
+          </div>
+        </div>
+
+        {/* Especialización: distingue proyectos de E360 de la experiencia previa de sus socios. */}
+        <div className="max-w-4xl mx-auto mb-20 border-l-4 border-[#25c6e3] bg-gray-50 rounded-r-2xl px-8 py-8">
+          <h3 className="text-2xl md:text-3xl font-bold text-[#2e527f] mb-4">
+            Especialización financiera e inmobiliaria
+          </h3>
+          <div className="text-lg leading-8 text-gray-700 space-y-4">
+            <p>E360 reúne proyectos en entidades financieras y desarrollos residenciales, comerciales y turísticos, con especialización en el sector inmobiliario y de construcción.</p>
+            <p>Nuestros socios aportan experiencia previa en auditoría y consultoría para instituciones financieras y operaciones complejas, incluidos fideicomisos, vehículos de propósito específico y entidades reguladas.</p>
+          </div>
         </div>
 
         {/* Contenedor del Slider / Perfil Destacado */}
@@ -120,6 +150,25 @@ export default function OurTeam() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
           </button>
+        </div>
+
+        {/* Capacidades del equipo y método */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-24">
+          {capacidades.map((bloque) => (
+            <div key={bloque.titulo} className="flex flex-col bg-[#2e527f] rounded-2xl shadow-xl p-8 lg:p-10">
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-6">{bloque.titulo}</h3>
+              <div className="text-white/85 leading-relaxed space-y-4 flex-grow">
+                {bloque.parrafos.map((parrafo) => (
+                  <p key={parrafo}>{parrafo}</p>
+                ))}
+              </div>
+              <div className="mt-8 flex gap-1 items-center">
+                <div className="h-1 flex-1 bg-white/30 rounded-full"></div>
+                <div className="h-1 flex-1 bg-[#25c6e3] rounded-full"></div>
+                <div className="h-1 flex-1 bg-[#E91E63] rounded-full"></div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

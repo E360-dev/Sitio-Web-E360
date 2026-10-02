@@ -22,9 +22,9 @@ export default function CallToAction() {
   const [ref, isVisible] = useOnScreen({ threshold: 0.1 });
 
   const benefits = [
-    "Rigor técnico que respalda cada decisión",
-    "Velocidad real en cada entrega",
-    "Cercanía que entiende tu negocio"
+    "Rigor técnico con visión de negocio",
+    "Agilidad para atender lo que importa",
+    "Cercanía que entiende tu empresa"
   ];
 
   return (
@@ -49,9 +49,10 @@ export default function CallToAction() {
               
               {/* Texto y Pills - Ocupa 8/12 del espacio para que quepan en una línea */}
               <div className="flex flex-col space-y-8 lg:col-span-8">
-                <p className="text-lg leading-8 text-white/90 max-w-2xl">
-                  En E360 convertimos la complejidad financiera en decisiones claras. Integramos experiencia técnica de alto nivel, agilidad en la ejecución y cercanía real para que avances con certeza, acceso a financiamiento y resultados medibles.
-                </p>
+                <div className="text-lg leading-8 text-white/90 max-w-2xl space-y-4">
+                  <p>En E360 convertimos la complejidad financiera en decisiones claras. Combinamos experiencia de firmas Big Four, agilidad de una boutique y atención cercana para dar confianza a tu información y resolver los asuntos que mueven tu negocio.</p>
+                  <p>Acompañamos a empresas medianas y grandes en Auditoría, Consultoría financiera, contable y fiscal, y BPS · Outsourcing contable, con tecnología y criterio profesional al servicio de la calidad.</p>
+                </div>
 
                 <div className="flex flex-wrap lg:flex-nowrap gap-2">
                   {benefits.map((benefit, index) => (
