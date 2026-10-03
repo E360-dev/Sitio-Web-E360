@@ -100,16 +100,16 @@ const enfoqueData = [
 const SERVICIO_INICIAL = servicesData[0].id;
 
 // --- Encabezado, descripción y apartados de un servicio ---
-function DetalleServicio({ service, compacto = false }) {
+function DetalleServicio({ service }) {
   return (
     <div className="w-full text-left mb-20 space-y-6">
-      <h2 className={`${compacto ? 'text-3xl md:text-4xl' : 'text-4xl md:text-5xl'} font-extrabold text-black flex items-center justify-start gap-4`}>
+      <h2 className="text-4xl md:text-5xl font-extrabold text-black flex items-center justify-start gap-4">
         <span className="text-black">✓</span> {service.name}
       </h2>
       {service.lema && (
         <p className="text-2xl font-bold text-[#2e527f]">{service.lema}</p>
       )}
-      <div className={`${compacto ? 'text-lg' : 'text-xl'} text-gray-600 leading-relaxed w-full space-y-4`}>
+      <div className="text-xl text-gray-600 leading-relaxed w-full space-y-4">
         {service.details.map((parrafo) => (
           <p key={parrafo}>{parrafo}</p>
         ))}
@@ -272,12 +272,49 @@ function ServicesTabs() {
 }
 
 // --- Financiamiento: bloque complementario inferior ---
+// Diseño propio y compacto (una tarjeta, enfoque en lista, sin fotos) para que
+// no se lea como una pestaña más del carrusel de servicios principales.
 function Financiamiento() {
+  const { name, details, leader, enfoque } = financiamientoData;
   return (
-    <section id={financiamientoData.id} className="bg-gray-50 text-gray-900 py-20 sm:py-24 border-t border-gray-100">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <DetalleServicio service={financiamientoData} compacto />
-        <Enfoque enfoque={financiamientoData.enfoque} />
+    <section id={financiamientoData.id} className="bg-gray-50 text-gray-900 py-20 sm:py-24 border-t border-gray-200">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 bg-white rounded-2xl shadow-lg overflow-hidden">
+          {/* Servicio */}
+          <div className="lg:col-span-2 bg-[#2e527f] text-white p-8 lg:p-10 flex flex-col">
+            <h2 className="text-3xl font-extrabold leading-tight">{name}</h2>
+            <div className="h-1 w-24 mt-5 mb-6 flex rounded-full overflow-hidden">
+              <div className="h-full w-1/3 bg-black"></div>
+              <div className="h-full w-1/3 bg-[#25c6e3]"></div>
+              <div className="h-full w-1/3 bg-[#E91E63]"></div>
+            </div>
+            <div className="text-white/90 leading-relaxed space-y-4 flex-grow">
+              {details.map((parrafo) => (
+                <p key={parrafo}>{parrafo}</p>
+              ))}
+            </div>
+            <p className="mt-8 text-sm font-bold tracking-wider text-[#25c6e3]">Líder: {leader}</p>
+          </div>
+
+          {/* Enfoque en lista: primera línea como subtítulo, el resto como texto */}
+          <ul className="lg:col-span-3 p-8 lg:p-10 flex flex-col justify-center gap-8">
+            {enfoqueData.map((item) => {
+              const [subtitulo, ...texto] = enfoque[item.key].split('\n');
+              return (
+                <li key={item.key} className="flex gap-5">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#2e527f]/10 text-[#2e527f] flex items-center justify-center">
+                    <item.icon className="text-xl" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black tracking-[0.2em] text-[#25c6e3]">{item.title}</p>
+                    <h3 className="mt-1 text-lg font-bold text-[#2e527f]">{subtitulo}</h3>
+                    <p className="mt-1 text-gray-700 leading-relaxed">{texto.join(' ')}</p>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </section>
   );
