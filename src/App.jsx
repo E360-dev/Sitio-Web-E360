@@ -13,6 +13,7 @@ import Preloader from './components/Preloader';
 import Registro from './pages/Registro';
 import Pendiente from './pages/Pendiente';
 import Login from './pages/Login';
+import CrearContrasena from './pages/CrearContrasena';
 import NotFoundPage from './pages/NotFoundPage'; // <-- IMPORTACIÓN AÑADIDA
 import ProtectedRoute from './components/ProtectedRoute';
 import { ROLES_INTERNOS } from './lib/permisos';
@@ -43,7 +44,7 @@ const AppContent = () => {
 
   // Rutas privadas o transaccionales que no deben indexarse. Se resuelve aquí y
   // no en cada página porque varias tienen múltiples returns (carga, error, ok).
-  const noindexPrefixes = ['/cliente', '/admin', '/documento', '/login', '/registro', '/pendiente'];
+  const noindexPrefixes = ['/cliente', '/admin', '/documento', '/login', '/registro', '/pendiente', '/crear-contrasena'];
   const isNoindexRoute = noindexPrefixes.some((prefix) => location.pathname.startsWith(prefix));
 
   // Título de pestaña para las rutas sin componente Seo, que si no heredarían
@@ -75,6 +76,7 @@ const AppContent = () => {
         <Route path="/registro" element={<Registro />} />
         <Route path="/pendiente" element={<Pendiente />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/crear-contrasena" element={<CrearContrasena />} />
         <Route 
           path="/documento/:uuid" 
           element={

@@ -109,7 +109,7 @@ export default function Login() {
                 className="w-full px-6 py-4 bg-white border-2 border-gray-600 rounded-full text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#25c6e3] focus:border-[#25c6e3] transition-all text-lg"
               />
               <div className="flex justify-start px-2">
-                <Link to="#" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
+                <Link to="/crear-contrasena" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
                   Forgot Password?
                 </Link>
               </div>
