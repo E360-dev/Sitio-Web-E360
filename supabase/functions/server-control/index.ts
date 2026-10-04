@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
   EC2Client,
   StartInstancesCommand,
@@ -25,11 +26,50 @@ const ec2 = new EC2Client({
   },
 });
 
+// Solo estos roles pueden encender, apagar o consultar el servidor.
+const ROLES_PERMITIDOS = ["admin", "auditor"];
+
+// verify_jwt solo exige un JWT válido, y la clave anon pública ya lo es.
+// Por eso el rol se comprueba aquí, con la sesión de quien llama.
+async function rechazarSinRol(req: Request): Promise<Response | null> {
+  const responder = (error: string, status: number) =>
+    new Response(JSON.stringify({ error }), {
+      status,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
+
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader) return responder("No authorization header", 401);
+
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_ANON_KEY")!,
+    { global: { headers: { Authorization: authHeader } } },
+  );
+
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user) return responder("Invalid user", 401);
+
+  const { data: rolData, error: rolError } = await supabase
+    .from("roles_usuario")
+    .select("rol")
+    .eq("user_id", user.id)
+    .single();
+
+  if (rolError || !ROLES_PERMITIDOS.includes(rolData?.rol)) {
+    return responder("Unauthorized", 403);
+  }
+  return null;
+}
+
 serve(async (req) => {
   // Manejo explícito de preflight OPTIONS
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
+
+  const rechazo = await rechazarSinRol(req);
+  if (rechazo) return rechazo;
 
   try {
     const { action } = await req.json();

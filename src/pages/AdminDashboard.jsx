@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import AdminSidebar from '../components/admin/AdminSidebar.jsx';
 import GestionDocumentos from '../components/admin/GestionDocumentos.jsx';
 import GestionArticulos from '../components/admin/GestionArticulos.jsx';
@@ -8,7 +8,9 @@ import AdminDocumentDetail from '../components/admin/AdminDocumentDetail.jsx';
 import EnviarCorreoManual from '../components/admin/EnviarCorreoManual.jsx';
 import ServerControlButton from '../components/admin/ServerControlButton.jsx';
 import { supabase } from '../lib/supabaseClient';
-import { 
+import { useRol } from '../hooks/useRol';
+import { puede } from '../lib/permisos';
+import {
   UserGroupIcon,
   DocumentDuplicateIcon,
   CpuChipIcon,
@@ -31,13 +33,16 @@ const KpiCard = ({ title, value, icon: Icon, isLoading, className = '' }) => (
   </div>
 );
 
-const AdminDashboardHome = ({ user }) => {
+const AdminDashboardHome = ({ user, rol }) => {
   const [stats, setStats] = useState({ clientes: 0 });
   const [loading, setLoading] = useState(true);
   const userName = user?.email?.split('@')[0] || 'Administrador';
   const capitalizedUserName = userName.charAt(0).toUpperCase() + userName.slice(1);
+  const verServidor = puede(rol, 'servidor');
+  const verClientes = puede(rol, 'documentos');
 
   useEffect(() => {
+    if (!verClientes) return;
     const fetchDashboardData = async () => {
       setLoading(true);
       try {
@@ -50,22 +55,24 @@ const AdminDashboardHome = ({ user }) => {
       }
     };
     fetchDashboardData();
-  }, []);
+  }, [verClientes]);
 
   const sections = [
-    { 
+    {
       title: 'GESTIÓN DE DOCUMENTOS',
       description: 'Crea y administra documentos probatorios para los clientes.',
       link: '/admin/documentos',
-      icon: DocumentDuplicateIcon
+      icon: DocumentDuplicateIcon,
+      permiso: 'documentos'
     },
-    { 
+    {
       title: 'NOTIFICACIONES MANUALES',
       description: 'Envía correos con QR personalizado a cualquier destinatario.',
       link: '/admin/enviar-correo',
-      icon: BellAlertIcon
+      icon: BellAlertIcon,
+      permiso: 'correo'
     },
-  ];
+  ].filter((section) => puede(rol, section.permiso));
 
   return (
     <div className="space-y-10 animate-fade-in">
@@ -92,20 +99,27 @@ const AdminDashboardHome = ({ user }) => {
       </div>
 
       {/* KPIs */}
+      {(verServidor || verClientes) && (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Bloque de Control de Servidor con estilo integrado */}
-        <div className="md:col-span-2 bg-[rgb(53,92,143)] p-8 rounded-2xl shadow-sm border border-white/10 flex flex-col justify-center">
+        {verServidor && (
+        <div className={`${verClientes ? 'md:col-span-2' : 'md:col-span-3'} bg-[rgb(53,92,143)] p-8 rounded-2xl shadow-sm border border-white/10 flex flex-col justify-center`}>
           <div className="flex items-center gap-4 mb-4">
             <CpuChipIcon className="h-6 w-6 text-[#25c6e3]" />
             <h3 className="text-sm font-black uppercase tracking-widest text-white">Estado del Sistema</h3>
           </div>
           <ServerControlButton />
         </div>
+        )}
 
-        <KpiCard title="Clientes Registrados" value={stats.clientes} icon={UserGroupIcon} isLoading={loading} className="md:col-span-1" />
+        {verClientes && (
+          <KpiCard title="Clientes Registrados" value={stats.clientes} icon={UserGroupIcon} isLoading={loading} className={verServidor ? 'md:col-span-1' : 'md:col-span-3'} />
+        )}
       </div>
+      )}
 
       {/* Accesos Directos */}
+      {sections.length > 0 && (
       <div className="bg-[rgb(53,92,143)] rounded-2xl p-10 shadow-sm">
         <div className="mb-8">
           <div className="flex items-center gap-3">
@@ -136,28 +150,36 @@ const AdminDashboardHome = ({ user }) => {
           ))}
         </div>
       </div>
+      )}
     </div>
   );
 };
 
 // --- Layout y Enrutador ---
 
-const AdminDashboardContent = ({ user }) => (
-  <div className="max-w-6xl">
-    <Routes>
-      <Route path="documentos" element={<GestionDocumentos />} />
-      <Route path="documentos/:uuid" element={<AdminDocumentDetail />} />
-      <Route path="comunica" element={<GestionArticulos />} />
-      <Route path="comunica/:id" element={<EdicionArticulo />} />
-      <Route path="enviar-correo" element={<EnviarCorreoManual />} />
-      <Route path="dashboard" element={<AdminDashboardHome user={user} />} />
-      <Route index element={<AdminDashboardHome user={user} />} />
-    </Routes>
-  </div>
-);
+const AdminDashboardContent = ({ user, rol }) => {
+  // Una sección sin permiso redirige a la portada en lugar de mostrarse.
+  const conPermiso = (permiso, elemento) =>
+    puede(rol, permiso) ? elemento : <Navigate to="/admin/dashboard" replace />;
+
+  return (
+    <div className="max-w-6xl">
+      <Routes>
+        <Route path="documentos" element={conPermiso('documentos', <GestionDocumentos />)} />
+        <Route path="documentos/:uuid" element={conPermiso('documentos', <AdminDocumentDetail />)} />
+        <Route path="comunica" element={conPermiso('comunica', <GestionArticulos />)} />
+        <Route path="comunica/:id" element={conPermiso('comunica', <EdicionArticulo />)} />
+        <Route path="enviar-correo" element={conPermiso('correo', <EnviarCorreoManual />)} />
+        <Route path="dashboard" element={<AdminDashboardHome user={user} rol={rol} />} />
+        <Route index element={<AdminDashboardHome user={user} rol={rol} />} />
+      </Routes>
+    </div>
+  );
+};
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
+  const { rol } = useRol();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -171,7 +193,7 @@ export default function AdminDashboard() {
     <div className="flex min-h-screen bg-gray-100">
       <AdminSidebar />
       <main className="flex-1 p-8 lg:p-12 overflow-y-auto bg-gray-100">
-        <AdminDashboardContent user={user} />
+        {rol && <AdminDashboardContent user={user} rol={rol} />}
       </main>
     </div>
   );

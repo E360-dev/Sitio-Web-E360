@@ -14,6 +14,7 @@ import {
 } from '@heroicons/react/24/solid';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useRol } from '../hooks/useRol'; // Importar useRol como named export
+import { esInterno, puede } from '../lib/permisos';
 
 
 const DocumentoPublico = () => {
@@ -70,7 +71,7 @@ const DocumentoPublico = () => {
   }, [uuid, loadingRol]);
 
   const handleBack = () => {
-    if (rol === 'admin') navigate('/admin/dashboard'); 
+    if (esInterno(rol)) navigate('/admin/dashboard');
     else if (rol === 'cliente') navigate('/cliente/dashboard');
     else navigate(-1); 
   };
@@ -81,13 +82,14 @@ const DocumentoPublico = () => {
   };
 
   const getDashboardLink = () => {
-    if (rol === 'admin') return '/admin/dashboard';
+    if (esInterno(rol)) return '/admin/dashboard';
     if (rol === 'cliente') return '/cliente/dashboard';
     return '/';
   };
 
   const getDocumentsLink = () => {
-    if (rol === 'admin') return '/admin/documentos';
+    if (puede(rol, 'documentos')) return '/admin/documentos';
+    if (esInterno(rol)) return '/admin/dashboard';
     if (rol === 'cliente') return '/cliente/dashboard'; // Los clientes ven sus documentos en su dashboard principal
     return '/login';
   };

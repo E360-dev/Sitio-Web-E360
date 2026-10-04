@@ -48,16 +48,16 @@ serve(async (req) => {
       );
     }
 
-    // 3️⃣ Verificar rol admin
+    // 3️⃣ Verificar rol admin o comercial
     const { data: rolData, error: rolError } = await supabase
       .from("roles_usuario")
       .select("rol")
       .eq("user_id", user.id)
       .single();
 
-    if (rolError || rolData?.rol !== "admin") {
+    if (rolError || !["admin", "comercial"].includes(rolData?.rol)) {
       return new Response(
-        JSON.stringify({ error: "Unauthorized - admin only" }),
+        JSON.stringify({ error: "Unauthorized - admin o comercial" }),
         { status: 403, headers: corsHeaders }
       );
     }

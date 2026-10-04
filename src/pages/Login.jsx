@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient.js';
 import Imagen, { fondoWebp } from '../components/Imagen';
+import { esInterno } from '../lib/permisos';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -50,9 +51,9 @@ export default function Login() {
       }
 
       const userRole = roleData ? roleData.rol : null;
-      const from = location.state?.from?.pathname || (userRole === 'admin' ? '/admin/dashboard' : '/cliente/dashboard');
+      const from = location.state?.from?.pathname || (esInterno(userRole) ? '/admin/dashboard' : '/cliente/dashboard');
 
-      if (userRole === 'admin' || userRole === 'cliente') {
+      if (esInterno(userRole) || userRole === 'cliente') {
         navigate(from, { replace: true });
       } else {
         setError("No se pudo determinar tu rol. Contacta a soporte.");

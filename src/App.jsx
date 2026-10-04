@@ -15,6 +15,7 @@ import Pendiente from './pages/Pendiente';
 import Login from './pages/Login';
 import NotFoundPage from './pages/NotFoundPage'; // <-- IMPORTACIÓN AÑADIDA
 import ProtectedRoute from './components/ProtectedRoute';
+import { ROLES_INTERNOS } from './lib/permisos';
 
 // Carga diferida de las áreas privadas: arrastran react-pdf y pdfjs-dist, que
 // pesan más que todo el sitio público junto y solo hacen falta tras iniciar sesión.
@@ -95,7 +96,7 @@ const AppContent = () => {
         <Route 
           path="/admin/*" // Ruta con comodín para el admin
           element={
-            <ProtectedRoute requiredRole="admin">
+            <ProtectedRoute requiredRole={ROLES_INTERNOS}>
               <AdminDashboard />
             </ProtectedRoute>
           } 

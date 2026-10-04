@@ -4,6 +4,8 @@ import { obtenerClientes, crearDocumentoBorrador } from '../../lib/documentosApi
 import { Toaster, toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { useRol } from '../../hooks/useRol';
+import { puede } from '../../lib/permisos';
 
 
 // --- Sub-componentes Modales ---
@@ -75,6 +77,9 @@ const GestionDocumentos = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate(); // Hook para la navegación
+  const { rol } = useRol();
+  // Los auditores ven los dictámenes sin poder crearlos ni eliminarlos.
+  const editable = puede(rol, 'documentosEditar');
   const [filtroCliente, setFiltroCliente] = useState('');
   const [filtroAño, setFiltroAño] = useState('');
   const [expandedYears, setExpandedYears] = useState({});
@@ -193,9 +198,11 @@ const GestionDocumentos = () => {
       <Toaster position="top-right" />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Gestión de Documentos</h1>
-        <button onClick={() => setIsModalOpen(true)} className="bg-[#E80554] hover:bg-[#c50447] text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
-          + Crear Nuevo Documento
-        </button>
+        {editable && (
+          <button onClick={() => setIsModalOpen(true)} className="bg-[#E80554] hover:bg-[#c50447] text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
+            + Crear Nuevo Documento
+          </button>
+        )}
       </div>
 
       <CrearDocumentoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onDocumentoCreado={cargarDatos} clientes={clientes} />
@@ -307,6 +314,7 @@ const GestionDocumentos = () => {
                           <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm"><span className={getStatusChip(doc.estado)}>{doc.estado}</span></td>
                           <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm"><p className="text-gray-900 whitespace-no-wrap">{new Date(doc.fecha_creacion).toLocaleDateString()}</p></td>
                           <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm" onClick={e => e.stopPropagation()}>
+                            {editable && (
                             <div className="relative">
                               <button onClick={e => { e.stopPropagation(); setMenuAbiertoId(menuAbiertoId === doc.id ? null : doc.id); }} className="text-gray-400 hover:text-gray-700 px-2 py-1 rounded hover:bg-gray-100 text-lg leading-none">⋮</button>
                               {menuAbiertoId === doc.id && (
@@ -315,6 +323,7 @@ const GestionDocumentos = () => {
                                 </div>
                               )}
                             </div>
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -349,6 +358,7 @@ const GestionDocumentos = () => {
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm"><span className={getStatusChip(doc.estado)}>{doc.estado}</span></td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm"><p className="text-gray-900 whitespace-no-wrap">{new Date(doc.fecha_creacion).toLocaleDateString()}</p></td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm" onClick={e => e.stopPropagation()}>
+                    {editable && (
                     <div className="relative">
                       <button onClick={e => { e.stopPropagation(); setMenuAbiertoId(menuAbiertoId === doc.id ? null : doc.id); }} className="text-gray-400 hover:text-gray-700 px-2 py-1 rounded hover:bg-gray-100 text-lg leading-none">⋮</button>
                       {menuAbiertoId === doc.id && (
@@ -357,6 +367,7 @@ const GestionDocumentos = () => {
                         </div>
                       )}
                     </div>
+                    )}
                   </td>
                 </tr>
               ))}

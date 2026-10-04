@@ -12,6 +12,10 @@
 //   GITHUB_REPO   - por ejemplo "E360-dev/Sitio-Web-E360"
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+// Roles que pueden publicar en E360 Comunica.
+const ROLES_PERMITIDOS = ["admin", "comercial", "comunicacion"];
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -27,6 +31,29 @@ const responder = (cuerpo: Record<string, unknown>, estado = 200) =>
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
+
+  // verify_jwt acepta también la clave anon pública: el rol se comprueba aquí.
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader) return responder({ ok: false, message: "Falta la sesión." }, 401);
+
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_ANON_KEY")!,
+    { global: { headers: { Authorization: authHeader } } },
+  );
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return responder({ ok: false, message: "Sesión no válida." }, 401);
+
+  const { data: rolData } = await supabase
+    .from("roles_usuario")
+    .select("rol")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!ROLES_PERMITIDOS.includes(rolData?.rol)) {
+    return responder({ ok: false, message: "No tienes permiso para publicar." }, 403);
+  }
 
   const token = Deno.env.get("GITHUB_TOKEN");
   const repo = Deno.env.get("GITHUB_REPO");

@@ -1,5 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
+import { useRol } from '../../hooks/useRol';
+import { puede } from '../../lib/permisos';
 import {
   HomeIcon,
   ArrowLeftOnRectangleIcon,
@@ -13,12 +15,14 @@ export default function AdminSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { rol } = useRol();
+
   const navLinks = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: HomeIcon },
-    { name: 'Gesti\u00f3n de Documentos', href: '/admin/documentos', icon: DocumentDuplicateIcon },
-    { name: 'E360 Comunica', href: '/admin/comunica', icon: NewspaperIcon },
-    { name: 'Enviar Notificaci\u00f3n', href: '/admin/enviar-correo', icon: EnvelopeIcon },
-  ];
+    { name: 'Gesti\u00f3n de Documentos', href: '/admin/documentos', icon: DocumentDuplicateIcon, permiso: 'documentos' },
+    { name: 'E360 Comunica', href: '/admin/comunica', icon: NewspaperIcon, permiso: 'comunica' },
+    { name: 'Enviar Notificaci\u00f3n', href: '/admin/enviar-correo', icon: EnvelopeIcon, permiso: 'correo' },
+  ].filter((link) => !link.permiso || puede(rol, link.permiso));
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -53,6 +57,7 @@ export default function AdminSidebar() {
           );
         })}
 
+        {puede(rol, 'servidor') && (
         <div className="pt-4 border-t border-gray-200">
           <a
             href="http://3.151.184.227:8501"
@@ -64,6 +69,7 @@ export default function AdminSidebar() {
             <span className="tracking-wide text-xs">Abrir App UNC</span>
           </a>
         </div>
+        )}
       </nav>
 
       <div className="flex flex-col items-center gap-5 p-6 border-t border-gray-200 text-center">

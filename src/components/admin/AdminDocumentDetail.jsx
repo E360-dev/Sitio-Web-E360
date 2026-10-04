@@ -13,10 +13,15 @@ import {
 } from '../../lib/documentosApi';
 import { ArrowLeftIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import { toast, Toaster } from 'react-hot-toast';
+import { useRol } from '../../hooks/useRol';
+import { puede } from '../../lib/permisos';
 
 const AdminDocumentDetail = () => {
   const { uuid } = useParams();
   const navigate = useNavigate();
+  const { rol } = useRol();
+  // Los auditores ven el detalle sin poder subir, emitir ni editar.
+  const editable = puede(rol, 'documentosEditar');
 
   const [document, setDocument] = useState(null);
   const [editableName, setEditableName] = useState('');
@@ -341,7 +346,7 @@ const AdminDocumentDetail = () => {
         <div className="mb-6 space-y-4">
           <div className="flex items-center">
             <strong className="w-24 text-gray-600">Nombre:</strong>
-            {document.estado !== 'emitido' ? (
+            {document.estado !== 'emitido' && editable ? (
               <div className="flex flex-1 items-center gap-2">
                 <input
                   type="text"
@@ -375,6 +380,9 @@ const AdminDocumentDetail = () => {
           {document.estado === 'emitido' && (
             <div className="flex items-center">
               <strong className="w-24 text-gray-600">Fecha emisión:</strong>
+              {!editable ? (
+                <p className="flex-1">{document.fecha_emision?.slice(0, 10)}</p>
+              ) : (
               <div className="flex flex-1 items-center gap-2">
                 <input
                   type="date"
@@ -395,11 +403,12 @@ const AdminDocumentDetail = () => {
                   {savingDate ? 'Guardando...' : 'Guardar'}
                 </button>
               </div>
+              )}
             </div>
           )}
         </div>
 
-        {document.estado === 'borrador' && (
+        {editable && document.estado === 'borrador' && (
           <div className="mt-6">
             <input type="file" accept="application/pdf" onChange={handleFileChange} />
             <button
@@ -412,7 +421,7 @@ const AdminDocumentDetail = () => {
           </div>
         )}
 
-        {document.estado === 'borrador' && document.hash_documento && (
+        {editable && document.estado === 'borrador' && document.hash_documento && (
           <div className="mt-6">
             <button
               onClick={handleEmit}
@@ -426,6 +435,7 @@ const AdminDocumentDetail = () => {
 
         {document.estado === 'emitido' && (
           <div className="mt-6 space-y-4">
+            {editable && (
             <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
               <p className="text-sm font-semibold text-amber-900">Reemplazar PDF en esta misma página</p>
               <p className="mt-1 text-sm text-amber-800">
@@ -470,6 +480,7 @@ const AdminDocumentDetail = () => {
                 </div>
               )}
             </div>
+            )}
 
             <button
               onClick={() => navigate(`/documento/${uuid}`)}
