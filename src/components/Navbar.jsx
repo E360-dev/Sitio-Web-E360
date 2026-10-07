@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import Imagen from './Imagen';
+import { SERVICIOS_PRINCIPALES, FINANCIAMIENTO } from '../datos/servicios';
 
 const logo = '/img/logo1.png';
 
@@ -20,6 +21,8 @@ const FiscalIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" vie
 const TecnologiaIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" /></svg>;
 
 // --- Datos completos del Menú ---
+const iconosServicio = { auditoria: AuditoriaIcon, consultoria: ConsultoriaIcon, bps: DominioIcon };
+
 const submenuData = {
   inicio: [
     { name: 'Cercanía Humana', description: 'ADN Big Four, Cercanía Humana.', href: '/#cercania-humana', icon: EnfoqueHumanoIcon },
@@ -27,9 +30,9 @@ const submenuData = {
     { name: 'Presencia', description: 'Nuestra cobertura y alcance global.', href: '/#presencia', icon: PresenciaIcon },
   ],
   servicios: [
-    { name: 'Consultoría Financiera e Impuestos', description: 'Optimización y estrategias tributarias.', href: '/servicios#consultoria', icon: ConsultoriaIcon },
-    { name: 'Financiamiento y Estructuración', description: 'Preparación para fondeo y capital.', href: '/servicios#financiamiento', icon: FiscalIcon },
-    
+    ...SERVICIOS_PRINCIPALES.map((s) => ({ name: s.nombre, href: `/servicios#${s.id}`, icon: iconosServicio[s.id] })),
+    // Complementario: va al final, separado y con menor jerarquía visual.
+    { name: FINANCIAMIENTO.nombre, href: `/servicios#${FINANCIAMIENTO.id}`, icon: FiscalIcon, secundario: true },
   ],
   nosotros: [
     { name: 'Propósito y Valores', description: 'El ADN que impulsa nuestras acciones.', href: '/nosotros#purpose-values', icon: PropositoIcon },
@@ -116,10 +119,10 @@ export default function Navbar() {
                       </NavLink>
 
                       {submenuData[item.name.toLowerCase()].map((subItem) => (
-                        <Link key={subItem.name} to={subItem.href} onMouseEnter={(e) => handleMouseEnter(e, item.name.toLowerCase())} className="relative z-10 flex items-start gap-4 p-3 rounded-lg">
-                          <div className="text-blue-400 mt-1 flex-shrink-0"><subItem.icon /></div>
+                        <Link key={subItem.name} to={subItem.href} onMouseEnter={(e) => handleMouseEnter(e, item.name.toLowerCase())} className={`relative z-10 flex items-start gap-4 p-3 rounded-lg ${subItem.secundario ? 'mt-1 border-t border-white/15 rounded-t-none' : ''}`}>
+                          <div className={`mt-1 flex-shrink-0 ${subItem.secundario ? 'text-blue-400/60 scale-90' : 'text-blue-400'}`}><subItem.icon /></div>
                           <div>
-                            <p className="font-semibold text-white">{subItem.name}</p>
+                            <p className={subItem.secundario ? 'text-sm font-medium text-white/70' : 'font-semibold text-white'}>{subItem.name}</p>
                           </div>
                         </Link>
                       ))}
@@ -159,7 +162,7 @@ export default function Navbar() {
                 <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openMobileSubmenu === item.name ? 'max-h-96' : 'max-h-0'}`}>
                   <div className="pl-4 mt-1 pt-1 border-l-2 border-gray-300 space-y-1">
                     {submenuData[item.name.toLowerCase()]?.map((subItem) => (
-                      <Link key={subItem.name} to={subItem.href} className="block px-3 py-2 rounded-md text-lg text-e360-text-dark hover:text-e360-accent hover:bg-gray-100" onClick={() => setMobileMenuOpen(false)}>{subItem.name}</Link>
+                      <Link key={subItem.name} to={subItem.href} className={`block px-3 py-2 rounded-md hover:text-e360-accent hover:bg-gray-100 ${subItem.secundario ? 'mt-2 pt-3 border-t border-gray-200 rounded-t-none text-base text-gray-500' : 'text-lg text-e360-text-dark'}`} onClick={() => setMobileMenuOpen(false)}>{subItem.name}</Link>
                     ))}
                   </div>
                 </div>

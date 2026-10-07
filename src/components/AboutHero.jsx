@@ -11,9 +11,10 @@ export default function AboutHero() {
           Impacto real, con técnica y criterio
         </h1>
         <div className="h-1 w-96 mx-auto mt-4 bg-gradient-to-r from-e360-highlight via-e360-cyan to-e360-accent rounded-full"></div>
-        <p className="mt-6 max-w-2xl mx-auto text-lg text-white">
-          En E360 combinamos la experiencia técnica de firmas internacionales con la agilidad de una boutique estratégica. Nuestro enfoque no es vender horas, sino resolver lo complejo con precisión, velocidad y criterio.
-        </p>
+        <div className="mt-6 max-w-2xl mx-auto text-lg text-white space-y-4">
+          <p>ADN Big Four, Cercanía Humana. Somos una boutique que reúne experiencia especializada, agilidad y visión de negocio para resolver asuntos financieros, contables y fiscales.</p>
+          <p>La tecnología forma parte de nuestra manera de trabajar y de nuestra evolución como firma, con el criterio profesional y la relación cercana con nuestros clientes al centro.</p>
+        </div>
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             to="/nosotros#proposito"

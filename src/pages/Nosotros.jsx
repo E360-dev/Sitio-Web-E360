@@ -16,9 +16,7 @@ export default function Nosotros() {
       <div id="proposito">
         <PurposeAndValues />
       </div>
-      <div id="equipo">
-        <OurTeam />
-      </div>
+      <OurTeam />
       <AboutCTA />
     </>
   );

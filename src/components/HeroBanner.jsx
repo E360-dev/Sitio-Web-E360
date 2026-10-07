@@ -72,7 +72,7 @@ export default function HeroBanner() {
       {/* El hero es solo video, sin texto. Este h1 da la jerarquía semántica que
           necesitan los buscadores sin alterar el diseño. */}
       <h1 className="sr-only">
-        E360 — Consultoría financiera, auditoría y financiamiento para empresas en México
+        E360 — Auditoría, consultoría y outsourcing contable para empresas en México
       </h1>
 
       <video
