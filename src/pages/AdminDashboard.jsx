@@ -7,6 +7,7 @@ import EdicionArticulo from '../components/admin/EdicionArticulo.jsx';
 import AdminDocumentDetail from '../components/admin/AdminDocumentDetail.jsx';
 import EnviarCorreoManual from '../components/admin/EnviarCorreoManual.jsx';
 import ServerControlButton from '../components/admin/ServerControlButton.jsx';
+import CentroConocimiento from '../components/admin/conocimiento/CentroConocimiento.jsx';
 import { supabase } from '../lib/supabaseClient';
 import { useRol } from '../hooks/useRol';
 import { puede } from '../lib/permisos';
@@ -170,6 +171,7 @@ const AdminDashboardContent = ({ user, rol }) => {
         <Route path="comunica" element={conPermiso('comunica', <GestionArticulos />)} />
         <Route path="comunica/:id" element={conPermiso('comunica', <EdicionArticulo />)} />
         <Route path="enviar-correo" element={conPermiso('correo', <EnviarCorreoManual />)} />
+        <Route path="conocimiento/*" element={conPermiso('conocimiento', <CentroConocimiento />)} />
         <Route path="dashboard" element={<AdminDashboardHome user={user} rol={rol} />} />
         <Route index element={<AdminDashboardHome user={user} rol={rol} />} />
       </Routes>

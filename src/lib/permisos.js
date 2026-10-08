@@ -13,6 +13,7 @@ export const PERMISOS = {
   correo: ['admin', 'comercial'],
   comunica: ['admin', 'comercial', 'comunicacion'],
   servidor: ['admin', 'auditor'],                      // EC2 y App UNC
+  conocimiento: ROLES_INTERNOS,                        // el Radar además exige estar en radar_accesos
 };
 
 /**

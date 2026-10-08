@@ -8,7 +8,8 @@ import {
   ArrowTopRightOnSquareIcon,
   DocumentDuplicateIcon,
   EnvelopeIcon,
-  NewspaperIcon
+  NewspaperIcon,
+  BookOpenIcon
 } from '@heroicons/react/24/solid';
 
 export default function AdminSidebar() {
@@ -40,7 +41,7 @@ export default function AdminSidebar() {
 
       <nav className="flex-1 flex flex-col justify-center px-4 py-6 space-y-3">
         {navLinks.map((link) => {
-          const isActive = location.pathname === link.href;
+          const isActive = location.pathname === link.href || location.pathname.startsWith(`${link.href}/`);
           return (
             <Link
               key={link.name}
