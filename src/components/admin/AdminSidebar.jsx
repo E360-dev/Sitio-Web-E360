@@ -23,6 +23,7 @@ export default function AdminSidebar() {
     { name: 'Gesti\u00f3n de Documentos', href: '/admin/documentos', icon: DocumentDuplicateIcon, permiso: 'documentos' },
     { name: 'E360 Comunica', href: '/admin/comunica', icon: NewspaperIcon, permiso: 'comunica' },
     { name: 'Enviar Notificaci\u00f3n', href: '/admin/enviar-correo', icon: EnvelopeIcon, permiso: 'correo' },
+    { name: 'Centro de Conocimiento', href: '/admin/conocimiento', icon: BookOpenIcon, permiso: 'conocimiento' },
   ].filter((link) => !link.permiso || puede(rol, link.permiso));
 
   const handleLogout = async () => {
