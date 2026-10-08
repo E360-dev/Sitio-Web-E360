@@ -12,6 +12,10 @@ import RadarProspecto from './RadarProspecto.jsx';
 
 const RadarContext = createContext(null);
 
+// Rutas absolutas: un enlace relativo dentro de una ruta con comodín se
+// resuelve desde la página actual y acaba en una ruta inexistente.
+export const RADAR = '/admin/conocimiento/radar';
+
 /**
  * Datos comunes a todas las pantallas del Radar:
  * mi acceso, el flujo, los nombres del equipo y utilidades de permisos.
@@ -59,20 +63,18 @@ export default function RadarComercial() {
   }
 
   const nombreDe = (userId) => accesos.find((a) => a.user_id === userId)?.nombre || 'Alguien del equipo';
-  const responsablesDe = (paso) => {
-    const nombres = accesos.filter((a) => a.pasos.includes(paso)).map((a) => a.nombre);
-    return nombres.length ? nombres.join(' y ') : pasos.find((p) => p.paso === paso)?.responsable || '—';
-  };
+  // El responsable es el que define el flujo; los accesos solo dicen quién puede cerrar el paso.
+  const responsablesDe = (paso) => pasos.find((p) => p.paso === paso)?.responsable || '—';
   const puedePaso = (paso) => Boolean(acceso?.pasos.includes(paso));
 
   const valor = { acceso, pasos, accesos, esAdmin, nombreDe, responsablesDe, puedePaso, recargarComunes: cargar };
 
   const pestanas = [
-    { to: '', nombre: 'Prospectos', end: true },
-    { to: 'lista-corta', nombre: 'Lista corta' },
-    { to: 'flujo', nombre: 'Flujo' },
-    ...(esAdmin ? [{ to: 'accesos', nombre: 'Accesos' }] : []),
-  ].filter((p) => acceso || p.to === 'accesos');
+    { to: RADAR, nombre: 'Prospectos', end: true },
+    { to: `${RADAR}/lista-corta`, nombre: 'Lista corta' },
+    { to: `${RADAR}/flujo`, nombre: 'Flujo' },
+    ...(esAdmin ? [{ to: `${RADAR}/accesos`, nombre: 'Accesos' }] : []),
+  ].filter((p) => acceso || p.nombre === 'Accesos');
 
   return (
     <RadarContext.Provider value={valor}>
@@ -117,10 +119,10 @@ export default function RadarComercial() {
               <Route path="prospecto/:id" element={<RadarProspecto />} />
             </>
           ) : (
-            <Route index element={<Navigate to="accesos" replace />} />
+            <Route index element={<Navigate to={`${RADAR}/accesos`} replace />} />
           )}
           {esAdmin && <Route path="accesos" element={<RadarAccesos />} />}
-          <Route path="*" element={<Navigate to="/admin/conocimiento/radar" replace />} />
+          <Route path="*" element={<Navigate to={RADAR} replace />} />
         </Routes>
       </div>
     </RadarContext.Provider>

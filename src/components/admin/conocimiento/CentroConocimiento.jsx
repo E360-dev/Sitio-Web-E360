@@ -31,7 +31,7 @@ const Portada = () => {
           <div className="bg-white rounded-2xl p-8 shadow-sm text-gray-400">Cargando…</div>
         ) : verRadar ? (
           <Link
-            to="radar"
+            to="/admin/conocimiento/radar"
             className="group bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:scale-[1.02] transition-all"
           >
             <ChartBarSquareIcon className="h-9 w-9 text-[#25c6e3] mb-4" />

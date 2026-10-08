@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { obtenerProspectos, pasoActual, formatoFecha, hoyISO, ESTADOS } from '../../../../lib/radarApi';
-import { useRadar } from './RadarComercial.jsx';
+import { useRadar, RADAR } from './RadarComercial.jsx';
 import { Semaforo, Tarjeta, Vacio } from './RadarUi.jsx';
 
 const ACTIVOS = ['en_curso', 'enviado', 'en_seguimiento'];
@@ -67,7 +67,7 @@ export default function RadarProspectos() {
       <Tarjeta titulo="Mis pendientes">
         {puedePaso(2) && candidatos > 0 && (
           <Link
-            to="lista-corta"
+            to={`${RADAR}/lista-corta`}
             className="mb-3 flex items-center justify-between gap-4 rounded-xl bg-[#25c6e3]/10 px-4 py-3 hover:bg-[#25c6e3]/20"
           >
             <span className="font-bold text-[#1a2f4e]">Elegir el prospecto de la lista corta</span>
@@ -80,7 +80,7 @@ export default function RadarProspectos() {
           <ul className="divide-y divide-gray-100">
             {pendientes.map((p) => (
               <li key={p.id}>
-                <Link to={`prospecto/${p.id}`} className="flex flex-wrap items-center justify-between gap-3 py-3 hover:bg-gray-50 rounded-lg px-2">
+                <Link to={`${RADAR}/prospecto/${p.id}`} className="flex flex-wrap items-center justify-between gap-3 py-3 hover:bg-gray-50 rounded-lg px-2">
                   <div>
                     <p className="font-bold text-[#1a2f4e]">{p.empresa}</p>
                     <p className="text-sm text-gray-500">
@@ -118,7 +118,7 @@ export default function RadarProspectos() {
                   <tr key={`${prospecto.id}-${hito.paso}`}>
                     <td className="py-2 pr-4 whitespace-nowrap">{formatoFecha(hito.fecha_compromiso)}</td>
                     <td className="py-2 pr-4">
-                      <Link to={`prospecto/${prospecto.id}`} className="font-bold text-[rgb(53,92,143)] hover:underline">
+                      <Link to={`${RADAR}/prospecto/${prospecto.id}`} className="font-bold text-[rgb(53,92,143)] hover:underline">
                         {prospecto.empresa}
                       </Link>
                     </td>
@@ -145,7 +145,7 @@ export default function RadarProspectos() {
         {lista.length === 0 ? (
           <Vacio>
             Todavía no hay prospectos en curso. Se crean al elegir uno de la{' '}
-            <Link to="lista-corta" className="font-bold text-[rgb(53,92,143)]">lista corta</Link>.
+            <Link to={`${RADAR}/lista-corta`} className="font-bold text-[rgb(53,92,143)]">lista corta</Link>.
           </Vacio>
         ) : (
           <div className="overflow-x-auto">
@@ -164,7 +164,7 @@ export default function RadarProspectos() {
                 {lista.map((p) => (
                   <tr key={p.id} className="hover:bg-gray-50">
                     <td className="py-3 pr-4">
-                      <Link to={`prospecto/${p.id}`} className="font-bold text-[rgb(53,92,143)] hover:underline">
+                      <Link to={`${RADAR}/prospecto/${p.id}`} className="font-bold text-[rgb(53,92,143)] hover:underline">
                         {p.empresa}
                       </Link>
                       <p className="text-xs text-gray-400">{ESTADOS[p.estado]}</p>

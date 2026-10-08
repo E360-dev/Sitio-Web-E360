@@ -18,7 +18,7 @@ import {
   TIPOS_ARCHIVO,
   FORMATOS_ACEPTADOS,
 } from '../../../../lib/radarApi';
-import { useRadar } from './RadarComercial.jsx';
+import { useRadar, RADAR } from './RadarComercial.jsx';
 import { Semaforo, Tarjeta, Vacio, claseBoton, claseBotonSecundario, claseCampo } from './RadarUi.jsx';
 
 const fechaHora = (iso) =>
@@ -419,7 +419,7 @@ export default function RadarProspecto() {
 
   return (
     <div className="space-y-6">
-      <Link to="/admin/conocimiento/radar" className="inline-flex items-center gap-1 text-sm font-semibold text-gray-500 hover:text-[#1a2f4e]">
+      <Link to={RADAR} className="inline-flex items-center gap-1 text-sm font-semibold text-gray-500 hover:text-[#1a2f4e]">
         <ChevronLeftIcon className="h-4 w-4" /> Prospectos
       </Link>
 

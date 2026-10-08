@@ -11,7 +11,7 @@ import {
   formatoFecha,
   viernesDeLista,
 } from '../../../../lib/radarApi';
-import { useRadar } from './RadarComercial.jsx';
+import { useRadar, RADAR } from './RadarComercial.jsx';
 import { Tarjeta, Vacio, claseBoton, claseBotonSecundario, claseCampo } from './RadarUi.jsx';
 
 const VACIO = { empresa: '', score: '', senal: '', por_que_ahora: '', servicios: '' };
@@ -98,7 +98,7 @@ const Candidato = ({ p, puedeElegir, puedeEditar, onCambio }) => {
     if (!window.confirm(`¿Elegir ${p.empresa}? Se calcularán las fechas de todos los pasos.`)) return;
     accion(async () => {
       await elegirProspecto(p.id);
-      navigate(`../prospecto/${p.id}`);
+      navigate(`${RADAR}/prospecto/${p.id}`);
     }, 'Prospecto elegido. Ya corre su calendario.');
   };
 
