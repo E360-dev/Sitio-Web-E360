@@ -167,6 +167,8 @@ export default function RadarProspectos() {
                       <Link to={`${RADAR}/prospecto/${p.id}`} className="font-bold text-[rgb(53,92,143)] hover:underline">
                         {p.empresa}
                       </Link>
+                      {p.sector && <p className="text-xs text-gray-500">Sector: {p.sector}</p>}
+                      {p.sitio_web && <a href={p.sitio_web} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-[rgb(53,92,143)] hover:underline">Sitio web / LinkedIn</a>}
                       <p className="text-xs text-gray-400">{ESTADOS[p.estado]}</p>
                     </td>
                     <td className="py-3 pr-4">

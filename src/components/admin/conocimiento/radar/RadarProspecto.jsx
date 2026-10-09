@@ -427,6 +427,8 @@ export default function RadarProspecto() {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h2 className="text-2xl font-black text-[#1a2f4e]">{prospecto.empresa}</h2>
+            {prospecto.sector && <p className="mt-1 text-sm font-semibold text-gray-500">Sector: {prospecto.sector}</p>}
+            {prospecto.sitio_web && <a href={prospecto.sitio_web} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block text-sm font-semibold text-[rgb(53,92,143)] hover:underline">Abrir sitio web / LinkedIn</a>}
             <p className="text-sm text-gray-500">
               {ESTADOS[prospecto.estado]} · Lista del {formatoFecha(prospecto.fecha_lista)}
               {actual && ` · Va en el paso ${actual.paso} de 9`}

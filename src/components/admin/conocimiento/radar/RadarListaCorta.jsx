@@ -14,7 +14,7 @@ import {
 import { useRadar, RADAR } from './RadarComercial.jsx';
 import { Tarjeta, Vacio, claseBoton, claseBotonSecundario, claseCampo } from './RadarUi.jsx';
 
-const VACIO = { empresa: '', score: '', senal: '', por_que_ahora: '', servicios: '' };
+const VACIO = { empresa: '', sector: '', sitio_web: '', score: '', senal: '', por_que_ahora: '', servicios: '' };
 
 const FormularioCandidato = ({ onCreado }) => {
   const [datos, setDatos] = useState(VACIO);
@@ -55,6 +55,14 @@ const FormularioCandidato = ({ onCreado }) => {
       <label className="md:col-span-2 text-sm font-bold text-gray-600">
         Lista del viernes
         <input type="date" className={`${claseCampo} mt-1`} value={fecha} onChange={(e) => setFecha(e.target.value)} required />
+      </label>
+      <label className="md:col-span-3 text-sm font-bold text-gray-600">
+        Sector
+        <input className={`${claseCampo} mt-1`} value={datos.sector} onChange={cambiar('sector')} placeholder="Ej. Salud, tecnología, financiero" />
+      </label>
+      <label className="md:col-span-3 text-sm font-bold text-gray-600">
+        Sitio web o LinkedIn
+        <input type="url" className={`${claseCampo} mt-1`} value={datos.sitio_web} onChange={cambiar('sitio_web')} placeholder="https://" />
       </label>
       <label className="md:col-span-6 text-sm font-bold text-gray-600">
         Señal
@@ -107,6 +115,8 @@ const Candidato = ({ p, puedeElegir, puedeEditar, onCambio }) => {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-lg font-black text-[#1a2f4e]">{p.empresa}</p>
+          {p.sector && <p className="text-sm text-gray-500">Sector: {p.sector}</p>}
+          {p.sitio_web && <a href={p.sitio_web} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-[rgb(53,92,143)] hover:underline">Sitio web / LinkedIn</a>}
           {p.score != null && <p className="text-sm font-bold text-[#25c6e3]">Score {p.score}</p>}
         </div>
         <div className="flex flex-wrap gap-2">
