@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
-import { BookOpenIcon, ChartBarSquareIcon, LockClosedIcon } from '@heroicons/react/24/solid';
+import { BookOpenIcon, ChartBarSquareIcon, CpuChipIcon, LockClosedIcon } from '@heroicons/react/24/solid';
 import { obtenerMiAcceso } from '../../../lib/radarApi';
 import { useRol } from '../../../hooks/useRol';
 import RadarComercial from './radar/RadarComercial.jsx';
+import CuentasTecnologia from './CuentasTecnologia.jsx';
 
 const Portada = () => {
   const { rol } = useRol();
@@ -42,6 +43,17 @@ const Portada = () => {
           </Link>
         ) : null}
 
+        <Link
+          to="/admin/conocimiento/cuentas-tecnologia"
+          className="group bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:scale-[1.02] transition-all"
+        >
+          <CpuChipIcon className="h-9 w-9 text-[#25c6e3] mb-4" />
+          <h2 className="font-black text-[#1a2f4e] text-lg tracking-wider">CUENTAS DE TECNOLOGÍA</h2>
+          <p className="text-gray-500 text-sm mt-2">
+            Herramientas, planes, costos y días de renovación.
+          </p>
+        </Link>
+
         <div className="bg-white rounded-2xl p-8 shadow-sm border border-dashed border-gray-200">
           <BookOpenIcon className="h-9 w-9 text-gray-300 mb-4" />
           <h2 className="font-black text-gray-400 text-lg tracking-wider">BIBLIOTECA</h2>
@@ -59,6 +71,7 @@ export default function CentroConocimiento() {
     <Routes>
       <Route index element={<Portada />} />
       <Route path="radar/*" element={<RadarComercial />} />
+      <Route path="cuentas-tecnologia/*" element={<CuentasTecnologia />} />
     </Routes>
   );
 }
