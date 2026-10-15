@@ -77,6 +77,8 @@ test('account validation preserves full calendar dates and cannot pass secrets i
   const input = { herramienta: 'Claude', plan: 'Pro', correo: 'test@example.com', uso: 'Investigación', fecha_renovacion: '2028-02-29', costo: '20', moneda: 'USD', contrasena: 'no-store' };
   assert.equal(validarCuenta(input).fecha_renovacion, '2028-02-29');
   assert.equal(validarCuenta(input).contrasena, undefined);
+  for (const moneda of ['MXN', 'COP', 'USD', 'EUR']) assert.equal(validarCuenta({ ...input, moneda }).moneda, moneda);
+  assert.throws(() => validarCuenta({ ...input, moneda: 'XXX' }));
   for (const fecha_renovacion of ['2026-02-29', '2026-13-01', '2026-01-32', '14/10/2026']) assert.throws(() => validarCuenta({ ...input, fecha_renovacion }));
   assert.throws(() => validarCuenta({ ...input, fecha_renovacion: '' }));
   assert.throws(() => validarCuenta({ ...input, costo: -1 }));

@@ -4,6 +4,10 @@ Solo `admin` puede consultar o modificar el inventario. Las cuentas existentes
 mantienen el día antiguo y una fecha completa vacía hasta que un administrador
 la complete. No se calculan cobros ni renovaciones automáticas.
 
+La moneda principal para cuentas nuevas es `MXN` (peso mexicano). También se
+admiten `COP`, `USD` y `EUR`; los importes muestran su código de moneda. Los
+registros existentes conservan su moneda y costo, sin conversiones automáticas.
+
 ## Sesión y desbloqueo
 
 `AuthProvider` comparte usuario y rol entre pantallas. Reconfirmar la misma

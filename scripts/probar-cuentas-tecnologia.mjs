@@ -29,7 +29,7 @@ if (process.argv.includes('--limpiar')) {
 const people = []; const accountIds = [];
 const stamp = `${Date.now()}-${randomBytes(4).toString('hex')}`;
 const toolPassword = randomBytes(24).toString('base64url');
-const account = { herramienta:`QA cuenta ${stamp}`,plan:'Prueba',correo:'qa@example.test',uso:'Registro temporal de prueba automática.',fecha_renovacion:'2028-02-29',costo:20,moneda:'USD' };
+const account = { herramienta:`QA cuenta ${stamp}`,plan:'Prueba',correo:'qa@example.test',uso:'Registro temporal de prueba automática.',fecha_renovacion:'2028-02-29',costo:20,moneda:'MXN' };
 
 async function makeUser(role) {
   const email = `qa-${role}-${people.length}-${stamp}@example.test`;
@@ -126,6 +126,7 @@ async function browserChecks(admin) {
     console.log('OK interfaz: desbloqueo con contraseña del portal.');
     phase='alta de cuenta';
     await click('Agregar cuenta');
+    assert.equal(await page.$eval('dialog[open] select', (select) => select.value), 'MXN', 'Moneda inicial: peso mexicano');
     const browserTool=`QA interfaz ${stamp}`;
     await fill('Herramienta',browserTool);await fill('Plan','Pro');await fill('Correo de la cuenta','qa@example.test');await fill('¿Para qué se usa?','Uso de prueba editable');
     await page.$eval('input[type="date"]',(input)=>{Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(input,'2027-06-15');input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));});
@@ -134,7 +135,8 @@ async function browserChecks(admin) {
     await page.waitForFunction(()=>!document.querySelector('dialog[open]'));
     console.log('OK interfaz: cuenta guardada desde el formulario.');
     phase='detalle y revelación';
-    const added=await service.from('cuentas_tecnologia').select('id').eq('herramienta',browserTool).single();assert.ok(added.data,'Cuenta creada en interfaz');accountIds.push(added.data.id);
+    const added=await service.from('cuentas_tecnologia').select('id,moneda').eq('herramienta',browserTool).single();assert.ok(added.data,'Cuenta creada en interfaz');accountIds.push(added.data.id);
+    assert.equal(added.data.moneda, 'MXN', 'El formulario guarda pesos mexicanos');
     await page.type('input[aria-label="Buscar cuentas"]',browserTool);
     await page.evaluate((name)=>[...document.querySelectorAll('li button')].find((b)=>b.textContent.includes(name)).click(),browserTool);
     await page.waitForSelector('dialog[open]');

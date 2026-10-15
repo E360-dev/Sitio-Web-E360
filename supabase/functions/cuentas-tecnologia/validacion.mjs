@@ -18,7 +18,7 @@ export function validarCuenta(input) {
   if (correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) throw new Error('DATOS_INVALIDOS');
   const costo = input.costo === '' || input.costo == null ? null : Number(input.costo);
   if (costo !== null && (!Number.isFinite(costo) || costo < 0 || costo > 9999999999.99)) throw new Error('DATOS_INVALIDOS');
-  if (!['COP','USD','EUR'].includes(input.moneda)) throw new Error('DATOS_INVALIDOS');
+  if (!['MXN','COP','USD','EUR'].includes(input.moneda)) throw new Error('DATOS_INVALIDOS');
   return {
     ...(nuevo ? {} : { id: validarId(input.id) }), nuevo,
     herramienta: text(input.herramienta, 120, true), plan: text(input.plan, 120, true),

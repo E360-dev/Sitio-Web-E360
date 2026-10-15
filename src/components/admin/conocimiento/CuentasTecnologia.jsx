@@ -5,9 +5,9 @@ import { useCredenciales } from '../../../context/CredencialesProvider';
 import { obtenerCuentasTecnologia } from '../../../lib/cuentasTecnologiaApi';
 import { claseBoton, claseBotonSecundario, claseCampo } from './radar/RadarUi.jsx';
 
-const INICIAL = { herramienta: '', plan: '', correo: '', uso: '', fecha_renovacion: '', costo: '', moneda: 'COP' };
+const INICIAL = { herramienta: '', plan: '', correo: '', uso: '', fecha_renovacion: '', costo: '', moneda: 'MXN' };
 const fecha = (value) => value ? value.split('-').reverse().join('/') : 'Fecha por completar';
-const costo = (value, currency) => value == null ? 'Sin costo registrado' : new Intl.NumberFormat('es-CO', { style: 'currency', currency: currency || 'COP', maximumFractionDigits: 2 }).format(Number(value));
+const costo = (value, currency) => value == null ? 'Sin costo registrado' : new Intl.NumberFormat('es-MX', { style: 'currency', currency: currency || 'MXN', currencyDisplay: 'code', maximumFractionDigits: 2 }).format(Number(value));
 
 function Modal({ titulo, cerrar, children }) {
   const ref = useRef(null);
@@ -55,7 +55,7 @@ function Formulario({ cuenta, guardar, cerrar, desbloqueada, pedirDesbloqueo }) 
       <label className="text-sm font-semibold">Próxima renovación<input type="date" className={`${claseCampo} mt-1`} value={form.fecha_renovacion} onChange={cambiar('fecha_renovacion')} required={!cuenta} />{cuenta && !cuenta.fecha_renovacion && <span className="block mt-1 text-xs text-amber-700">Fecha por completar. Día registrado anteriormente: {cuenta.dia_renovacion}.</span>}</label>
       <div className="grid grid-cols-[1fr_5rem] gap-2">
         <label className="text-sm font-semibold">Costo del plan<input type="number" min="0" max="9999999999.99" step="0.01" className={`${claseCampo} mt-1`} value={form.costo} onChange={cambiar('costo')} placeholder="Opcional" /></label>
-        <label className="text-sm font-semibold">Moneda<select className={`${claseCampo} mt-1`} value={form.moneda} onChange={cambiar('moneda')}><option>COP</option><option>USD</option><option>EUR</option></select></label>
+        <label className="text-sm font-semibold">Moneda<select className={`${claseCampo} mt-1`} value={form.moneda} onChange={cambiar('moneda')}><option value="MXN">MXN — Peso mexicano</option><option>COP</option><option>USD</option><option>EUR</option></select></label>
       </div>
       <div className="sm:col-span-2 rounded-xl bg-slate-50 border p-4 space-y-3">
         <p className="font-bold text-sm">Contraseña de la herramienta</p>
