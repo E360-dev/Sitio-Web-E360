@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '../../lib/supabaseClient';
+import { useRol } from '../../hooks/useRol';
 import { 
   ServerIcon, 
   PlayIcon, 
@@ -11,6 +12,7 @@ import {
 const SERVER_FUNCTION_URL = 'https://crxtzmykprgbgkdbqccd.functions.supabase.co/server-control';
 
 const ServerControlButton = () => {
+  const { user } = useRol();
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
@@ -114,38 +116,13 @@ const ServerControlButton = () => {
   useEffect(() => {
     isMounted.current = true;
     
-    // 1. Escuchar cambios de sesión para disparar la carga cuando esté lista
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session && isMounted.current) {
-        fetchStatus();
-      } else if (event === 'SIGNED_OUT' && isMounted.current) {
-        setLoading(false);
-        setStatus(null);
-      }
-    });
-
-    // 2. Intento de carga inicial
-    const checkInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session && isMounted.current) {
-        fetchStatus();
-      } else {
-        // Margen para inicialización de Supabase
-        setTimeout(() => {
-          if (isMounted.current && loading && !status) {
-            setLoading(false);
-          }
-        }, 2500);
-      }
-    };
-
-    checkInitialSession();
+    if (user) fetchStatus();
+    else { setLoading(false); setStatus(null); }
 
     return () => {
       isMounted.current = false;
-      subscription.unsubscribe();
     };
-  }, [fetchStatus]);
+  }, [fetchStatus, user?.id]);
 
   useEffect(() => {
     if (!status || status === 'running' || status === 'stopped') return;

@@ -3,7 +3,7 @@ import { useRol } from '../hooks/useRol';
 import { esInterno } from '../lib/permisos';
 
 export default function ProtectedRoute({ children, requiredRole }) {
-  const { rol, loading } = useRol();
+  const { rol, loading, error, reintentar } = useRol();
   const location = useLocation();
 
   if (loading) {
@@ -12,6 +12,10 @@ export default function ProtectedRoute({ children, requiredRole }) {
         <p>Verificando acceso...</p>
       </div>
     );
+  }
+
+  if (!rol && error) {
+    return <div className="min-h-screen flex flex-col items-center justify-center gap-4"><p role="alert">{error}</p><button onClick={reintentar} className="font-bold text-blue-700">Reintentar</button></div>;
   }
 
   if (!rol) {

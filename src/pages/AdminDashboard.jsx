@@ -180,21 +180,12 @@ const AdminDashboardContent = ({ user, rol }) => {
 };
 
 export default function AdminDashboard() {
-  const [user, setUser] = useState(null);
-  const { rol } = useRol();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    fetchUser();
-  }, []);
+  const { rol, user } = useRol();
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
       <AdminSidebar />
-      <main className="flex-1 p-8 lg:p-12 overflow-y-auto bg-gray-100">
+      <main className="min-w-0 flex-1 p-4 sm:p-8 lg:p-12 overflow-y-auto bg-gray-100">
         {rol && <AdminDashboardContent user={user} rol={rol} />}
       </main>
     </div>

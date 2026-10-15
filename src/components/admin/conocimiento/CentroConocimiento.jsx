@@ -53,7 +53,7 @@ const Portada = () => {
             <CpuChipIcon className="h-9 w-9 text-[#25c6e3] mb-4" />
             <h2 className="font-black text-[#1a2f4e] text-lg tracking-wider">CUENTAS DE TECNOLOGÍA</h2>
             <p className="text-gray-500 text-sm mt-2">
-              Herramientas, planes, costos y días de renovación.
+              Herramientas, usos, credenciales protegidas y próximas renovaciones.
             </p>
           </Link>
         ) : null}
