@@ -2,6 +2,7 @@
   "name": "tailwind-vite-e360",
   "version": "1.0.0",
   "scripts": {
+    "test:radar": "node --test tests/radar-modelo.test.mjs",
     "test:cuentas": "node --test tests/cuentas-tecnologia.test.mjs",
     "dev": "vite",
     "contenido": "node scripts/generar-contenido.mjs",
@@ -27,6 +28,7 @@
     "dompurify": "^3.4.14",
     "emailjs-com": "^3.2.0",
     "leaflet": "^1.9.4",
+    "mammoth": "1.13.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.6.0",

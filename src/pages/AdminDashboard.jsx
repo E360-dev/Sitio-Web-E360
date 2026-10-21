@@ -8,6 +8,7 @@ import AdminDocumentDetail from '../components/admin/AdminDocumentDetail.jsx';
 import EnviarCorreoManual from '../components/admin/EnviarCorreoManual.jsx';
 import ServerControlButton from '../components/admin/ServerControlButton.jsx';
 import CentroConocimiento from '../components/admin/conocimiento/CentroConocimiento.jsx';
+import NotificacionesRadar from '../components/admin/NotificacionesRadar.jsx';
 import { supabase } from '../lib/supabaseClient';
 import { useRol } from '../hooks/useRol';
 import { puede } from '../lib/permisos';
@@ -186,6 +187,7 @@ export default function AdminDashboard() {
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
       <AdminSidebar />
       <main className="min-w-0 flex-1 p-4 sm:p-8 lg:p-12 overflow-y-auto bg-gray-100">
+        <NotificacionesRadar />
         {rol && <AdminDashboardContent user={user} rol={rol} />}
       </main>
     </div>

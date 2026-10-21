@@ -29,7 +29,7 @@ export default function RadarComercial() {
   const cargar = useCallback(async () => {
     try {
       const acceso = await obtenerMiAcceso();
-      if (!acceso) {
+      if (!acceso && rol !== 'admin') {
         setEstado({ cargando: false, acceso: null, pasos: [], accesos: [] });
         return;
       }
@@ -38,7 +38,7 @@ export default function RadarComercial() {
     } catch {
       setEstado({ cargando: false, acceso: null, pasos: [], accesos: [] });
     }
-  }, []);
+  }, [rol]);
 
   useEffect(() => {
     cargar();

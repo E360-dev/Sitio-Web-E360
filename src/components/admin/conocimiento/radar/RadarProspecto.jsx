@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { CheckIcon, ArrowDownTrayIcon, ArrowUpTrayIcon, ChevronLeftIcon } from '@heroicons/react/24/outline';
 import {
@@ -18,6 +18,7 @@ import {
   TIPOS_ARCHIVO,
   FORMATOS_ACEPTADOS,
 } from '../../../../lib/radarApi';
+import RadarRevision, { PrevisualizarDocumento } from './RadarRevision.jsx';
 import { useRadar, RADAR } from './RadarComercial.jsx';
 import { Semaforo, Tarjeta, Vacio, claseBoton, claseBotonSecundario, claseCampo } from './RadarUi.jsx';
 
@@ -29,6 +30,7 @@ const fechaHora = (iso) =>
 const Archivos = ({ prospecto, paso, archivos, puedeSubir, onCambio }) => {
   const { nombreDe } = useRadar();
   const [subiendo, setSubiendo] = useState(null);
+  const [viendo, setViendo] = useState(null);
 
   const subir = async (tipo, archivo, versionActual) => {
     if (!archivo) return;
@@ -54,6 +56,7 @@ const Archivos = ({ prospecto, paso, archivos, puedeSubir, onCambio }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {viendo && <PrevisualizarDocumento archivo={viendo} prospecto={prospecto} cerrar={() => setViendo(null)} onCambio={onCambio} />}
       {TIPOS_ARCHIVO[paso].map(({ tipo, nombre }) => {
         const versiones = archivos.filter((a) => a.tipo === tipo).sort((a, b) => b.version - a.version);
         return (
@@ -86,7 +89,8 @@ const Archivos = ({ prospecto, paso, archivos, puedeSubir, onCambio }) => {
                     <span className="truncate">
                       <span className="font-black">v{a.version}</span> · {a.nombre} · {nombreDe(a.subido_por)}, {fechaHora(a.subido_en)}
                     </span>
-                    <button onClick={() => descargar(a.ruta)} className="shrink-0 text-[rgb(53,92,143)] hover:text-[#1a2f4e]" title="Descargar">
+                    <button onClick={() => setViendo(a)} className="shrink-0 text-blue-800 underline">Previsualizar</button>
+                    <button onClick={() => descargar(a.ruta)} className="shrink-0 text-[rgb(53,92,143)] hover:text-[#1a2f4e]" title="Descargar" aria-label={`Descargar ${a.nombre} v${a.version}`}>
                       <ArrowDownTrayIcon className="h-4 w-4" />
                     </button>
                   </li>
@@ -231,7 +235,8 @@ const Paso = ({ config, hito, prospecto, archivos, comentarios, esActual, hitos,
 
   // La nota se corrige en el paso 5 mientras el 6 siga abierto.
   const paso6Abierto = hitos.some((h) => h.paso === 6 && !h.fecha_real) && hitos.some((h) => h.paso === 5 && h.fecha_real);
-  const puedeSubir = mio && (!hecho || (n === 5 && paso6Abierto));
+  const contextoAbierto = hitos.some((h) => h.paso === 10 && !h.fecha_real && !h.exento_revision);
+  const puedeSubir = mio && (!hecho || (n === 3 && contextoAbierto) || (n === 5 && paso6Abierto));
 
   const ultimoComentario6 = comentarios.filter((c) => c.tipo !== 'comentario').at(-1);
   const ultimaNota = [...notas].sort((a, b) => b.version - a.version)[0];
@@ -239,16 +244,17 @@ const Paso = ({ config, hito, prospecto, archivos, comentarios, esActual, hitos,
     n === 6 && !hecho && ultimoComentario6?.tipo === 'observacion' && (!ultimaNota || ultimaNota.subido_en < ultimoComentario6.creado_en);
 
   const alcanzado = hecho || esActual;
+  const anteriorPendiente = pasoActual(hitos);
 
   return (
-    <li className={`rounded-2xl border p-5 ${esActual ? 'border-[rgb(53,92,143)] bg-white shadow-md' : hecho ? 'border-gray-100 bg-white' : 'border-gray-100 bg-gray-50'}`}>
+    <li id={`radar-paso-${n}`} className={`rounded-2xl border p-5 ${esActual ? 'border-[rgb(53,92,143)] bg-white shadow-md' : hecho ? 'border-gray-100 bg-white' : 'border-gray-100 bg-gray-50'}`}>
       <div className="flex flex-wrap items-center gap-3">
         <span
           className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-black ${
             hecho ? 'bg-emerald-500 text-white' : esActual ? 'bg-[rgb(53,92,143)] text-white' : 'bg-gray-200 text-gray-500'
           }`}
         >
-          {hecho ? <CheckIcon className="h-5 w-5" /> : n}
+          {hecho ? <CheckIcon className="h-5 w-5" /> : config.etiqueta}
         </span>
         <div className="flex-1 min-w-[12rem]">
           <p className={`font-black ${alcanzado ? 'text-[#1a2f4e]' : 'text-gray-400'}`}>{config.nombre}</p>
@@ -279,8 +285,12 @@ const Paso = ({ config, hito, prospecto, archivos, comentarios, esActual, hitos,
         )}
       </div>
 
+      {hito?.exento_revision && <p className="mt-3 text-sm text-gray-500">Exento por migración: el enfoque ya estaba cerrado antes de incorporar 3B. No representa una aprobación documental.</p>}
+      {!hecho && !esActual && !hito?.exento_revision && anteriorPendiente && <p className="mt-3 text-xs text-gray-500">Bloqueado hasta completar el paso {anteriorPendiente.radar_pasos?.etiqueta || anteriorPendiente.paso}.</p>}
+
       {alcanzado && (
         <div className="mt-4 ml-0 md:ml-11">
+          {n === 10 && <RadarRevision prospecto={prospecto} onCambio={onCambio} />}
           {(n === 3 || n === 5) && (
             <Archivos prospecto={prospecto} paso={n} archivos={archivos} puedeSubir={puedeSubir} onCambio={onCambio} />
           )}
@@ -366,7 +376,7 @@ const Paso = ({ config, hito, prospecto, archivos, comentarios, esActual, hitos,
             )
           )}
 
-          {esActual && mio && n >= 3 && n !== 6 && (
+          {esActual && mio && n >= 3 && n !== 6 && n !== 10 && (
             <div className="mt-4 flex flex-wrap gap-2">
               {n === 4 && (
                 <button
@@ -396,7 +406,8 @@ const Paso = ({ config, hito, prospecto, archivos, comentarios, esActual, hitos,
 
 export default function RadarProspecto() {
   const { id } = useParams();
-  const { pasos } = useRadar();
+  const { pasos, nombreDe } = useRadar();
+  const [params, setParams] = useSearchParams();
   const [prospecto, setProspecto] = useState(null);
   const [error, setError] = useState(null);
 
@@ -409,6 +420,11 @@ export default function RadarProspecto() {
   useEffect(() => {
     cargar();
   }, [cargar]);
+  const destinoPaso = params.get('paso');
+  const cargado = Boolean(prospecto);
+  useEffect(() => {
+    if (cargado && destinoPaso) document.getElementById(`radar-paso-${destinoPaso}`)?.scrollIntoView({ block: 'start' });
+  }, [cargado, destinoPaso]);
 
   if (error) return <Tarjeta><Vacio>{error}</Vacio></Tarjeta>;
   if (!prospecto) return <p className="text-gray-400">Cargando prospecto…</p>;
@@ -416,9 +432,11 @@ export default function RadarProspecto() {
   const hitos = prospecto.radar_hitos || [];
   const actual = pasoActual(hitos);
   const comentarios = [...(prospecto.radar_comentarios || [])].sort((a, b) => a.creado_en.localeCompare(b.creado_en));
+  const desdeAviso = prospecto.radar_archivos?.find((a) => String(a.id) === params.get('archivo'));
 
   return (
     <div className="space-y-6">
+      {desdeAviso && <PrevisualizarDocumento archivo={desdeAviso} prospecto={prospecto} onCambio={cargar} cerrar={() => { const siguiente = new URLSearchParams(params); siguiente.delete('archivo'); setParams(siguiente, { replace: true }); }} />}
       <Link to={RADAR} className="inline-flex items-center gap-1 text-sm font-semibold text-gray-500 hover:text-[#1a2f4e]">
         <ChevronLeftIcon className="h-4 w-4" /> Prospectos
       </Link>
@@ -431,7 +449,7 @@ export default function RadarProspecto() {
             {prospecto.sitio_web && <a href={prospecto.sitio_web} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block text-sm font-semibold text-[rgb(53,92,143)] hover:underline">Abrir sitio web / LinkedIn</a>}
             <p className="text-sm text-gray-500">
               {ESTADOS[prospecto.estado]} · Lista del {formatoFecha(prospecto.fecha_lista)}
-              {actual && ` · Va en el paso ${actual.paso} de 9`}
+              {actual && ` · Paso ${pasos.find((p) => p.paso === actual.paso)?.etiqueta || actual.paso}`}
             </p>
           </div>
           <div className="flex gap-6 text-center">
@@ -460,7 +478,7 @@ export default function RadarProspecto() {
         <ol className="space-y-3">
           {pasos.map((config) => (
             <Paso
-              key={`${config.paso}-${prospecto.rondas}`}
+              key={config.paso}
               config={config}
               hito={hitos.find((h) => h.paso === config.paso)}
               hitos={hitos}
@@ -473,6 +491,10 @@ export default function RadarProspecto() {
           ))}
         </ol>
       )}
+      <Tarjeta titulo="Historial de actividad">
+        {!(prospecto.radar_actividad || []).length && <p className="text-sm text-gray-500">Los eventos se registran desde la incorporación de la revisión documental.</p>}
+        <ol className="space-y-3">{[...(prospecto.radar_actividad || [])].sort((a, b) => b.id - a.id).slice(0,100).map((evento) => <li key={evento.id} className="text-sm border-b pb-2 break-words"><p className="text-xs text-gray-500">{evento.actor ? nombreDe(evento.actor) : 'Sistema'} · {fechaHora(evento.creado_en)}</p><p className="whitespace-pre-wrap">{evento.detalle}</p></li>)}</ol>
+      </Tarjeta>
     </div>
   );
 }

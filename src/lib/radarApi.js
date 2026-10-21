@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+export { pasoActual, etiquetaPaso } from './radarModelo.mjs';
 
 // Radar comercial: prospectos, hitos, archivos y accesos.
 //
@@ -78,7 +79,7 @@ export const quitarAcceso = async (userId) => {
 };
 
 export const obtenerPasos = async () => {
-  const { data, error } = await supabase.from('radar_pasos').select('*').order('paso');
+  const { data, error } = await supabase.from('radar_pasos').select('*').order('orden');
   if (error) fallar(error, 'No se pudo cargar el flujo.');
   return data;
 };
@@ -87,7 +88,7 @@ export const obtenerPasos = async () => {
 export const obtenerProspectos = async () => {
   const { data, error } = await supabase
     .from('radar_prospectos')
-    .select('*, radar_hitos(paso, fecha_compromiso, fecha_real)')
+    .select('*, radar_hitos(paso, fecha_compromiso, fecha_real, exento_revision, radar_pasos(orden,etiqueta)), radar_archivos(id,paso,tipo,version), radar_observaciones(archivo_id,tipo,resuelta_en)')
     .order('fecha_lista', { ascending: false })
     .order('score', { ascending: false, nullsFirst: false });
   if (error) fallar(error, 'No se pudieron cargar los prospectos.');
@@ -97,7 +98,7 @@ export const obtenerProspectos = async () => {
 export const obtenerProspecto = async (id) => {
   const { data, error } = await supabase
     .from('radar_prospectos')
-    .select('*, radar_hitos(*), radar_archivos(*), radar_comentarios(*)')
+    .select('*, radar_hitos(*,radar_pasos(orden,etiqueta)), radar_archivos(*,radar_revisiones(*)), radar_comentarios(*), radar_observaciones(*), radar_actividad(*)')
     .eq('id', id)
     .single();
   if (error) fallar(error, 'No se pudo cargar el prospecto.');
@@ -155,10 +156,10 @@ export const moverFechaCompromiso = async (prospectoId, paso, fecha) => {
  * Sube un archivo como versión nueva de su tipo. Nunca reemplaza: si falla el
  * registro en la tabla, borra el archivo subido para no dejar huérfanos.
  */
-export const subirArchivo = async ({ prospectoId, paso, tipo, archivo, versionActual }) => {
+export const subirArchivo = async ({ prospectoId, paso, tipo, archivo }) => {
   const { data: { user } } = await supabase.auth.getUser();
   const limpio = archivo.name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w.-]+/g, '_');
-  const ruta = `${prospectoId}/${paso}/${Date.now()}_${limpio}`;
+  const ruta = `${prospectoId}/${paso}/${user.id}/${crypto.randomUUID()}_${limpio}`;
 
   const { error: errorSubida } = await supabase.storage.from(BUCKET).upload(ruta, archivo);
   if (errorSubida) fallar(errorSubida, 'No se pudo subir el archivo.');
@@ -169,7 +170,8 @@ export const subirArchivo = async ({ prospectoId, paso, tipo, archivo, versionAc
     tipo,
     nombre: archivo.name,
     ruta,
-    version: versionActual + 1,
+    // The server serializes uploads and assigns the version; never trust this client.
+    version: 1,
     subido_por: user.id,
   });
   if (error) {
@@ -192,9 +194,10 @@ const hoyISO = () => {
   return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 };
 
-/** Primer hito sin cerrar (el paso en el que va el prospecto). */
-export const pasoActual = (hitos = []) =>
-  [...hitos].sort((a, b) => a.paso - b.paso).find((h) => !h.fecha_real) || null;
+export async function revisarArchivo(archivo, accion, texto = '', observaciones = []) {
+  const { error } = await supabase.rpc('radar_revisar_archivo', { p_archivo: archivo, p_accion: accion, p_texto: texto, p_observaciones: observaciones });
+  if (error) fallar(error, 'No se pudo guardar la revisión.');
+}
 
 /** 'atrasado' | 'por_vencer' | 'a_tiempo' | 'hecho' */
 export const semaforo = (hito) => {

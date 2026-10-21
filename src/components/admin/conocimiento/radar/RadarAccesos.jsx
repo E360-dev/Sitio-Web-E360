@@ -4,11 +4,11 @@ import { obtenerAccesos, obtenerUsuariosInternos, guardarAcceso, quitarAcceso } 
 import { useRadar } from './RadarComercial.jsx';
 import { Tarjeta, Vacio, claseBoton, claseBotonSecundario, claseCampo } from './RadarUi.jsx';
 
-const PASOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-const SelectorPasos = ({ pasos, onChange }) => (
+const SelectorPasos = ({ pasos, onChange }) => {
+ const { pasos: catalogo } = useRadar();
+ return (
   <div className="flex flex-wrap gap-1.5">
-    {PASOS.map((n) => {
+    {catalogo.map(({ paso: n, etiqueta, nombre }) => {
       const activo = pasos.includes(n);
       return (
         <button
@@ -19,14 +19,14 @@ const SelectorPasos = ({ pasos, onChange }) => (
             activo ? 'bg-[rgb(53,92,143)] text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
           }`}
           aria-pressed={activo}
-          title={`Paso ${n}`}
+          title={`Paso ${etiqueta}: ${nombre}`}
         >
-          {n}
+          {etiqueta}
         </button>
       );
     })}
   </div>
-);
+); };
 
 const Fila = ({ acceso, email, onCambio }) => {
   const [nombre, setNombre] = useState(acceso.nombre);

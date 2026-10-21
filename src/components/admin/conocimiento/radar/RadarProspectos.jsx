@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { obtenerProspectos, pasoActual, formatoFecha, hoyISO, ESTADOS } from '../../../../lib/radarApi';
+import { obtenerProspectos, pasoActual, etiquetaPaso, formatoFecha, hoyISO, ESTADOS } from '../../../../lib/radarApi';
 import { useRadar, RADAR } from './RadarComercial.jsx';
+import { requiereCorreccion } from '../../../../lib/radarModelo.mjs';
 import { Semaforo, Tarjeta, Vacio } from './RadarUi.jsx';
 
 const ACTIVOS = ['en_curso', 'enviado', 'en_seguimiento'];
@@ -42,13 +43,13 @@ export default function RadarProspectos() {
 
     return {
       pendientes: conActual
-        .filter((p) => p.actual && puedePaso(p.actual.paso))
+        .filter((p) => p.actual && (puedePaso(p.actual.paso) || (p.actual.paso === 10 && puedePaso(3) && requiereCorreccion(p))))
         .sort((a, b) => a.actual.fecha_compromiso.localeCompare(b.actual.fecha_compromiso)),
       // Lo que vence esta semana o ya venció, en todos los prospectos.
       semana: conActual
         .flatMap((p) =>
           p.radar_hitos
-            .filter((h) => !h.fecha_real && h.fecha_compromiso <= viernes)
+            .filter((h) => !h.fecha_real && !h.exento_revision && h.fecha_compromiso <= viernes)
             .map((h) => ({ prospecto: p, hito: h, vencido: h.fecha_compromiso < lunes })),
         )
         .sort((a, b) => a.hito.fecha_compromiso.localeCompare(b.hito.fecha_compromiso)),
@@ -84,7 +85,8 @@ export default function RadarProspectos() {
                   <div>
                     <p className="font-bold text-[#1a2f4e]">{p.empresa}</p>
                     <p className="text-sm text-gray-500">
-                      Paso {p.actual.paso}: {nombrePaso(p.actual.paso)}
+                      Paso {etiquetaPaso(p.actual.paso, pasos)}: {nombrePaso(p.actual.paso)}
+                      {p.actual.paso === 10 && puedePaso(3) && requiereCorreccion(p) && ' · Tienes correcciones por entregar'}
                     </p>
                   </div>
                   <div className="flex items-center gap-3 text-sm text-gray-500">
@@ -122,9 +124,9 @@ export default function RadarProspectos() {
                         {prospecto.empresa}
                       </Link>
                     </td>
-                    <td className="py-2 pr-4">{hito.paso}. {nombrePaso(hito.paso)}</td>
+                    <td className="py-2 pr-4">{etiquetaPaso(hito.paso, pasos)}. {nombrePaso(hito.paso)}</td>
                     <td className="py-2 pr-4">{responsablesDe(hito.paso)}</td>
-                    <td className="py-2"><Semaforo hito={hito} /></td>
+                    <td className="py-2">{prospecto.actual?.paso === hito.paso ? <Semaforo hito={hito} /> : <span className="text-xs text-gray-500">Bloqueado por {etiquetaPaso(prospecto.actual?.paso, pasos)}</span>}</td>
                   </tr>
                 ))}
               </tbody>
@@ -172,7 +174,7 @@ export default function RadarProspectos() {
                       <p className="text-xs text-gray-400">{ESTADOS[p.estado]}</p>
                     </td>
                     <td className="py-3 pr-4">
-                      {p.actual ? `${p.actual.paso}/9 · ${nombrePaso(p.actual.paso)}` : 'Flujo completo'}
+                      {p.actual ? `${etiquetaPaso(p.actual.paso, pasos)} · ${nombrePaso(p.actual.paso)}` : 'Flujo completo'}
                     </td>
                     <td className="py-3 pr-4">{p.actual ? responsablesDe(p.actual.paso) : '—'}</td>
                     <td className="py-3 pr-4 whitespace-nowrap">{p.actual ? formatoFecha(p.actual.fecha_compromiso) : '—'}</td>

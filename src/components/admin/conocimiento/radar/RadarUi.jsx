@@ -10,6 +10,7 @@ const ESTILOS = {
 
 /** Etiqueta de color según la fecha compromiso de un hito. */
 export const Semaforo = ({ hito }) => {
+  if (hito?.exento_revision) return <span className="text-xs text-gray-500">Exento por migración</span>;
   const estado = semaforo(hito);
   const retraso = hito ? diasRetraso(hito) : 0;
   const texto = {

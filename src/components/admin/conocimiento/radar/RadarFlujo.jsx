@@ -22,7 +22,7 @@ export default function RadarFlujo() {
         {pasos.map((p) => (
           <li key={p.paso} className="ml-8">
             <span className="absolute -left-[17px] flex h-8 w-8 items-center justify-center rounded-full bg-[rgb(53,92,143)] text-sm font-black text-white">
-              {p.paso}
+              {p.etiqueta}
             </span>
             <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
               <div className="flex flex-wrap items-baseline justify-between gap-2">

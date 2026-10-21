@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
+import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
 const PdfViewer = ({ url, title }) => {
   const [numPages, setNumPages] = useState(null);

@@ -1,0 +1,33 @@
+// Authorized one-time import. Contents stay in memory/Storage, never in Git/logs.
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import { basename } from 'node:path';
+import mammoth from 'mammoth';
+import { createClient } from '@supabase/supabase-js';
+const path = process.argv[2]; const prospecto = Number(process.argv[3]);
+if (!path || !Number.isSafeInteger(prospecto) || prospecto < 1) throw new Error('Uso: node scripts/importar-comentarios-radar.mjs archivo.docx prospecto_id');
+const ref = 'crxtzmykprgbgkdbqccd';
+const keys = JSON.parse(execFileSync(process.platform === 'win32' ? 'supabase.exe' : 'supabase', ['projects','api-keys','--project-ref',ref,'--output','json'], { encoding:'utf8',stdio:['ignore','pipe','pipe'] }));
+const service = createClient(`https://${ref}.supabase.co`, keys.find((k) => k.name === 'service_role').api_key, { auth: { persistSession:false,autoRefreshToken:false } });
+const bytes = readFileSync(path); const sha256 = createHash('sha256').update(bytes).digest('hex');
+const existing = await service.from('radar_observaciones').select('id').like('clave_importacion',`${sha256}:%`);
+if (existing.error) throw new Error('No se pudo comprobar la importación anterior.');
+if (existing.data.length === 4) { console.log('El original ya estaba importado: no se duplicaron comentarios ni archivos.'); process.exit(0); }
+if (existing.data.length) throw new Error('Importación parcial encontrada; requiere revisión antes de continuar.');
+const { value } = await mammoth.extractRawText({ buffer:bytes });
+const texto = value.replaceAll('\r','');
+const patrones = [/^1\s+Guía de entendimiento[^\n]*/m,/^2\s+Matriz de riesgos[^\n]*/m,/^3\s+Ficha ejecutiva[^\n]*/m,/^4\s+Paquete de decisión[^\n]*/m,/^Qué ha pasado en 2026[^\n]*/m];
+const limites = patrones.map((p) => { const found = p.exec(texto); if (!found) throw new Error('No se reconoce la estructura de cuatro documentos y contexto general.'); return { inicio:found.index,fin:found.index+found[0].length }; });
+const tipos = ['guia_entendimiento','matriz_riesgos','ficha_directivos','decision_pack'];
+const bloques = tipos.map((tipo,i) => ({ tipo,texto:texto.slice(limites[i].fin,limites[i+1].inicio).trim() }));
+if (bloques.some((b) => !b.texto || b.texto.length>12000)) throw new Error('Bloque de comentarios inválido.');
+const general = texto.slice(limites[4].inicio).trim();
+const actor = await service.from('radar_accesos').select('user_id,pasos').eq('nombre','JD').single();
+if (actor.error || !actor.data.pasos.includes(3)) throw new Error('No se encontró el importador JD autorizado.');
+const ruta = `${prospecto}/10/importados/${sha256}.docx`;
+const subida = await service.storage.from('radar').upload(ruta,bytes,{contentType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',upsert:false});
+if (subida.error && subida.error.statusCode!=='409' && subida.error.statusCode!==409) throw new Error('No se pudo adjuntar el original.');
+const result = await service.rpc('radar_importar_revision', { p_prospecto:prospecto,p_autor:actor.data.user_id,p_fuente:{ruta,nombre:basename(path),sha256},p_bloques:bloques,p_general:general });
+if (result.error) throw new Error(`No se pudo completar la importación: ${result.error.message}`);
+console.log('Original adjuntado y cuatro bloques de corrección importados, con procedencia JD. Sin aprobaciones inventadas.');
