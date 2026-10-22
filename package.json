@@ -2,6 +2,7 @@
   "name": "tailwind-vite-e360",
   "version": "1.0.0",
   "scripts": {
+    "test:bps": "node --test tests/bps-modelo.test.mjs",
     "test:radar": "node --test tests/radar-modelo.test.mjs",
     "test:cuentas": "node --test tests/cuentas-tecnologia.test.mjs",
     "dev": "vite",

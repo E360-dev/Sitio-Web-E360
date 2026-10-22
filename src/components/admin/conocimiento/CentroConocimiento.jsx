@@ -5,14 +5,24 @@ import { obtenerMiAcceso } from '../../../lib/radarApi';
 import { useRol } from '../../../hooks/useRol';
 import RadarComercial from './radar/RadarComercial.jsx';
 import CuentasTecnologia from './CuentasTecnologia.jsx';
+import RadarBps from './bps/RadarBps.jsx';
+import { miAccesoBps } from '../../../lib/bpsApi';
 
 const Portada = () => {
-  const { rol, loading: rolCargando } = useRol();
+  const { rol, user, loading: rolCargando } = useRol();
   const [acceso, setAcceso] = useState(undefined);
+  const [accesoBps, setAccesoBps] = useState(null);
 
   useEffect(() => {
     obtenerMiAcceso().then(setAcceso).catch(() => setAcceso(null));
   }, []);
+
+  useEffect(() => {
+    let vigente = true;
+    setAccesoBps(null);
+    if (user) miAccesoBps(user.id).then(a => { if (vigente) setAccesoBps(a); }).catch(() => {});
+    return () => { vigente = false; };
+  }, [user?.id]);
 
   const verRadar = acceso || rol === 'admin';
 
@@ -42,6 +52,14 @@ const Portada = () => {
             </p>
           </Link>
         ) : null}
+
+        {(accesoBps || rol === 'admin') && (
+          <Link to="/admin/conocimiento/radar-bps" className="group bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:scale-[1.02] transition-all">
+            <ChartBarSquareIcon className="h-9 w-9 text-[#25c6e3] mb-4" />
+            <h2 className="font-black text-[#1a2f4e] text-lg tracking-wider">RADAR BPS CONTABLE</h2>
+            <p className="text-gray-500 text-sm mt-2">Cuentas directas, canales y seguimiento de oportunidades de tercerización contable.</p>
+          </Link>
+        )}
 
         {rolCargando ? (
           <div className="bg-white rounded-2xl p-8 shadow-sm text-gray-400">Cargando…</div>
@@ -82,6 +100,7 @@ export default function CentroConocimiento() {
     <Routes>
       <Route index element={<Portada />} />
       <Route path="radar/*" element={<RadarComercial />} />
+      <Route path="radar-bps/*" element={<RadarBps />} />
       <Route path="cuentas-tecnologia/*" element={cuentasTecnologia} />
     </Routes>
   );
