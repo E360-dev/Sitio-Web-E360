@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?worker&url';
 import DOMPurify from 'dompurify';
 import 'react-pdf/dist/Page/TextLayer.css';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import { supabase } from '../../../../lib/supabaseClient';
 
-// Bundled worker: no third-party viewer receives documents or signed URLs.
+// Compile as an ESM .js worker: some Apache hosts omit the MIME type for .mjs.
+// Kept local: no third-party viewer receives documents or signed URLs.
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
 export function sanearDocx(html) {
@@ -22,12 +23,14 @@ function Contenido({ archivo }) {
   const [paginas, setPaginas] = useState(0);
   const [zoom, setZoom] = useState(1);
   const [ancho, setAncho] = useState(600);
+  const [intento, setIntento] = useState(0);
+  const [errorPdf, setErrorPdf] = useState('');
   const marco = useRef(null);
   const extension = archivo.nombre.split('.').pop().toLowerCase();
   const soportado = ['pdf','docx','png','jpg','jpeg'].includes(extension);
   useEffect(() => {
     let vivo = true, objeto;
-    setEstado({ cargando: true }); setPagina(1); setPaginas(0);
+    setEstado({ cargando: true }); setPagina(1); setPaginas(0); setErrorPdf('');
     if (!soportado) { setEstado({ noSoportado: true }); return; }
     (async () => {
       const { data, error } = await supabase.storage.from('radar').download(archivo.ruta);
@@ -44,7 +47,7 @@ function Contenido({ archivo }) {
       }
     })().catch((e) => { if (vivo) setEstado({ error: e.message }); });
     return () => { vivo = false; if (objeto) URL.revokeObjectURL(objeto); };
-  }, [archivo.id, archivo.ruta, extension, soportado]);
+  }, [archivo.id, archivo.ruta, extension, soportado, intento]);
   useEffect(() => {
     if (!marco.current) return;
     const observer = new ResizeObserver(([e]) => setAncho(Math.max(180, e.contentRect.width - 24)));
@@ -62,7 +65,11 @@ function Contenido({ archivo }) {
         <button aria-label="Página siguiente" disabled={pagina >= paginas} onClick={() => setPagina(pagina + 1)}>→</button>
         <label>Zoom <select aria-label="Zoom del documento" value={zoom} onChange={(e) => setZoom(Number(e.target.value))}>{[0.75,1,1.25,1.5,2].map((v) => <option key={v} value={v}>{v * 100}%</option>)}</select></label>
       </div>
-      <Document file={estado.url} onLoadSuccess={({ numPages }) => setPaginas(numPages)} loading="Cargando PDF…" error="No se pudo leer este PDF. Puedes descargarlo.">
+      <Document file={estado.url} onLoadSuccess={({ numPages }) => { setPaginas(numPages); setErrorPdf(''); }}
+        onLoadError={(e) => setErrorPdf(/worker|dynamically imported module|module script/i.test(e?.message || '')
+          ? 'No se pudo iniciar el lector PDF. Reintenta o recarga el portal para actualizarlo.'
+          : 'No se pudo mostrar este PDF. Reintenta o descarga el archivo para abrirlo con su aplicación.')}
+        loading="Cargando PDF…" error={<div role="alert" className="space-y-3 p-4 text-red-700"><p>{errorPdf || 'No se pudo mostrar este PDF.'}</p><button className="rounded border px-3 py-2 text-sm font-semibold" onClick={() => setIntento(v => v + 1)}>Reintentar previsualización</button></div>}>
         <Page pageNumber={pagina} width={ancho * zoom} renderTextLayer renderAnnotationLayer={false} />
       </Document>
     </>}

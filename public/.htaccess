@@ -3,6 +3,12 @@
 # Este archivo se despliega con el sitio (Vite copia public/ a dist/).
 # Antes vivía únicamente en el servidor, sin copia ni historial.
 
+# Module workers require a JavaScript MIME type. Keep .mjs support for older
+# cached frontend bundles as well as the new compiled .js PDF worker.
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+</IfModule>
+
 # ---------------------------------------------------------------------------
 # Redirección de www al dominio principal
 #
@@ -63,7 +69,7 @@
 
   # Los assets llevan hash en el nombre: si cambia el contenido, cambia la URL.
   # Pueden cachearse indefinidamente sin riesgo de servir algo viejo.
-  <FilesMatch "\.(js|css|woff2?)$">
+  <FilesMatch "\.(m?js|css|woff2?)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
 

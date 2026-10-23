@@ -61,6 +61,39 @@ incluida en el paquete. La aplicación carga `mammoth.browser`, que no incluye
 No se aplican overrides mayores sin soporte ni actualizaciones masivas de
 dependencias ajenas. Los avisos anteriores del proyecto se revisan por separado.
 
+## Corrección del visor PDF · 23-10-2026
+
+Se reprodujo en el sitio publicado que `pdf.worker.min-*.mjs` se entregaba sin
+un Content-Type JavaScript válido. El navegador rechazaba iniciar el worker,
+provocando el mismo error en todos los PDF, aunque la descarga privada funcionara.
+No se modifican archivos, revisiones, etapas ni permisos para corregirlo.
+
+Ambos visores usan ahora `?worker&url` y `worker.format: 'es'`: Vite compila un
+worker ESM con extensión `.js` y hash, servido desde el propio sitio. Apache
+declara además `application/javascript` para `.js` y `.mjs`; los `.mjs` también
+entran en la política de caché de assets. No se usa un CDN ni un visor externo.
+El Radar distingue un fallo del lector de un fallo de lectura y ofrece reintento.
+
+Pruebas adicionales:
+
+```powershell
+node scripts/probar-pdf-visor.mjs --legacy-worker
+npm run test:pdf
+node scripts/probar-pdf-visor.mjs --real
+```
+
+El primer comando reproduce el fallo anterior con un PDF válido; el segundo
+verifica el build de producción bajo un servidor que deliberadamente no reconoce
+el MIME `.mjs`, ambos visores, páginas, texto, zoom, móvil, reintento tras un PDF
+ilegible y acceso denegado. El modo `--real` lee los cuatro PDF actuales de SONDA
+solo en memoria, sin escrituras ni capturas de documentos privados. Las claves
+permanecen en el proceso Node y nunca se entregan al navegador. El HTML de pruebas
+no se incluye en la compilación normal del sitio.
+
+Para publicar este arreglo hay que desplegar juntos los nuevos assets del frontend
+y `dist/.htaccess`. Después se recarga el portal. No requiere migración ni volver
+a subir documentos; no queda arreglado en producción solo por hacer el commit local.
+
 ## Avisos e historial
 
 Los eventos se escriben en la misma transacción que la acción. Cada aviso tiene

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body style="margin:0"><div id="root" style="height:100dvh"></div>
+<script type="module">
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import VisorRadar from '../src/components/admin/conocimiento/radar/VisorRadar.jsx';
+import PdfViewer from '../src/components/PdfViewer.jsx';
+import { supabase } from '../src/lib/supabaseClient.js';
+import '../src/style.css';
+
+// Harness only: no Auth credentials, real Storage calls, or public third-party viewer.
+Object.defineProperty(supabase,'storage',{value:{from: () => ({ download: async () => window.__pdfDenied
+  ? { data:null,error:{message:'Acceso de prueba denegado'} }
+  : { data:new Blob([Uint8Array.from(window.__pdfBytes)],{type:'application/pdf'}),error:null } })}});
+const general=new URLSearchParams(location.search).get('visor')==='general';
+const url=URL.createObjectURL(new Blob([Uint8Array.from(window.__pdfBytes)],{type:'application/pdf'}));
+createRoot(document.getElementById('root')).render(general
+  ? React.createElement(PdfViewer,{url,title:'Documento de prueba'})
+  : React.createElement(VisorRadar,{archivo:{id:1,nombre:'documento-qa.pdf',ruta:'qa/solo-en-memoria.pdf',version:1},cerrar:()=>{}}));
+</script></body></html>
