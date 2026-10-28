@@ -3,7 +3,7 @@ import { supabase } from './supabaseClient';
 export const obtenerCuentasTecnologia = async () => {
   const { data, error } = await supabase
     .from('cuentas_tecnologia')
-    .select('id, herramienta, plan, dia_renovacion, fecha_renovacion, correo, uso, costo, moneda, tiene_contrasena')
+    .select('id, herramienta, plan, dia_renovacion, fecha_renovacion, correo, uso, costo, moneda, tiene_contrasena, periodicidad, pago_version, pago_deshacer_hasta, ultimo_pago_id, ultimo_pago_en, ultimo_pago_por')
     .order('fecha_renovacion', { nullsFirst: true })
     .order('herramienta');
   if (error) throw new Error(error.message || 'No se pudieron cargar las cuentas.');

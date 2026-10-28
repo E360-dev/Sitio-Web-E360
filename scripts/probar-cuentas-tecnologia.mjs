@@ -49,13 +49,62 @@ async function post(person, body, expected = 200) {
     method:'POST', headers:{ apikey:anon,Authorization:`Bearer ${person?.session?.access_token || anon}`,'Content-Type':'application/json' },body:JSON.stringify(body),
   });
   const data = await response.json();
-  assert.equal(response.status,expected,`${body.accion}: HTTP esperado (${data.codigo || 'sin código'})`);
+  assert.ok((Array.isArray(expected) ? expected : [expected]).includes(response.status), `${body.accion}: HTTP ${response.status}, esperado ${expected} (${data.codigo || 'sin código'})`);
   if (expected === 200) assert.match(response.headers.get('cache-control') || '',/no-store/);
   return data;
 }
 async function row(id, client=service) {
   const result = await client.from('cuentas_tecnologia').select('*').eq('id',id).maybeSingle();
   assert.ok(!result.error,'Consultar inventario'); return result.data;
+}
+
+async function paymentChecks(admin, other, auditor, id) {
+  const save = async (values) => post(admin, { accion:'guardar', cuenta:{...account,id,...values} });
+  const command = (c, extra={}) => ({ accion:'registrar_pago',id,version:c.pago_version,operacion_id:crypto.randomUUID(),...extra });
+  const undo = (c) => ({ accion:'deshacer_pago',id,version:c.pago_version,pago_id:c.ultimo_pago_id,operacion_id:crypto.randomUUID() });
+  await save({fecha_renovacion:'2028-01-31',periodicidad:'mensual'});
+  let c=await row(id);
+  const first=command(c);
+  await post(null,first,401); await post(auditor,first,403);
+  await post(admin,{...first,version:-1},400);
+  await post(admin,first);await post(admin,first);
+  c=await row(id);
+  assert.equal(c.fecha_renovacion,'2028-02-29');assert.equal(c.dia_renovacion,31);
+  assert.equal(c.ultimo_pago_por,admin.id);assert.ok(c.pago_deshacer_hasta);
+  const history=await admin.client.from('pagos_tecnologia').select('*').eq('cuenta_id',id);
+  assert.equal(history.data.length,1,'Retry creates exactly one event');
+  const hidden=await auditor.client.from('pagos_tecnologia').select('*').eq('cuenta_id',id);
+  assert.ok(!hidden.error && hidden.data.length===0,'History only readable by admins');
+  assert.ok((await admin.client.from('cuentas_tecnologia').update({ultimo_pago_id:crypto.randomUUID()}).eq('id',id)).error,'Cannot forge payment summary');
+  assert.ok((await admin.client.from('pagos_tecnologia').insert({})).error,'Cannot insert payment events directly');
+  await post(admin,{accion:'guardar',cuenta:{...account,id,fecha_renovacion:c.fecha_renovacion,uso:'Solo cambia el uso'}});
+  c=await row(id);assert.equal(c.dia_renovacion,31);assert.equal(c.ultimo_pago_id,first.operacion_id,'Unrelated edit preserves payment');
+  await post(admin,command(c));c=await row(id);assert.equal(c.fecha_renovacion,'2028-03-31');
+  const revert=undo(c);await post(other,revert);await post(other,revert);
+  c=await row(id);assert.equal(c.fecha_renovacion,'2028-02-29');assert.equal(c.ultimo_pago_id,first.operacion_id);assert.equal(c.pago_deshacer_hasta,null);
+  await post(admin,undo(c),409);
+  const requests=[command(c),command(c)];
+  const results=await Promise.all([post(admin,requests[0],[200,409]),post(other,requests[1],[200,409])]);
+  assert.equal(results.filter((r)=>r.ok).length,1,'Two admins advance one period only');
+  c=await row(id);assert.equal(c.fecha_renovacion,'2028-03-31');
+  const oldUndo=undo(c);
+  await admin.client.from('cuentas_tecnologia').update({fecha_renovacion:'2028-04-30'}).eq('id',id);
+  c=await row(id);assert.equal(c.ultimo_pago_id,null);await post(admin,oldUndo,409);
+  await save({fecha_renovacion:'2028-02-29',periodicidad:'anual'});
+  c=await row(id);await post(admin,command(c));c=await row(id);assert.equal(c.fecha_renovacion,'2029-02-28');
+  await post(admin,command(c));c=await row(id);assert.equal(c.fecha_renovacion,'2030-02-28');
+  await save({fecha_renovacion:'2026-01-15',periodicidad:'mensual'});
+  c=await row(id);await post(admin,command(c),422);
+  assert.equal((await row(id)).fecha_renovacion,'2026-01-15','Overdue payment requires explicit date');
+  await post(admin,command(c,{fecha_renovacion:'2028-01-15'}));
+  await save({fecha_renovacion:null});c=await row(id);await post(admin,command(c),422);
+  await post(admin,command(c,{fecha_renovacion:'2028-01-15'}));c=await row(id);
+  assert.equal((await service.from('pagos_tecnologia').update({creado_en:'2020-01-01T00:00:00Z'}).eq('operacion_id',c.ultimo_pago_id)).error,null);
+  await post(admin,undo(c),409);
+  const revoked=await makeUser('admin');await revoked.client.auth.signOut({scope:'local'});
+  await post(revoked,command(c),401);
+  await save({fecha_renovacion:account.fecha_renovacion,periodicidad:'mensual'});
+  console.log('OK pagos: fechas, anclaje, periodicidad, registro, reintentos, concurrencia, reversión, permisos y sesiones revocadas.');
 }
 
 async function browserChecks(admin) {
@@ -126,7 +175,7 @@ async function browserChecks(admin) {
     console.log('OK interfaz: desbloqueo con contraseña del portal.');
     phase='alta de cuenta';
     await click('Agregar cuenta');
-    assert.equal(await page.$eval('dialog[open] select', (select) => select.value), 'MXN', 'Moneda inicial: peso mexicano');
+    assert.equal(await page.$$eval('dialog[open] select', (selects) => selects.at(-1).value), 'MXN', 'Moneda inicial: peso mexicano');
     const browserTool=`QA interfaz ${stamp}`;
     await fill('Herramienta',browserTool);await fill('Plan','Pro');await fill('Correo de la cuenta','qa@example.test');await fill('¿Para qué se usa?','Uso de prueba editable');
     await page.$eval('input[type="date"]',(input)=>{Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(input,'2027-06-15');input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));});
@@ -138,6 +187,48 @@ async function browserChecks(admin) {
     const added=await service.from('cuentas_tecnologia').select('id,moneda').eq('herramienta',browserTool).single();assert.ok(added.data,'Cuenta creada en interfaz');accountIds.push(added.data.id);
     assert.equal(added.data.moneda, 'MXN', 'El formulario guarda pesos mexicanos');
     await page.type('input[aria-label="Buscar cuentas"]',browserTool);
+    phase='pagos';
+    await click('Marcar pago realizado');
+    await page.waitForFunction(()=>document.querySelector('li')?.textContent.includes('Al día'));
+    await page.reload({waitUntil:'networkidle2'});await page.waitForSelector('input[aria-label="Buscar cuentas"]');
+    await page.type('input[aria-label="Buscar cuentas"]',browserTool);
+    await page.waitForFunction(()=>document.querySelector('li')?.textContent.includes('Al día'));
+    await click('Deshacer');
+    await page.waitForFunction(()=>document.querySelector('li')?.textContent.includes('Sin confirmar'));
+    // Commit the real request, then drop its response. Retry must reuse its UUID.
+    let dropped=false;
+    await page.setRequestInterception(true);
+    const intercept=async(request)=>{
+      if(!dropped && request.url().includes('/functions/v1/cuentas-tecnologia') && request.method()==='POST' && JSON.parse(request.postData()||'{}').accion==='registrar_pago') {
+        dropped=true;
+        await fetch(request.url(),{method:'POST',headers:request.headers(),body:request.postData()});
+        await request.abort('failed');
+      } else await request.continue();
+    };
+    page.on('request',intercept);
+    await click('Marcar pago realizado');await page.waitForSelector('li [role="alert"]');
+    await click('Marcar pago realizado');
+    await page.waitForFunction(()=>document.querySelector('li')?.textContent.includes('Al día'));
+    assert.equal((await row(added.data.id)).fecha_renovacion,'2027-07-15','Lost response retry advances exactly once');
+    await page.setRequestInterception(false);page.off('request',intercept);
+    mkdirSync('supabase/.temp',{recursive:true});
+    await page.screenshot({path:'supabase/.temp/qa-pagos-desktop.png'});
+    await page.setViewport({width:390,height:844});
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Payment row fits mobile');
+    await page.screenshot({path:'supabase/.temp/qa-pagos-mobile.png',fullPage:true});
+    await page.setViewport({width:1440,height:1050});
+    await page.evaluate((name)=>[...document.querySelectorAll('li button')].find((b)=>b.textContent.includes(name)).click(),browserTool);
+    await page.waitForSelector('dialog[open]');
+    await click('Registrar pago anticipado');
+    await page.waitForSelector('dialog[open] dialog[open]');
+    await click('Cancelar');await click('Deshacer');
+    await page.waitForFunction(()=>document.querySelector('dialog[open]')?.textContent.includes('Sin confirmar'));
+    await click('Cerrar');
+    // Reload deliberately locked the vault. Restore it for the credential checks.
+    await click('Desbloquear credenciales');await fill('Contraseña del portal',admin.password);await click('Desbloquear');
+    await page.waitForFunction(()=>document.body.textContent.includes('Credenciales desbloqueadas en esta pestaña'));
+    console.log('OK interfaz pagos: registro, persistencia, deshacer, respuesta perdida, reintento, pago anticipado y móvil.');
+    phase='detalle y revelación';
     await page.evaluate((name)=>[...document.querySelectorAll('li button')].find((b)=>b.textContent.includes(name)).click(),browserTool);
     await page.waitForSelector('dialog[open]');
     mkdirSync('supabase/.temp',{recursive:true});
@@ -204,6 +295,7 @@ try {
   assert.ok(!legacy.error && legacy.data.fecha_renovacion===null,'Compatibilidad con cuentas antiguas sin fecha completa');
   accountIds.push(legacy.data.id);
   const created=await post(admin,{accion:'guardar',cuenta:account});const id=created.id;accountIds.push(id);
+  await paymentChecks(admin,other,auditor,id);
   await post(admin,{accion:'guardar',cuenta:{...account,id,herramienta:'No debe persistir'},contrasena:toolPassword},423);
   assert.ok((await row(id)).herramienta===account.herramienta,'Guardar sin desbloqueo no cambia metadata');
   await post(admin,{accion:'desbloquear',contrasena:'incorrecta-de-prueba'},401);

@@ -3,7 +3,44 @@ import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
 import { crearEstadoAuth, idSesion } from '../src/lib/authStore.mjs';
 import { cifrar, descifrar, hashToken, nuevoToken } from '../supabase/functions/cuentas-tecnologia/crypto.mjs';
-import { validarCuenta } from '../supabase/functions/cuentas-tecnologia/validacion.mjs';
+import { validarCuenta, validarPago } from '../supabase/functions/cuentas-tecnologia/validacion.mjs';
+import { estadoPago, hoyBogota, puedeDeshacer, siguienteRenovacion } from '../src/lib/pagosTecnologia.mjs';
+
+test('renewals retain the billing anchor through short months and leap years', () => {
+  const monthly = { periodicidad: 'mensual', dia_renovacion: 31, fecha_renovacion: '2027-01-31' };
+  assert.equal(siguienteRenovacion(monthly), '2027-02-28');
+  assert.equal(siguienteRenovacion({ ...monthly, fecha_renovacion: '2027-02-28' }), '2027-03-31');
+  assert.equal(siguienteRenovacion({ ...monthly, fecha_renovacion: '2027-12-31' }), '2028-01-31');
+  assert.equal(siguienteRenovacion({ ...monthly, fecha_renovacion: '2028-01-31' }), '2028-02-29');
+  assert.equal(siguienteRenovacion({ periodicidad: 'anual', dia_renovacion: 29, fecha_renovacion: '2028-02-29' }), '2029-02-28');
+  assert.equal(siguienteRenovacion({ periodicidad: 'anual', dia_renovacion: 29, fecha_renovacion: '2031-02-28' }), '2032-02-29');
+  assert.equal(siguienteRenovacion({}), null);
+});
+
+test('payment status distinguishes confirmed coverage and uses Bogota day boundaries', () => {
+  const hoy = '2026-10-27';
+  const cuenta = { fecha_renovacion: '2026-11-02', ultimo_pago_id: 'payment' };
+  assert.equal(hoyBogota(new Date('2026-10-28T04:59:59Z')), hoy);
+  assert.equal(hoyBogota(new Date('2026-10-28T05:00:00Z')), '2026-10-28');
+  assert.equal(estadoPago(cuenta, hoy).texto, 'Al día');
+  assert.equal(estadoPago({ ...cuenta, fecha_renovacion: '2026-11-01' }, hoy).texto, 'Por renovar');
+  assert.equal(estadoPago({ ...cuenta, fecha_renovacion: '2026-10-28' }, hoy).texto, 'Por renovar');
+  for (const fecha of ['2026-10-27', '2026-10-26']) assert.equal(estadoPago({ ...cuenta, fecha_renovacion: fecha }, hoy).texto, 'Pago por confirmar');
+  assert.equal(estadoPago({ ...cuenta, ultimo_pago_id: null }, hoy).texto, 'Sin confirmar');
+  assert.equal(estadoPago({ ...cuenta, fecha_renovacion: null }, hoy).texto, 'Sin confirmar');
+});
+
+test('undo expires at ten minutes and payment inputs reject forged or invalid fields', () => {
+  const until = Date.parse('2026-10-27T20:10:00Z');
+  const cuenta = { ultimo_pago_id: 'p', pago_deshacer_hasta: new Date(until).toISOString() };
+  assert.equal(puedeDeshacer(cuenta, until - 1), true);
+  assert.equal(puedeDeshacer(cuenta, until), false);
+  assert.equal(puedeDeshacer({ ...cuenta, pago_deshacer_hasta: null }, until - 1), false);
+  const input = { accion: 'registrar_pago', id: 1, version: 0, operacion_id: crypto.randomUUID(), fecha_renovacion: '2028-02-29', usuario_id: 'forged' };
+  assert.equal(validarPago(input).usuario_id, undefined);
+  for (const patch of [{ version: -1 }, { version: '0' }, { operacion_id: 'invalid' }, { fecha_renovacion: '2027-02-29' }, { accion: 'deshacer_pago', pago_id: 'invalid' }]) assert.throws(() => validarPago({ ...input, ...patch }));
+  assert.throws(() => validarCuenta({ herramienta: 'A', plan: 'Pro', moneda: 'MXN', id: 1, periodicidad: 'semanal' }));
+});
 
 const flush = () => new Promise((resolve) => setTimeout(resolve, 10));
 const session = (id = 'u1', sid = 's1') => ({ user: { id }, access_token: `header.${btoa(JSON.stringify({ session_id: sid }))}.sig` });

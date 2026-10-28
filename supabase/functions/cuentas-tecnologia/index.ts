@@ -1,11 +1,14 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.51.0';
 import { cifrar, descifrar, hashToken, nuevoToken } from './crypto.mjs';
-import { validarCuenta, validarId } from './validacion.mjs';
+import { validarCuenta, validarId, validarPago } from './validacion.mjs';
 
 const ORIGINS = new Set(['https://e360.pro', 'https://www.e360.pro', 'http://localhost:5173', 'http://127.0.0.1:5173']);
 const authOptions = { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false };
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const ERRORS: Record<string, [number, string]> = {
+  CONFLICTO_PAGO: [409, 'La cuenta cambió. Actualiza el listado antes de registrar el pago.'],
+  FECHA_REQUERIDA: [422, 'Indica una próxima renovación futura para el período que pagaste.'],
+  DESHACER_NO_DISPONIBLE: [409, 'Este pago ya no se puede deshacer. Actualiza el listado.'],
   DATOS_INVALIDOS: [400, 'Revisa los datos de la cuenta.'],
   ACCION_INVALIDA: [400, 'Operación no válida.'],
   SESION_INVALIDA: [401, 'Tu sesión ya no está activa. Vuelve a iniciar sesión.'],
@@ -63,6 +66,10 @@ Deno.serve(async (req: Request) => {
       return result;
     };
     await rpc('validar');
+
+    if (body.accion === 'registrar_pago' || body.accion === 'deshacer_pago') {
+      return respond(200, await rpc(body.accion, validarPago(body), null));
+    }
 
     if (body.accion === 'desbloquear') {
       if (typeof body.contrasena !== 'string' || !body.contrasena || body.contrasena.length > 4096) throw new Error('DATOS_INVALIDOS');

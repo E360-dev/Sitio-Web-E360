@@ -2,7 +2,45 @@
 
 Solo `admin` puede consultar o modificar el inventario. Las cuentas existentes
 mantienen el día antiguo y una fecha completa vacía hasta que un administrador
-la complete. No se calculan cobros ni renovaciones automáticas.
+la complete. El registro manual de pagos actualiza la renovación; no se realizan
+cargos ni se comprueban pagos con el proveedor.
+
+## Registro de pagos
+
+Cada fila permite «Marcar pago realizado» sin desbloquear las credenciales.
+El servidor registra usuario y hora, actualiza la próxima renovación y conserva
+un evento en `pagos_tecnologia`, consultable solo por administradores. El listado
+muestra último pago, periodicidad y estado: sin confirmar, pago por confirmar
+(hoy o vencido), por renovar (uno a cinco días) o al día (más de cinco días con
+un pago confirmado). Una fecha futura sin pago registrado no confirma cobertura.
+
+La periodicidad puede ser mensual o anual; las cuentas existentes empiezan como
+mensuales, sin pagos inferidos. Se avanza desde el vencimiento anterior conservando
+el día habitual, incluidos el 31 y el 29 de febrero. Si no existe fecha o el
+siguiente período sigue vencido, se solicita una próxima renovación futura.
+Las fechas se interpretan como días de calendario en `America/Bogota`.
+
+Después del registro se puede «Deshacer» durante diez minutos, también desde el
+detalle. Se restaura la renovación y el resumen anteriores y queda un evento de
+reversión. No se permite encadenar reversiones ni deshacer después de otro pago o
+de una edición de la renovación/periodicidad. Editar otros datos conserva el pago.
+Los pagos anticipados se confirman expresamente desde el detalle cuando la cuenta
+ya está al día. La disponibilidad de deshacer se actualiza cada diez segundos;
+el servidor comprueba el plazo exacto en cada operación.
+
+Las acciones `registrar_pago` y `deshacer_pago` de la función existente requieren
+un UUID de operación y la versión de pago observada; deshacer incluye el ID del
+pago. Fecha, resumen e historial cambian en una transacción con bloqueo de fila.
+Un reintento conserva el UUID; otra operación con versión antigua devuelve 409.
+El servidor devuelve 422 si falta una próxima fecha válida, y comprueba rol y
+sesión activa incluso al repetir una operación ya procesada. Los campos de pago
+y el historial no se pueden modificar directamente desde el navegador.
+
+La migración `20261028041030_cuentas_tecnologia_pagos.sql` es aditiva y conserva
+la compatibilidad con el portal anterior. `operar_cuentas_base` mantiene las
+operaciones de cuentas/credenciales; el puente existente pasa por el nuevo
+despachador de pagos y periodicidad. Al editar metadata con la misma fecha,
+se conserva el día anclado original después de un mes corto.
 
 La moneda principal para cuentas nuevas es `MXN` (peso mexicano). También se
 admiten `COP`, `USD` y `EUR`; los importes muestran su código de moneda. Los
