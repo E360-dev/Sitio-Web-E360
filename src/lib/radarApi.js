@@ -111,8 +111,9 @@ export const crearCandidato = async (candidato) => {
 };
 
 export const actualizarProspecto = async (id, cambios) => {
-  const { error } = await supabase.from('radar_prospectos').update(cambios).eq('id', id);
+  const { data, error } = await supabase.from('radar_prospectos').update(cambios).eq('id', id).select('id').single();
   if (error) fallar(error, 'No se pudo guardar el cambio.');
+  if (!data) throw new Error('No se pudo guardar. Recarga y comprueba tus permisos.');
 };
 
 export const eliminarCandidato = async (id) => {

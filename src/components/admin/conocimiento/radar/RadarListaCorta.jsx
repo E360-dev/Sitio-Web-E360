@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { PlusIcon } from '@heroicons/react/24/outline';
 import {
   obtenerProspectos,
-  crearCandidato,
   elegirProspecto,
   actualizarProspecto,
   eliminarCandidato,
@@ -12,82 +10,14 @@ import {
   viernesDeLista,
 } from '../../../../lib/radarApi';
 import { useRadar, RADAR } from './RadarComercial.jsx';
-import { Tarjeta, Vacio, claseBoton, claseBotonSecundario, claseCampo } from './RadarUi.jsx';
+import RadarFormularioFicha from './RadarFormularioFicha.jsx';
+import RadarFichaEmpresa from './RadarFichaEmpresa.jsx';
+import { Tarjeta, Vacio, claseBoton, claseBotonSecundario } from './RadarUi.jsx';
 
-const VACIO = { empresa: '', sector: '', sitio_web: '', score: '', senal: '', por_que_ahora: '', servicios: '' };
-
-const FormularioCandidato = ({ onCreado }) => {
-  const [datos, setDatos] = useState(VACIO);
-  const [fecha, setFecha] = useState(viernesDeLista());
-  const [guardando, setGuardando] = useState(false);
-
-  const cambiar = (campo) => (e) => setDatos({ ...datos, [campo]: e.target.value });
-
-  const enviar = async (e) => {
-    e.preventDefault();
-    setGuardando(true);
-    try {
-      await crearCandidato({
-        ...datos,
-        score: datos.score === '' ? null : Number(datos.score),
-        fecha_lista: fecha,
-      });
-      toast.success('Candidato agregado a la lista corta.');
-      setDatos(VACIO);
-      onCreado();
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setGuardando(false);
-    }
-  };
-
-  return (
-    <form onSubmit={enviar} className="grid grid-cols-1 md:grid-cols-6 gap-4">
-      <label className="md:col-span-3 text-sm font-bold text-gray-600">
-        Empresa
-        <input className={`${claseCampo} mt-1`} value={datos.empresa} onChange={cambiar('empresa')} required />
-      </label>
-      <label className="md:col-span-1 text-sm font-bold text-gray-600">
-        Score
-        <input type="number" min="0" className={`${claseCampo} mt-1`} value={datos.score} onChange={cambiar('score')} />
-      </label>
-      <label className="md:col-span-2 text-sm font-bold text-gray-600">
-        Lista del viernes
-        <input type="date" className={`${claseCampo} mt-1`} value={fecha} onChange={(e) => setFecha(e.target.value)} required />
-      </label>
-      <label className="md:col-span-3 text-sm font-bold text-gray-600">
-        Sector
-        <input className={`${claseCampo} mt-1`} value={datos.sector} onChange={cambiar('sector')} placeholder="Ej. Salud, tecnología, financiero" />
-      </label>
-      <label className="md:col-span-3 text-sm font-bold text-gray-600">
-        Sitio web o LinkedIn
-        <input type="url" className={`${claseCampo} mt-1`} value={datos.sitio_web} onChange={cambiar('sitio_web')} placeholder="https://" />
-      </label>
-      <label className="md:col-span-6 text-sm font-bold text-gray-600">
-        Señal
-        <textarea rows={2} className={`${claseCampo} mt-1`} value={datos.senal} onChange={cambiar('senal')} required />
-      </label>
-      <label className="md:col-span-3 text-sm font-bold text-gray-600">
-        Por qué es buen momento
-        <textarea rows={2} className={`${claseCampo} mt-1`} value={datos.por_que_ahora} onChange={cambiar('por_que_ahora')} required />
-      </label>
-      <label className="md:col-span-3 text-sm font-bold text-gray-600">
-        Servicios a ofrecer
-        <textarea rows={2} className={`${claseCampo} mt-1`} value={datos.servicios} onChange={cambiar('servicios')} required />
-      </label>
-      <div className="md:col-span-6 flex justify-end">
-        <button type="submit" className={claseBoton} disabled={guardando}>
-          <PlusIcon className="h-4 w-4" /> {guardando ? 'Guardando…' : 'Agregar a la lista corta'}
-        </button>
-      </div>
-    </form>
-  );
-};
-
-const Candidato = ({ p, puedeElegir, puedeEditar, onCambio }) => {
+const Candidato = ({ p, puedeElegir, puedeEditar, listaActualCerrada, onCambio }) => {
   const navigate = useNavigate();
   const [ocupado, setOcupado] = useState(false);
+  const [editando, setEditando] = useState(false);
 
   const accion = async (fn, mensaje) => {
     setOcupado(true);
@@ -103,7 +33,7 @@ const Candidato = ({ p, puedeElegir, puedeEditar, onCambio }) => {
   };
 
   const elegir = () => {
-    if (!window.confirm(`¿Elegir ${p.empresa}? Se calcularán las fechas de todos los pasos.`)) return;
+    if (!window.confirm(`¿Elegir ${p.empresa}? Se calcularán las fechas de todos los pasos y la lista se cerrará: los demás candidatos quedarán como no elegidos.`)) return;
     accion(async () => {
       await elegirProspecto(p.id);
       navigate(`${RADAR}/prospecto/${p.id}`);
@@ -111,21 +41,20 @@ const Candidato = ({ p, puedeElegir, puedeEditar, onCambio }) => {
   };
 
   return (
-    <li className="rounded-xl border border-gray-100 p-5">
+    <li className="min-w-0 rounded-xl border border-gray-100 p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0 max-w-full break-words">
           <p className="text-lg font-black text-[#1a2f4e]">{p.empresa}</p>
-          {p.sector && <p className="text-sm text-gray-500">Sector: {p.sector}</p>}
-          {p.sitio_web && <a href={p.sitio_web} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-[rgb(53,92,143)] hover:underline">Sitio web / LinkedIn</a>}
           {p.score != null && <p className="text-sm font-bold text-[#25c6e3]">Score {p.score}</p>}
+          {p.estado === 'no_elegido' && <p className="text-xs text-gray-400">De la lista del {formatoFecha(p.fecha_lista)}</p>}
         </div>
         <div className="flex flex-wrap gap-2">
           {puedeElegir && p.estado === 'candidato' && (
             <>
-              <button className={claseBoton} disabled={ocupado} onClick={elegir}>Elegir</button>
+              <button className={claseBoton} disabled={ocupado || editando} onClick={elegir}>Elegir</button>
               <button
                 className={claseBotonSecundario}
-                disabled={ocupado}
+                disabled={ocupado || editando}
                 onClick={() => accion(() => actualizarProspecto(p.id, { estado: 'no_elegido' }))}
               >
                 No elegido
@@ -136,7 +65,8 @@ const Candidato = ({ p, puedeElegir, puedeEditar, onCambio }) => {
             // Vuelve con la fecha de la lista actual para que su calendario no nazca atrasado.
             <button
               className={claseBotonSecundario}
-              disabled={ocupado}
+              disabled={ocupado || editando || listaActualCerrada}
+              title={listaActualCerrada ? 'La lista de este viernes ya tiene un prospecto elegido' : 'Lo publica en la lista de este viernes'}
               onClick={() =>
                 accion(
                   () => actualizarProspecto(p.id, { estado: 'candidato', fecha_lista: viernesDeLista() }),
@@ -148,33 +78,31 @@ const Candidato = ({ p, puedeElegir, puedeEditar, onCambio }) => {
             </button>
           )}
           {puedeEditar && (
-            <button
-              className="text-sm font-bold text-red-500 hover:text-red-700 px-2"
-              disabled={ocupado}
-              onClick={() => window.confirm(`¿Eliminar ${p.empresa}?`) && accion(() => eliminarCandidato(p.id), 'Candidato eliminado.')}
-            >
-              Eliminar
-            </button>
+            <details className="rounded-lg border border-gray-200 px-3 py-2 text-sm">
+              <summary className="cursor-pointer font-semibold text-gray-600">Más opciones<span className="sr-only"> de {p.empresa}</span></summary>
+              <div className="mt-2 flex flex-wrap gap-3">
+                <button type="button" className="font-bold text-[rgb(53,92,143)]" disabled={ocupado || editando} onClick={() => setEditando(true)}>Editar ficha</button>
+                <button type="button" className="font-bold text-red-600" disabled={ocupado || editando} onClick={() => window.confirm(`¿Eliminar ${p.empresa}?`) && accion(() => eliminarCandidato(p.id), 'Candidato eliminado.')}>Eliminar</button>
+              </div>
+            </details>
           )}
         </div>
       </div>
-      <dl className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-        <div><dt className="font-bold text-gray-500">Señal</dt><dd className="text-gray-700 whitespace-pre-line">{p.senal || '—'}</dd></div>
-        <div><dt className="font-bold text-gray-500">Por qué ahora</dt><dd className="text-gray-700 whitespace-pre-line">{p.por_que_ahora || '—'}</dd></div>
-        <div><dt className="font-bold text-gray-500">Servicios</dt><dd className="text-gray-700 whitespace-pre-line">{p.servicios || '—'}</dd></div>
-      </dl>
+      <div className="mt-4">
+        {editando ? <RadarFormularioFicha prospecto={p} onCancelar={() => setEditando(false)} onGuardado={() => { setEditando(false); onCambio(); }} /> : <RadarFichaEmpresa prospecto={p} />}
+      </div>
     </li>
   );
 };
 
 export default function RadarListaCorta() {
   const { puedePaso } = useRadar();
-  const [prospectos, setProspectos] = useState(null);
+  const [todos, setTodos] = useState(null);
   const [verNoElegidos, setVerNoElegidos] = useState(false);
 
   const cargar = useCallback(() => {
     obtenerProspectos()
-      .then((todos) => setProspectos(todos.filter((p) => ['candidato', 'no_elegido'].includes(p.estado))))
+      .then(setTodos)
       .catch((e) => toast.error(e.message));
   }, []);
 
@@ -182,7 +110,14 @@ export default function RadarListaCorta() {
     cargar();
   }, [cargar]);
 
-  if (!prospectos) return <p className="text-gray-400">Cargando la lista corta…</p>;
+  if (!todos) return <p className="text-gray-400">Cargando la lista corta…</p>;
+
+  const prospectos = todos.filter((p) => ['candidato', 'no_elegido'].includes(p.estado));
+  // Una lista con un prospecto elegido queda cerrada: solo se elige uno por lista.
+  const cerradas = Object.fromEntries(
+    todos.filter((p) => !['candidato', 'no_elegido'].includes(p.estado)).map((p) => [p.fecha_lista, p.empresa]),
+  );
+  const listaActualCerrada = Boolean(cerradas[viernesDeLista()]);
 
   const candidatos = prospectos.filter((p) => p.estado === 'candidato');
   const noElegidos = prospectos.filter((p) => p.estado === 'no_elegido');
@@ -197,7 +132,10 @@ export default function RadarListaCorta() {
     <div className="space-y-6">
       {puedePaso(1) && (
         <Tarjeta titulo="Paso 1 · Agregar candidato">
-          <FormularioCandidato onCreado={cargar} />
+          <details>
+            <summary className="cursor-pointer text-sm font-bold text-[rgb(53,92,143)]">Preparar candidato</summary>
+            <div className="mt-4"><RadarFormularioFicha onGuardado={cargar} /></div>
+          </details>
         </Tarjeta>
       )}
 
@@ -207,10 +145,22 @@ export default function RadarListaCorta() {
         </Tarjeta>
       ) : (
         Object.entries(porLista).map(([fecha, lista]) => (
-          <Tarjeta key={fecha} titulo={`Lista del ${formatoFecha(fecha)}`}>
+          <Tarjeta key={fecha} titulo={`Lista del ${formatoFecha(fecha)}${cerradas[fecha] ? ' · cerrada' : ''}`}>
+            {cerradas[fecha] && (
+              <p className="mb-4 rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-500">
+                En esta lista ya se eligió {cerradas[fecha]}. Solo se elige un prospecto por lista.
+              </p>
+            )}
             <ul className="space-y-4">
               {lista.map((p) => (
-                <Candidato key={p.id} p={p} puedeElegir={puedePaso(2)} puedeEditar={puedePaso(1)} onCambio={cargar} />
+                <Candidato
+                  key={p.id}
+                  p={p}
+                  puedeElegir={puedePaso(2) && !cerradas[fecha]}
+                  puedeEditar={puedePaso(1)}
+                  listaActualCerrada={listaActualCerrada}
+                  onCambio={cargar}
+                />
               ))}
             </ul>
           </Tarjeta>
@@ -229,7 +179,14 @@ export default function RadarListaCorta() {
           {verNoElegidos ? (
             <ul className="space-y-4">
               {noElegidos.map((p) => (
-                <Candidato key={p.id} p={p} puedeElegir={puedePaso(2)} puedeEditar={puedePaso(1)} onCambio={cargar} />
+                <Candidato
+                  key={p.id}
+                  p={p}
+                  puedeElegir={puedePaso(2)}
+                  puedeEditar={puedePaso(1)}
+                  listaActualCerrada={listaActualCerrada}
+                  onCambio={cargar}
+                />
               ))}
             </ul>
           ) : (
