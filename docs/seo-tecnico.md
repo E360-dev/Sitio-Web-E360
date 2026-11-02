@@ -25,6 +25,8 @@ ni canónica. La cabecera HTTP `X-Robots-Tag` utiliza la petición original para
 mantener la exclusión tras las reescrituras. Las áreas autenticadas siguen
 bloqueadas en robots.txt; las transaccionales permiten leer su `noindex`.
 La exclusión SEO no reemplaza la autenticación ni los controles de acceso.
+Las URLs inexistentes responden HTTP 404 con una página de error sin canónica
+ni descripción de la portada, tanto antes como después de ejecutar React.
 
 ## Publicación y recuperación
 

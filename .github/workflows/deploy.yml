@@ -46,6 +46,7 @@ jobs:
           test -d dist/assets   || { echo "ERROR: no se generó dist/assets"; exit 1; }
           test -f dist/.htaccess || { echo "ERROR: falta .htaccess"; exit 1; }
           test -f dist/_private/index.html || { echo "ERROR: falta la shell privada"; exit 1; }
+          test -f dist/_notfound/index.html || { echo "ERROR: falta la página 404"; exit 1; }
           test -f dist/sitemap.xml || { echo "ERROR: no se generó el sitemap"; exit 1; }
 
           # Las páginas prerenderizadas deben llevar contenido real, no solo el

@@ -23,15 +23,16 @@ const servidor = createServer(async (req, res) => {
   try {
     const ruta = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
     let archivo = resolve(dist, `.${ruta}`);
+    let estadoHttp = 200;
     assert(archivo === dist || archivo.startsWith(dist + sep));
     if (/^\/(admin|cliente|documento|login|registro|pendiente|crear-contrasena)(\/|$)/.test(ruta)) {
       archivo = resolve(dist, '_private/index.html');
     } else {
       try { if ((await stat(archivo)).isDirectory()) archivo = resolve(archivo, 'index.html'); }
-      catch { archivo = resolve(dist, 'index.html'); }
+      catch { archivo = resolve(dist, '_notfound/index.html'); estadoHttp = 404; }
     }
     const contenido = await readFile(archivo);
-    res.writeHead(200, { 'Content-Type': tipos[extname(archivo)] || 'application/octet-stream' });
+    res.writeHead(estadoHttp, { 'Content-Type': tipos[extname(archivo)] || 'application/octet-stream' });
     res.end(contenido);
   } catch { res.writeHead(404); res.end(); }
 });
@@ -102,7 +103,13 @@ try {
   await comprobar('/nosotros');
   console.log('OK shell privada sin JS, formulario de acceso y retorno público');
 
-  await pagina.goto(base + '/ruta-que-no-existe-seo');
+  await pagina.setJavaScriptEnabled(false);
+  assert.equal((await pagina.goto(base + '/ruta-que-no-existe-seo')).status(), 404);
+  assert.equal(await pagina.$('link[rel="canonical"]'), null);
+  assert.match(await pagina.$eval('meta[name="robots"]', (e) => e.content), /noindex/);
+  assert.equal(await pagina.$eval('h1', (e) => e.textContent), '404');
+  await pagina.setJavaScriptEnabled(true);
+  assert.equal((await pagina.goto(base + '/ruta-que-no-existe-seo')).status(), 404);
   await pagina.waitForFunction(() => document.title === 'Página no encontrada | E360');
   assert.equal(await pagina.$('link[rel="canonical"]'), null);
   assert.match(await pagina.$eval('meta[name="robots"]', (e) => e.content), /noindex/);

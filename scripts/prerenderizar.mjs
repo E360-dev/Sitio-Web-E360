@@ -8,7 +8,8 @@
 //
 // La salida es `dist/<ruta>/index.html`. Esa forma encaja con el .htaccess sin
 // tocarlo: su regla `RewriteCond %{REQUEST_FILENAME} -d` detecta el directorio
-// y Apache sirve el index.html de dentro; lo que no existe sigue cayendo a la SPA.
+// y Apache sirve el index.html de dentro. Las rutas privadas y los errores
+// usan sus propias shells, sin heredar la portada.
 
 import { createServer } from 'node:http';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
@@ -141,6 +142,11 @@ async function main() {
       .replace('</head>', '<title>Acceso privado | E360</title><meta name="robots" content="noindex, nofollow"></head>');
     await mkdir(join(DIST, '_private'), { recursive: true });
     await writeFile(join(DIST, '_private/index.html'), shellPrivada, 'utf8');
+    const shellError = shellPrivada
+      .replace('Acceso privado | E360', 'Página no encontrada | E360')
+      .replace('<div id="root"></div>', '<div id="root"><main><h1>404</h1><p>Página no encontrada</p></main></div>');
+    await mkdir(join(DIST, '_notfound'), { recursive: true });
+    await writeFile(join(DIST, '_notfound/index.html'), shellError, 'utf8');
   } finally {
     await navegador.close();
     servidor.close();

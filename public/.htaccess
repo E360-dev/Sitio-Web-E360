@@ -1,4 +1,6 @@
 # Configuración de Apache para e360.pro
+# Un enlace inexistente conserva la pantalla React, pero responde HTTP 404.
+ErrorDocument 404 /_notfound/index.html
 #
 # Este archivo se despliega con el sitio (Vite copia public/ a dist/).
 # Antes vivía únicamente en el servidor, sin copia ni historial.
@@ -45,8 +47,8 @@
   RewriteRule ^(.+?)/?$ /$1/index.html [L]
 
   # -------------------------------------------------------------------------
-  # Rutas de la SPA — reglas originales del servidor, sin cambios.
-  # Sin esto, entrar directo a /servicios devuelve 404.
+  # Archivos existentes y errores para rutas desconocidas.
+  # Las rutas conocidas se sirven por las reglas anteriores.
   # -------------------------------------------------------------------------
 
   # Si el archivo o carpeta existe, servirlo normalmente
@@ -54,8 +56,8 @@
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # Si no existe, redirigir a index.html
-  RewriteRule ^ index.html [L]
+  # Las rutas públicas válidas ya tienen HTML; las privadas se resuelven arriba.
+  RewriteRule ^ - [R=404,L]
 </IfModule>
 
 # ---------------------------------------------------------------------------
@@ -65,7 +67,7 @@
 # ---------------------------------------------------------------------------
 <IfModule mod_headers.c>
   # THE_REQUEST conserva la ruta original tras las reescrituras internas.
-  Header always set X-Robots-Tag "noindex, nofollow" "expr=%{THE_REQUEST} =~ m#\s/+(?:admin|cliente|documento|login|registro|pendiente|crear-contrasena|_private)(?:[/\s?])#"
+  Header always set X-Robots-Tag "noindex, nofollow" "expr=%{REQUEST_STATUS} == 404 || %{THE_REQUEST} =~ m#\s/+(?:admin|cliente|documento|login|registro|pendiente|crear-contrasena|_private|_notfound)(?:[/\s?])#"
 
   # El HTML se revalida siempre: es el único archivo que puede quedar obsoleto,
   # porque es quien apunta a los assets con hash.
