@@ -24,6 +24,9 @@
   RewriteCond %{HTTP_HOST} ^www\.e360\.pro$ [NC]
   RewriteRule ^(.*)$ https://e360.pro/$1 [R=301,L]
 
+  # La shell privada arranca React sin contenido ni canónica de la portada.
+  RewriteRule ^(?:admin|cliente|documento|login|registro|pendiente|crear-contrasena)(?:/.*)?$ /_private/index.html [L]
+
   # -------------------------------------------------------------------------
   # Páginas prerenderizadas
   #
@@ -61,6 +64,9 @@
 # Es lo que elimina el purgado manual después de cada despliegue.
 # ---------------------------------------------------------------------------
 <IfModule mod_headers.c>
+  # THE_REQUEST conserva la ruta original tras las reescrituras internas.
+  Header always set X-Robots-Tag "noindex, nofollow" "expr=%{THE_REQUEST} =~ m#\s/+(?:admin|cliente|documento|login|registro|pendiente|crear-contrasena|_private)(?:[/\s?])#"
+
   # El HTML se revalida siempre: es el único archivo que puede quedar obsoleto,
   # porque es quien apunta a los assets con hash.
   <FilesMatch "\.html$">

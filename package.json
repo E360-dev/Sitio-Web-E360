@@ -6,9 +6,10 @@
     "test:bps": "node --test tests/bps-modelo.test.mjs",
     "test:radar": "node --test tests/radar-modelo.test.mjs tests/radar-ficha.test.mjs",
     "test:cuentas": "node --test tests/cuentas-tecnologia.test.mjs",
+    "test:seo": "node scripts/verificar-seo.mjs",
     "dev": "vite",
     "contenido": "node scripts/generar-contenido.mjs",
-    "build": "npm run contenido && vite build && node scripts/prerenderizar.mjs",
+    "build": "npm run contenido && vite build && node scripts/prerenderizar.mjs && npm run test:seo",
     "build:rapido": "vite build",
     "preview": "vite preview"
   },

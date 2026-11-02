@@ -44,7 +44,8 @@ jobs:
         run: |
           test -f dist/index.html || { echo "ERROR: no se generó dist/index.html"; exit 1; }
           test -d dist/assets   || { echo "ERROR: no se generó dist/assets"; exit 1; }
-          test -f dist/.htaccess || echo "AVISO: no hay .htaccess en el build; se conservará el del servidor"
+          test -f dist/.htaccess || { echo "ERROR: falta .htaccess"; exit 1; }
+          test -f dist/_private/index.html || { echo "ERROR: falta la shell privada"; exit 1; }
           test -f dist/sitemap.xml || { echo "ERROR: no se generó el sitemap"; exit 1; }
 
           # Las páginas prerenderizadas deben llevar contenido real, no solo el
@@ -96,6 +97,16 @@ jobs:
         # se resubirían 25 MB en cada despliegue.
         # Sin --delete: en la raíz puede haber archivos que no gestiona el repo.
         run: |
+          # Copia completa y privada, fuera del directorio servido por Apache.
+          # Si falla el respaldo, no comienza la sincronización.
+          ssh -i ~/.ssh/id_despliegue -p "${{ secrets.SSH_PORT }}" -o StrictHostKeyChecking=yes \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "set -eu; umask 077; \
+             test -f '${{ secrets.DEPLOY_PATH }}/index.html'; \
+             mkdir -p '${{ secrets.DEPLOY_PATH }}/../.e360-backups'; \
+             tar -czf '${{ secrets.DEPLOY_PATH }}/../.e360-backups/antes-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT.tar.gz' -C '${{ secrets.DEPLOY_PATH }}' .; \
+             echo 'Respaldo completo anterior al despliegue guardado fuera de public_html.'"
+
           rsync -avz --checksum --human-readable \
             -e "ssh -i ~/.ssh/id_despliegue -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" \
             dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/"

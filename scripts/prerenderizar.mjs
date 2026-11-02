@@ -17,6 +17,7 @@ import { dirname, resolve, join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import puppeteer from 'puppeteer';
 import { RUTAS_ESTATICAS } from './rutas.mjs';
+import { validarSeoPublico } from './seo-validacion.mjs';
 
 const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = resolve(RAIZ, 'dist');
@@ -67,31 +68,6 @@ function levantarServidor(esqueletoOriginal) {
   return new Promise((ok) => servidor.listen(PUERTO, () => ok(servidor)));
 }
 
-// React 19 añade sus etiquetas al <head> pero no retira las de index.html, así
-// que quedan duplicadas. Un rastreador leería la que le tocase. Se deja una
-// sola de cada: para el título manda document.title, y para el resto la última,
-// que es la que React acaba de escribir.
-function limpiarCabecera() {
-  const titulo = document.title;
-  document.querySelectorAll('head > title').forEach((t) => t.remove());
-  const nuevo = document.createElement('title');
-  nuevo.textContent = titulo;
-  document.head.prepend(nuevo);
-
-  const ultimas = new Map();
-  const metas = [...document.querySelectorAll('head > meta[name], head > meta[property]')];
-  for (const m of metas) {
-    ultimas.set(m.getAttribute('name') || m.getAttribute('property'), m);
-  }
-  for (const m of metas) {
-    const clave = m.getAttribute('name') || m.getAttribute('property');
-    if (ultimas.get(clave) !== m) m.remove();
-  }
-
-  const canonicas = [...document.querySelectorAll('head > link[rel="canonical"]')];
-  canonicas.slice(0, -1).forEach((l) => l.remove());
-}
-
 async function main() {
   const articulos = JSON.parse(
     await readFile(resolve(RAIZ, 'src/contenido/articulos.json'), 'utf8')
@@ -135,7 +111,9 @@ async function main() {
         timeout: 10000,
       });
 
-      await pagina.evaluate(limpiarCabecera);
+      await pagina.waitForFunction((rutaActual) => document.head.dataset.seoPath === rutaActual, {}, ruta);
+      const { errores } = await pagina.evaluate(validarSeoPublico, { ruta });
+      if (errores.length) throw new Error(`${ruta}: ${errores.join('; ')}`);
 
       const html = await pagina.content();
 
@@ -154,6 +132,15 @@ async function main() {
       generadas += 1;
       await pagina.close();
     }
+
+    // Las rutas privadas nunca deben recibir la portada estática como fallback.
+    const shellPrivada = esqueletoOriginal
+      .replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi, '')
+      .replace(/<meta\b[^>]*(?:name="(?:description|robots|twitter:[^"]*)"|property="og:[^"]*")[^>]*>/gi, '')
+      .replace(/<link\b[^>]*rel="canonical"[^>]*>/gi, '')
+      .replace('</head>', '<title>Acceso privado | E360</title><meta name="robots" content="noindex, nofollow"></head>');
+    await mkdir(join(DIST, '_private'), { recursive: true });
+    await writeFile(join(DIST, '_private/index.html'), shellPrivada, 'utf8');
   } finally {
     await navegador.close();
     servidor.close();

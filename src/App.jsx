@@ -33,6 +33,7 @@ const CargandoPantalla = () => (
 
 import ScrollToAnchor from './components/ScrollToAnchor';
 import usePageTracking from './hooks/usePageTracking';
+import Seo from './components/Seo';
 
 // Componente que envuelve las rutas y decide si mostrar Navbar/Footer
 const AppContent = () => {
@@ -45,21 +46,25 @@ const AppContent = () => {
   // Rutas privadas o transaccionales que no deben indexarse. Se resuelve aquí y
   // no en cada página porque varias tienen múltiples returns (carga, error, ok).
   const noindexPrefixes = ['/cliente', '/admin', '/documento', '/login', '/registro', '/pendiente', '/crear-contrasena'];
-  const isNoindexRoute = noindexPrefixes.some((prefix) => location.pathname.startsWith(prefix));
+  const privatePrefix = noindexPrefixes.find((prefix) => location.pathname === prefix || location.pathname.startsWith(`${prefix}/`));
+  const isNoindexRoute = Boolean(privatePrefix);
 
   // Título de pestaña para las rutas sin componente Seo, que si no heredarían
-  // el de index.html. /documento se omite: lo define el nombre del documento.
+  // el de index.html. Ninguna ruta privada declara la portada como canónica.
   const privateTitles = {
     '/login': 'Iniciar sesión | E360',
     '/registro': 'Crear cuenta | E360',
     '/pendiente': 'Registro recibido | E360',
+    '/crear-contrasena': 'Crear contraseña | E360',
+    '/admin': 'Administración | E360',
+    '/cliente': 'Portal de clientes | E360',
+    '/documento': 'Documento privado | E360',
   };
-  const privateTitle = privateTitles[location.pathname];
+  const privateTitle = privateTitles[privatePrefix];
 
   return (
     <>
-      {isNoindexRoute && <meta name="robots" content="noindex, nofollow" />}
-      {privateTitle && <title>{privateTitle}</title>}
+      {isNoindexRoute && <Seo title={privateTitle} path={null} noindex />}
       <ScrollToAnchor />
       {showNavAndFooter && <Navbar />}
       <Preloader />

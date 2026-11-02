@@ -1,12 +1,9 @@
 User-agent: *
 Allow: /
 
-# Rutas privadas o transaccionales
+# Áreas privadas. Permitir rastrear las transaccionales para leer noindex.
 Disallow: /admin
 Disallow: /cliente
 Disallow: /documento
-Disallow: /login
-Disallow: /registro
-Disallow: /pendiente
 
 Sitemap: https://e360.pro/sitemap.xml

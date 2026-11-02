@@ -16,7 +16,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SITIO = 'https://e360.pro';
+import { construirSitemap } from './sitemap.mjs';
 
 const SUPABASE_URL =
   process.env.SUPABASE_URL || 'https://crxtzmykprgbgkdbqccd.supabase.co';
@@ -26,7 +26,6 @@ const SUPABASE_ANON_KEY =
 
 import { RUTAS_ESTATICAS } from './rutas.mjs';
 
-const soloFecha = (iso) => (iso || new Date().toISOString()).slice(0, 10);
 
 async function descargarArticulos() {
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -46,38 +45,6 @@ async function descargarArticulos() {
   }
 
   return data ?? [];
-}
-
-function construirSitemap(articulos) {
-  const entradas = [
-    ...RUTAS_ESTATICAS.map(({ ruta, prioridad, frecuencia }) => ({
-      url: `${SITIO}${ruta === '/' ? '/' : ruta}`,
-      fecha: soloFecha(),
-      frecuencia,
-      prioridad,
-    })),
-    ...articulos.map((a) => ({
-      url: `${SITIO}/comunica/${a.slug}`,
-      fecha: soloFecha(a.actualizado_en || a.fecha_publicacion),
-      frecuencia: 'yearly',
-      prioridad: '0.7',
-    })),
-  ];
-
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${entradas
-  .map(
-    (e) => `  <url>
-    <loc>${e.url}</loc>
-    <lastmod>${e.fecha}</lastmod>
-    <changefreq>${e.frecuencia}</changefreq>
-    <priority>${e.prioridad}</priority>
-  </url>`
-  )
-  .join('\n')}
-</urlset>
-`;
 }
 
 async function main() {
