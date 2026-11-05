@@ -20,6 +20,7 @@ import {
   FORMATOS_ACEPTADOS,
 } from '../../../../lib/radarApi';
 import RadarRevision, { PrevisualizarDocumento } from './RadarRevision.jsx';
+import { CONFIRMACION_ENVIO_ARTURO } from '../../../../lib/radarModelo.mjs';
 import { useRadar, RADAR } from './RadarComercial.jsx';
 import { Semaforo, Tarjeta, Vacio, claseBoton, claseBotonSecundario, claseCampo } from './RadarUi.jsx';
 
@@ -204,6 +205,7 @@ const Paso = ({ config, hito, prospecto, archivos, comentarios, esActual, hitos,
     crm_url: prospecto.crm_url || '',
   });
   const [observaciones, setObservaciones] = useState('');
+  const [envioConfirmado, setEnvioConfirmado] = useState(false);
 
   const ejecutar = async (fn, mensaje) => {
     setOcupado(true);
@@ -231,8 +233,8 @@ const Paso = ({ config, hito, prospecto, archivos, comentarios, esActual, hitos,
   const cerrar = () =>
     ejecutar(async () => {
       if (camposDelPaso) await guardarCampos();
-      await completarPaso(prospecto.id, n);
-    }, `Paso ${n} cerrado.`);
+      await completarPaso(prospecto.id, n, n === 11 ? CONFIRMACION_ENVIO_ARTURO : null);
+    }, n === 7 ? 'Envío a Arturo autorizado.' : n === 11 ? 'Correo a Arturo registrado.' : `Paso ${config.etiqueta} cerrado.`);
 
   // La nota se corrige en el paso 5 mientras el 6 siga abierto.
   const paso6Abierto = hitos.some((h) => h.paso === 6 && !h.fecha_real) && hitos.some((h) => h.paso === 5 && h.fecha_real);
@@ -286,8 +288,8 @@ const Paso = ({ config, hito, prospecto, archivos, comentarios, esActual, hitos,
         )}
       </div>
 
-      {hito?.exento_revision && <p className="mt-3 text-sm text-gray-500">Exento por migración: el enfoque ya estaba cerrado antes de incorporar 3B. No representa una aprobación documental.</p>}
-      {!hecho && !esActual && !hito?.exento_revision && anteriorPendiente && <p className="mt-3 text-xs text-gray-500">Bloqueado hasta completar el paso {anteriorPendiente.radar_pasos?.etiqueta || anteriorPendiente.paso}.</p>}
+      {hito?.exento_revision && <p className="mt-3 text-sm text-gray-500">{n === 11 ? 'No exigible por migración: el proceso ya había llegado al envío externo antes de incorporar 7B. No acredita un correo enviado a Arturo.' : 'Exento por migración: el enfoque ya estaba cerrado antes de incorporar 3B. No representa una aprobación documental.'}</p>}
+      {!hecho && !esActual && !hito?.exento_revision && anteriorPendiente && <p className="mt-3 text-xs text-gray-500">Bloqueado hasta completar el paso {anteriorPendiente.radar_pasos?.etiqueta || (anteriorPendiente.paso === 11 ? '7B' : anteriorPendiente.paso === 10 ? '3B' : anteriorPendiente.paso)}.</p>}
 
       {alcanzado && (
         <div className="mt-4 ml-0 md:ml-11">
@@ -299,6 +301,18 @@ const Paso = ({ config, hito, prospecto, archivos, comentarios, esActual, hitos,
           {n === 4 && (
             <Enfoque prospecto={prospecto} editable={mio && !hecho} valores={valores} setValores={setValores} />
           )}
+
+          {n === 7 && <p className="mb-3 text-sm text-gray-700">José Luis autoriza a JD a enviar por correo la nota ejecutiva y el plan de acercamiento a Arturo, con copia a José Luis, Luna y Diego.</p>}
+
+          {n === 11 && <div className="space-y-4">
+            <div className="rounded-xl bg-blue-50 p-4 text-sm text-gray-700">
+              <p><strong>Para:</strong> Arturo</p>
+              <p><strong>Copia:</strong> José Luis, Luna y Diego</p>
+              <p className="mt-2">Envía por correo las versiones vigentes de la nota ejecutiva y el plan de acercamiento que se muestran abajo. Después registra el envío aquí para habilitar el paso de Arturo.</p>
+            </div>
+            <Archivos prospecto={prospecto} paso={5} archivos={(prospecto.radar_archivos || []).filter((a) => a.paso === 5 && !prospecto.radar_archivos.some((otra) => otra.paso === 5 && otra.tipo === a.tipo && otra.version > a.version))} puedeSubir={false} onCambio={onCambio} />
+            {esActual && mio && <label className="flex items-start gap-2 text-sm text-gray-700"><input type="checkbox" className="mt-1 shrink-0" checked={envioConfirmado} disabled={ocupado} onChange={(e) => setEnvioConfirmado(e.target.checked)} /><span>{CONFIRMACION_ENVIO_ARTURO}</span></label>}
+          </div>}
 
           {n === 6 && esperandoCorreccion && (
             <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-800">
@@ -343,7 +357,7 @@ const Paso = ({ config, hito, prospecto, archivos, comentarios, esActual, hitos,
           {n === 8 && (
             mio && !hecho ? (
               <label className="text-sm font-bold text-gray-600">
-                Fecha de envío
+                Fecha del envío de Arturo al prospecto
                 <input
                   type="date"
                   className={`${claseCampo} mt-1 max-w-xs`}
@@ -388,8 +402,8 @@ const Paso = ({ config, hito, prospecto, archivos, comentarios, esActual, hitos,
                   Guardar borrador
                 </button>
               )}
-              <button className={claseBoton} disabled={ocupado} onClick={cerrar}>
-                <CheckIcon className="h-4 w-4" /> Marcar paso como hecho
+              <button className={claseBoton} disabled={ocupado || (n === 11 && !envioConfirmado)} onClick={cerrar}>
+                <CheckIcon className="h-4 w-4" /> {n === 7 ? 'Autorizar envío a Arturo' : n === 11 ? 'Registrar envío a Arturo' : n === 8 ? 'Registrar envío de Arturo' : 'Marcar paso como hecho'}
               </button>
             </div>
           )}

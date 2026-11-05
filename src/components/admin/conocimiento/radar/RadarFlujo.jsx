@@ -14,6 +14,7 @@ export default function RadarFlujo() {
           <li>Cada persona solo puede cerrar los pasos que tiene asignados, y en orden.</li>
           <li>Si un paso se atrasa, la fecha compromiso no se mueve: se marca el retraso. Así sabemos dónde se pierde el tiempo.</li>
           <li>Los documentos se suben al prospecto y nada se reemplaza: cada corrección queda como versión nueva.</li>
+          <li>En el paso 7, José Luis autoriza el envío interno. En el 7B, JD envía por correo la nota ejecutiva y el plan de acercamiento a Arturo, con copia a José Luis, Luna y Diego, y registra el envío. Después Arturo realiza el acercamiento al prospecto.</li>
           <li>El ciclo dura unas dos semanas, así que normalmente hay dos prospectos en curso al mismo tiempo.</li>
         </ul>
       </Tarjeta>

@@ -27,7 +27,7 @@ export const TIPOS_ARCHIVO = {
   ],
   5: [
     { tipo: 'nota_ejecutiva', nombre: 'Nota ejecutiva' },
-    { tipo: 'plan_seguimiento', nombre: 'Plan de seguimiento' },
+    { tipo: 'plan_seguimiento', nombre: 'Plan de acercamiento y seguimiento' },
   ],
 };
 

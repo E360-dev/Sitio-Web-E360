@@ -42,7 +42,7 @@ update public.radar_prospectos set estado='candidato',fecha_lista='2099-11-06' w
 select public.radar_elegir(current_setting('qa.ficha')::bigint);
 select pg_temp.comprobar((select estado='no_elegido' from public.radar_prospectos where id=current_setting('qa.otro_candidato')::bigint),'Elegir cierra la lista para los demás candidatos');
 select pg_temp.rechaza('select public.radar_elegir('||current_setting('qa.otro_candidato')||')');
-select pg_temp.comprobar((select count(*)=10 from public.radar_hitos where prospecto_id=current_setting('qa.ficha')::bigint),'Elección conserva diez hitos');
+select pg_temp.comprobar((select count(*)=11 from public.radar_hitos where prospecto_id=current_setting('qa.ficha')::bigint),'Elección genera once hitos');
 select pg_temp.rechaza('select public.radar_elegir('||current_setting('qa.ficha')||')');
 update public.radar_prospectos set enfoque_servicio='Consultoría',enfoque_angulo='Reportes',enfoque_cuidar='Validar alcance' where id=current_setting('qa.ficha')::bigint;
 select set_config('request.jwt.claim.sub',current_setting('qa.autor'),true);

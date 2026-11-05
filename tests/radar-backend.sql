@@ -26,7 +26,7 @@ do $$ declare v_id bigint; begin
 end $$;
 select pg_temp.actor('jl');
 select public.radar_elegir(current_setting('qa.prospecto')::bigint);
-select pg_temp.comprobar((select count(*)=10 from public.radar_hitos where prospecto_id=current_setting('qa.prospecto')::bigint),'Elegir genera diez hitos');
+select pg_temp.comprobar((select count(*)=11 from public.radar_hitos where prospecto_id=current_setting('qa.prospecto')::bigint),'Elegir genera once hitos');
 select pg_temp.actor('jd');
 reset role;
 -- Only metadata is needed for SQL validation; no physical file is uploaded.

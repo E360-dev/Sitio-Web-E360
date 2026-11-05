@@ -8,6 +8,19 @@ test('3B is ordered between 3 and 4; historical exemptions are not approvals or 
  assert.equal(pasoActual([{paso:1,fecha_real:'2026-10-15'}]),null);
  assert.equal(pasoActual([{paso:3,radar_pasos:{orden:50}},{paso:4,radar_pasos:{orden:40}}]).paso,4);
 });
+
+test('7B follows authorization and blocks the external send without changing stable step IDs', () => {
+ const hitos = [{paso:9},{paso:8},{paso:11},{paso:7}];
+ assert.equal(pasoActual(hitos).paso,7);
+ hitos[3].fecha_real='2026-11-05';
+ assert.equal(pasoActual(hitos).paso,11);
+ assert.equal(etiquetaPaso(11),'7B');
+ hitos[2].fecha_real='2026-11-05';
+ assert.equal(pasoActual(hitos).paso,8);
+ hitos[2].fecha_real=null; hitos[2].exento_revision=true;
+ assert.equal(pasoActual(hitos).paso,8);
+ assert.equal(destinoNotificacion({prospecto_id:19,paso:11}),'/admin/conocimiento/radar/prospecto/19?paso=11');
+});
 test('reviews belong to individual versions; a new version does not inherit approval', () => {
  const one={id:1,paso:3,tipo:'matriz_riesgos',version:1,radar_revisiones:[{aprobado_por:'reviewer'}]};
  const two={id:2,paso:3,tipo:'matriz_riesgos',version:2,radar_revisiones:[]};

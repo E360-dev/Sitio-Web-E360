@@ -1,5 +1,6 @@
-export const ordenPaso = (hito) => hito.radar_pasos?.orden ?? (hito.paso === 10 ? 35 : hito.paso * 10);
-export const etiquetaPaso = (paso, catalogo = []) => catalogo.find((p) => p.paso === paso)?.etiqueta || (paso === 10 ? '3B' : String(paso));
+export const ordenPaso = (hito) => hito.radar_pasos?.orden ?? ({ 10: 35, 11: 75 }[hito.paso] ?? hito.paso * 10);
+export const etiquetaPaso = (paso, catalogo = []) => catalogo.find((p) => p.paso === paso)?.etiqueta || ({ 10: '3B', 11: '7B' }[paso] ?? String(paso));
+export const CONFIRMACION_ENVIO_ARTURO = 'Confirmo que envié por correo a Arturo la nota ejecutiva y el plan de acercamiento vigentes, con copia a José Luis, Luna y Diego.';
 export const pasoActual = (hitos = []) => [...hitos].sort((a, b) => ordenPaso(a) - ordenPaso(b)).find((h) => !h.fecha_real && !h.exento_revision) || null;
 export const ultimaVersion = (archivos, tipo) => archivos.filter((a) => a.paso === 3 && a.tipo === tipo).sort((a, b) => b.version - a.version)[0];
 export const requiereCorreccion = (prospecto) => (prospecto.radar_observaciones || []).some((o) => {
