@@ -137,3 +137,34 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Gobierno de la firma: estilos limitados a la sección institucional. */
+.gobierno-page { background: #f8fafc; }
+.gobierno-container { width: 100%; max-width: 1200px; margin-inline: auto; padding-inline: 1.5rem; }
+.gobierno-hero { position: relative; overflow: hidden; color: white; background: #172f4d; }
+.gobierno-hero::after { content: ''; position: absolute; width: 500px; height: 500px; right: -180px; top: -180px; border: 1px solid #ffffff12; border-radius: 50%; box-shadow: 0 0 0 80px #ffffff03, 0 0 0 160px #ffffff03; pointer-events: none; }
+.gobierno-eyebrow { font-size: .7rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #7de0ef; }
+.gobierno-page section .gobierno-eyebrow { color: #2e527f; }
+.gobierno-breadcrumb { padding-block: 1.75rem; border-bottom: 1px solid #ffffff20; color: #d2dfec; }
+.gobierno-breadcrumb a:hover { color: white; text-decoration: underline; text-underline-offset: 4px; }
+.gobierno-card { display: flex; flex-direction: column; padding: 1.75rem; border: 1px solid #e2e8f0; border-radius: 1rem; background: white; transition: border-color .2s, box-shadow .2s; }
+.gobierno-card:hover, .gobierno-card:focus-within { border-color: #7fa1c7; box-shadow: 0 8px 24px #172f4d09; }
+.gobierno-icon { display: inline-flex; padding: .8rem; color: #2e527f; background: #eef4f9; border-radius: .8rem; }
+.gobierno-card-link { display: flex; align-items: center; justify-content: space-between; padding-top: 1.2rem; border-top: 1px solid #edf1f5; color: #2e527f; font-size: .875rem; font-weight: 700; }
+.gobierno-marco { display: flex; flex-direction: column; justify-content: center; padding: 2rem; background: #eaf1f7; border: 1px solid #dce6ef; border-radius: 1rem; }
+.gobierno-version { display: flex; flex-wrap: wrap; column-gap: 1.25rem; row-gap: .5rem; color: #64748b; font-size: .75rem; line-height: 1.8; }
+.gobierno-toc { border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: .8rem; background: white; }
+.gobierno-toc a { display: flex; align-items: baseline; gap: .7rem; padding-block: .6rem; font-size: .8rem; line-height: 1.6; color: #475569; }
+.gobierno-toc a:hover { color: #2e527f; text-decoration: underline; text-underline-offset: 4px; }
+.gobierno-prose { font-size: 1.0625rem; line-height: 1.9; color: #475569; }
+.gobierno-prose section + section { margin-top: 2.75rem; padding-top: 2.5rem; border-top: 1px solid #e2e8f0; }
+.gobierno-prose h2 { font-size: 1.5rem; font-weight: 750; color: #1e3a5f; letter-spacing: -.025em; line-height: 1.35; }
+.gobierno-prose p + p { margin-top: 1.1rem; }
+.gobierno-download { display: flex; align-items: flex-start; gap: 1rem; padding: 1.5rem; margin-top: 1.75rem; background: #edf3f8; border: 1px solid #d7e3ee; border-radius: .75rem; line-height: 1.6; }
+.gobierno-page a:focus-visible { outline: 3px solid #2e527f; outline-offset: 5px; border-radius: 2px; }
+.gobierno-hero a:focus-visible { outline-color: #7de0ef; }
+.gobierno-page h1:focus { outline: none; }
+.gobierno-skip { position: fixed; top: -200px; left: 1rem; padding: .8rem 1rem; z-index: 100; background: white; color: #1e3a5f; border: 2px solid #2e527f; border-radius: .5rem; }
+.gobierno-skip:focus { top: 6rem; }
+@media (min-width: 1024px) { .gobierno-container { padding-inline: 2rem; } }
+@media (prefers-reduced-motion: reduce) { .gobierno-page * { scroll-behavior: auto !important; transition: none !important; } }

@@ -28,6 +28,7 @@ export default function Footer() {
                 <li><Link to="/" className="text-gray-600 hover:text-[#2e527f] font-medium transition-colors">Inicio</Link></li>
                 <li><Link to="/servicios" className="text-gray-600 hover:text-[#2e527f] font-medium transition-colors">Servicios</Link></li>
                 <li><Link to="/nosotros" className="text-gray-600 hover:text-[#2e527f] font-medium transition-colors">Nosotros</Link></li>
+                <li><Link to="/gobierno" className="text-gray-600 hover:text-[#2e527f] text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-e360-primary">Gobierno de la firma</Link></li>
               </ul>
             </nav>
           </div>

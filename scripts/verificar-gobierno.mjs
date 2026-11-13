@@ -1,0 +1,43 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { resolve, sep } from 'node:path';
+import { RUTAS_ESTATICAS } from './rutas.mjs';
+
+const contenido = await readFile('src/datos/gobierno.json');
+const datos = JSON.parse(contenido);
+const versiones = JSON.parse(await readFile('docs/gobierno-versiones.json', 'utf8'));
+const sha = (buffer) => createHash('sha256').update(buffer).digest('hex');
+assert.equal(versiones.contenidoSha256, sha(contenido), 'Regenerar PDFs: el contenido cambió');
+assert.equal(datos.politicas.length, 7);
+assert.equal(new Set(datos.politicas.map((p) => p.slug)).size, 7);
+assert.equal(versiones.documentos.length, 7);
+assert.equal(datos.fechaVigencia, null, 'La vista previa no declara vigencia aprobada');
+const publica = resolve('public/documentos/gobierno');
+for (const p of datos.politicas) {
+  assert.match(p.slug, /^[a-z]+(?:-[a-z]+)*$/);
+  assert(RUTAS_ESTATICAS.some((r) => r.ruta === `/gobierno/${p.slug}`));
+  assert.deepEqual(p.apartados.map((a) => a.id), ['proposito', 'principios', 'aplicacion', 'responsabilidades', 'documentos']);
+  const palabras = [p.introduccion, ...p.apartados.flatMap((a) => a.parrafos)].join(' ').split(/\s+/).length;
+  assert(palabras >= 400 && palabras <= 700, `${p.slug}: ${palabras} palabras`);
+  const resumen = p.resumen.split(/\s+/).length;
+  assert(resumen >= 25 && resumen <= 40, `${p.slug}: resumen de ${resumen} palabras`);
+  for (const consulta of p.consultas) assert.match(consulta.url, /^(https:\/\/|mailto:|\/(?!\/))/);
+  const archivo = resolve('public', `.${p.documento.ruta}`);
+  assert(archivo.startsWith(publica + sep));
+  const pdf = await readFile(archivo);
+  assert.equal(pdf.subarray(0, 5).toString(), '%PDF-');
+  const registro = versiones.documentos.find((d) => d.tema === p.slug);
+  assert.equal(registro.archivo, p.documento.ruta);
+  assert.equal(registro.sha256, sha(pdf), `${p.slug}: PDF alterado`);
+  assert.equal(registro.fechaPublicacion, null);
+  assert.equal(registro.aprobacion, null);
+}
+const texto = contenido.toString();
+assert(!/ASOFOM|Círculo de Proveedores|50%|50\/50|RFC|600,000|fimubac|sourcedoc|sharepoint|teams\.microsoft/i.test(texto), 'Contenido reservado, histórico o del expediente en la colección pública');
+const gobierno = datos.politicas.find((p) => p.slug === 'gobierno-y-responsabilidad');
+assert.match(JSON.stringify(gobierno), /cinco integrantes/);
+assert.match(JSON.stringify(gobierno), /40%/);
+assert.match(JSON.stringify(gobierno), /Administradora Única/);
+assert.equal(RUTAS_ESTATICAS.filter((r) => /^\/gobierno(?:\/|$)/.test(r.ruta)).length, 8);
+console.log('Gobierno: 8 rutas, 7 textos y PDFs coherentes; versiones y exclusiones verificadas.');

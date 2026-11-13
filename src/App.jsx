@@ -23,6 +23,9 @@ import { ROLES_INTERNOS } from './lib/permisos';
 const ClienteDashboard = lazy(() => import('./pages/ClienteDashboard'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const DocumentoPublico = lazy(() => import('./pages/DocumentoPublico'));
+// Las políticas se descargan al entrar en Gobierno, sin añadir su texto al inicio.
+const Gobierno = lazy(() => import('./pages/Gobierno'));
+const PoliticaGobierno = lazy(() => import('./pages/PoliticaGobierno'));
 
 // Ocupa la pantalla completa para que el cambio de ruta no provoque un salto de layout.
 const CargandoPantalla = () => (
@@ -77,6 +80,8 @@ const AppContent = () => {
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/comunica" element={<Comunica />} />
         <Route path="/comunica/:slug" element={<Articulo />} />
+        <Route path="/gobierno" element={<Gobierno />} />
+        <Route path="/gobierno/:slug" element={<PoliticaGobierno />} />
         
         <Route path="/registro" element={<Registro />} />
         <Route path="/pendiente" element={<Pendiente />} />

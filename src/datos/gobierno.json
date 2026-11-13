@@ -1,0 +1,430 @@
+{
+  "titulo": "Gobierno de la firma",
+  "version": "0.1",
+  "estado": "borrador",
+  "fechaPreparacion": "2026-11-13",
+  "fechaVigencia": null,
+  "fuente": "Manual institucional de gobierno y práctica profesional de E360, versión 1.2",
+  "politicas": [
+    {
+      "slug": "etica-e-integridad",
+      "titulo": "Ética e integridad",
+      "icono": "etica",
+      "capitulos": [
+        3,
+        9
+      ],
+      "resumen": "Actuamos con integridad, objetividad y confidencialidad. Nuestras políticas orientan la independencia profesional, el manejo de conflictos de interés y la atención de inquietudes en la relación con clientes, equipo y terceros.",
+      "introduccion": "La confianza requiere decisiones sustentadas y una conducta coherente. La ética profesional guía nuestra relación con clientes, colaboradores, autoridades, proveedores y otras partes interesadas.",
+      "consultas": [],
+      "documento": {
+        "ruta": "/documentos/gobierno/etica-e-integridad-v0.1-borrador.pdf",
+        "version": "0.1",
+        "estado": "borrador"
+      },
+      "apartados": [
+        {
+          "id": "proposito",
+          "titulo": "Propósito y alcance",
+          "parrafos": [
+            "Esta política orienta la conducta de socios, directivos, equipo profesional y administrativo, y de los terceros conforme a su relación con E360. Comprende servicios, contratación, comunicaciones y trabajo presencial o remoto. En cada encargo se consideran las obligaciones legales y profesionales que le corresponden.",
+            "En trabajos que generan confianza en información financiera también consideramos a quienes utilizan esa información. Las presiones de tiempo, comerciales o de permanencia de un cliente se atienden sin alterar los hechos ni debilitar el juicio profesional."
+          ]
+        },
+        {
+          "id": "principios",
+          "titulo": "Principios y compromisos",
+          "parrafos": [
+            "Aplicamos integridad, objetividad, competencia y diligencia profesional, confidencialidad y comportamiento profesional. Evaluamos la independencia al aceptar o continuar servicios y cuando cambian las circunstancias. Las incompatibilidades se resuelven conforme al marco aplicable; algunas requieren rechazar el trabajo.",
+            "Prohibimos ofrecer, solicitar o aceptar beneficios indebidos, directamente o mediante terceros. El efectivo, los beneficios ocultos y los incentivos condicionados a modificar una conclusión se rechazan y reportan. La hospitalidad se evalúa por intención, valor, frecuencia y restricciones profesionales."
+          ]
+        },
+        {
+          "id": "aplicacion",
+          "titulo": "Cómo la aplicamos",
+          "parrafos": [
+            "Identificamos los hechos del dilema, las relaciones involucradas y las amenazas al juicio. Consultamos las reglas aplicables y evaluamos si corresponde eliminar la circunstancia, aplicar una salvaguarda efectiva o retirarnos de la actividad. La decisión y su seguimiento quedan documentados.",
+            "Los conflictos se declaran antes de intervenir y se actualizan ante cambios. El personal sujeto a independencia mantiene confirmaciones documentadas al menos anuales y comprobaciones por encargo. La prestación de servicios adicionales a clientes de auditoría requiere una evaluación específica de incompatibilidades."
+          ]
+        },
+        {
+          "id": "responsabilidades",
+          "titulo": "Responsabilidades y consultas",
+          "parrafos": [
+            "Cada persona comunica oportunamente los posibles conflictos e incumplimientos. La función responsable de ética recibe y registra las inquietudes; los responsables facultados determinan las medidas. Si el asunto involucra al receptor habitual, la dirección asigna una vía alterna y una persona imparcial.",
+            "El mecanismo de reportes protege la confidencialidad mediante acceso limitado y prohíbe represalias por reportar de buena fe. Los reportes anónimos se evalúan según los datos verificables disponibles. Su atención preserva los derechos de las personas y el acceso a autoridades competentes."
+          ]
+        },
+        {
+          "id": "documentos",
+          "titulo": "Documentos y vigencia",
+          "parrafos": [
+            "Esta síntesis deriva de los capítulos 3 y 9 del Manual institucional de gobierno y práctica profesional de E360, versión 1.2. Las reglas se interpretan según el tipo de servicio y sus obligaciones profesionales.",
+            "La dirección y las funciones competentes revisan cambios y lecciones de aplicación. Las versiones difundidas se identifican y conservan para mantener su trazabilidad. Los registros de conflictos, reportes e investigaciones tienen acceso restringido."
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "gobierno-y-responsabilidad",
+      "titulo": "Gobierno y responsabilidad",
+      "icono": "gobierno",
+      "capitulos": [
+        2,
+        12
+      ],
+      "resumen": "Organizamos la dirección, la supervisión y las decisiones de la firma con responsabilidades claras. Nuestro gobierno interno aporta seguimiento y perspectiva independiente, dentro de las facultades de cada función y entidad.",
+      "introduccion": "Nuestro gobierno articula prioridades, capacidad y responsabilidad profesional. Las decisiones se toman con información suficiente, facultades definidas y seguimiento de los acuerdos.",
+      "consultas": [],
+      "documento": {
+        "ruta": "/documentos/gobierno/gobierno-y-responsabilidad-v0.1-borrador.pdf",
+        "version": "0.1",
+        "estado": "borrador"
+      },
+      "apartados": [
+        {
+          "id": "proposito",
+          "titulo": "Propósito y alcance",
+          "parrafos": [
+            "Esta política describe la dirección y el seguimiento internos de E360, denominación institucional utilizada por FFM Consumo, S.A. de C.V. Aplica a socios, consejeros en su ámbito, directivos y funciones responsables de la operación. Cada entidad conserva sus obligaciones y representación.",
+            "El Consejo interno de E360 tiene cinco integrantes, dos de ellos consejeros independientes, equivalentes al 40%. Sus funciones aportan dirección, seguimiento y perspectiva externa. La identidad de los consejeros independientes se mantiene confidencial y se resguarda en registros restringidos."
+          ]
+        },
+        {
+          "id": "principios",
+          "titulo": "Principios y compromisos",
+          "parrafos": [
+            "La administración estatutaria y la representación legal de FFM Consumo corresponden a Karla Daniela Barrios Navarro, Administradora Única, conforme a los instrumentos corporativos vigentes. El consejo interno actúa dentro de su ámbito y mantiene esa distinción de facultades.",
+            "Las prioridades y los compromisos consideran calidad, independencia, protección de información, capacidad real y riesgo. Cada función tiene responsabilidades, suplencia y facultades conocidas. La acumulación de funciones exige evaluar conflictos, capacidad y concentración de accesos, preservando la separación requerida."
+          ]
+        },
+        {
+          "id": "aplicacion",
+          "titulo": "Cómo la aplicamos",
+          "parrafos": [
+            "Los asuntos se resuelven en el nivel competente. Los cambios relevantes en riesgo, alcance, recursos o compromisos se escalan a gerencia. La aceptación sensible, independencia, opinión y emisión requieren intervención del socio u otra autoridad competente, según el caso.",
+            "Las decisiones identifican hechos, fuentes, criterio, impacto, alternativas, responsable y fecha. Registramos quién aprobó, sobre qué versión y con qué condiciones. El silencio o la recepción de un mensaje no sustituyen una aprobación. Las delegaciones tienen materia y plazo delimitados.",
+            "Antes de asumir un servicio comprobamos capacidad, experiencia, supervisión y calendario. Los servicios críticos contemplan continuidad ante ausencias o fallas. El seguimiento se organiza semanalmente por encargo, quincenalmente por cartera, mensualmente por operación, trimestralmente por capacidades y anualmente por estrategia, con intensidad proporcional al riesgo."
+          ]
+        },
+        {
+          "id": "responsabilidades",
+          "titulo": "Responsabilidades y consultas",
+          "parrafos": [
+            "La dirección establece prioridades y da seguimiento a los acuerdos. Gerencia administra capacidad y ejecución; los socios atienden decisiones profesionales dentro de sus facultades. Los consejeros independientes participan en los asuntos de su mandato y con acceso a la información pertinente.",
+            "Las dudas de facultades o excepciones se consultan con la función competente. Cada acuerdo identifica responsable, fecha y evidencia de cierre. Los indicadores utilizan fuentes y definiciones verificables, mientras que los datos individuales o reservados conservan su acceso limitado."
+          ]
+        },
+        {
+          "id": "documentos",
+          "titulo": "Documentos y vigencia",
+          "parrafos": [
+            "Esta síntesis deriva de los capítulos 2 y 12 del Manual institucional, versión 1.2. La dirección mantiene el control documental con las funciones responsables y revisa el manual al menos anualmente y ante cambios relevantes.",
+            "Las actualizaciones identifican alcance, versión, fecha efectiva y responsables. Los contratos, poderes y obligaciones profesionales conservan su régimen propio. Las excepciones requieren fundamento, salvaguardas y revisión, y deben ser compatibles con las obligaciones aplicables."
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "calidad-y-practica-profesional",
+      "titulo": "Calidad profesional",
+      "icono": "calidad",
+      "capitulos": [
+        4,
+        5,
+        7
+      ],
+      "resumen": "La calidad acompaña cada etapa del servicio: aceptación, planeación, evidencia, revisión y conclusiones. Combinamos metodología y tecnología con juicio profesional, supervisión y responsabilidad humana sobre los entregables y las decisiones.",
+      "introduccion": "Trabajamos para que cada conclusión sea congruente con el alcance acordado y la evidencia obtenida. La calidad se construye durante todo el servicio y se revisa antes de liberar sus resultados.",
+      "consultas": [],
+      "documento": {
+        "ruta": "/documentos/gobierno/calidad-y-practica-profesional-v0.1-borrador.pdf",
+        "version": "0.1",
+        "estado": "borrador"
+      },
+      "apartados": [
+        {
+          "id": "proposito",
+          "titulo": "Propósito y alcance",
+          "parrafos": [
+            "Esta política comprende auditoría, consultoría y servicios contables conforme a sus normas y responsabilidades específicas. Antes de aceptar un encargo identificamos entidad, periodo, objetivo, entregables, marco técnico y condiciones de información. La administración del cliente conserva sus responsabilidades.",
+            "Evaluamos integridad, independencia, conflictos, competencia, especialistas, disponibilidad y calendario. El responsable facultado decide la aceptación y sus condiciones. Los cambios de alcance, información, riesgo o capacidad se evalúan nuevamente y se documentan con el cliente cuando corresponde."
+          ]
+        },
+        {
+          "id": "principios",
+          "titulo": "Principios y compromisos",
+          "parrafos": [
+            "Mantenemos escepticismo profesional y atendemos evidencia contradictoria. Distinguimos hechos, hipótesis, estimaciones y asuntos pendientes. Las conclusiones deben corresponder a la suficiencia y pertinencia de su soporte; una explicación o una salida automatizada se evalúa según su finalidad y confiabilidad.",
+            "Auditoría A+ organiza el trabajo con anticipación del informe, evidencia trazable, revisión y puntos de control. Se integra con las normas profesionales aplicables y mantiene la responsabilidad del socio y del equipo. El Sistema A3 apoya la gestión y trazabilidad de los encargos."
+          ]
+        },
+        {
+          "id": "aplicacion",
+          "titulo": "Cómo la aplicamos",
+          "parrafos": [
+            "La planeación relaciona riesgos, procedimientos, evidencia esperada, responsables y fechas. Un borrador temprano permite anticipar preguntas y necesidades de soporte, conservando su carácter de hipótesis. Las modificaciones relevantes del plan requieren revisión y registro.",
+            "Durante la ejecución comprobamos origen, periodo e integridad de la información y documentamos trabajo, resultados y excepciones. La preparación, revisión y aprobación son intervenciones distintas. Las consultas y diferencias relevantes se resuelven antes de fechar o liberar el informe según el requisito aplicable.",
+            "Cuando corresponde una revisión formal de calidad, interviene un revisor humano con elegibilidad y objetividad suficientes. El módulo automatizado EQCR C1 apoya la identificación de observaciones; su salida no constituye la revisión humana exigible. Antes de emitir verificamos asuntos, versión final y autorización del socio."
+          ]
+        },
+        {
+          "id": "responsabilidades",
+          "titulo": "Responsabilidades y consultas",
+          "parrafos": [
+            "El equipo prepara y documenta; los responsables del encargo dirigen, supervisan y revisan. Metodología y Calidad mantienen criterios y consultas. El socio conserva la responsabilidad profesional correspondiente y la decisión de opinión y emisión dentro de sus facultades.",
+            "La inteligencia artificial apoya análisis, cálculos y preparación. Las personas contrastan sus resultados con fuentes identificables y conservan los juicios significativos. Las inconformidades del cliente tienen una ruta de atención; si involucran al responsable habitual, se asigna otro receptor competente."
+          ]
+        },
+        {
+          "id": "documentos",
+          "titulo": "Documentos y vigencia",
+          "parrafos": [
+            "Esta síntesis deriva de los capítulos 4, 5 y 7 del Manual institucional, versión 1.2. El marco profesional se determina para cada servicio, jurisdicción y periodo. Las actualizaciones consideran sus fechas efectivas y efectos en encargos activos.",
+            "Los hallazgos de revisiones, consultas e incidentes alimentan acciones de mejora, formación y cambios controlados. El seguimiento distingue una corrección puntual de una deficiencia del sistema y comprueba la eficacia de las medidas adoptadas."
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "privacidad-y-seguridad",
+      "titulo": "Privacidad y seguridad",
+      "icono": "privacidad",
+      "capitulos": [
+        6,
+        7
+      ],
+      "resumen": "Protegemos la información de clientes, equipo y terceros mediante finalidades definidas, acceso según función y uso autorizado de herramientas. La confidencialidad, la conservación y la atención de incidentes forman parte del trabajo profesional.",
+      "introduccion": "El cuidado de la información acompaña cada servicio y relación. Compartimos los principios de protección y uso responsable, preservando los detalles de seguridad y los expedientes de acceso restringido.",
+      "consultas": [],
+      "documento": {
+        "ruta": "/documentos/gobierno/privacidad-y-seguridad-v0.1-borrador.pdf",
+        "version": "0.1",
+        "estado": "borrador"
+      },
+      "apartados": [
+        {
+          "id": "proposito",
+          "titulo": "Propósito y alcance",
+          "parrafos": [
+            "Esta política comprende la información de clientes, colaboradores, proveedores y de la propia firma, en soportes físicos y digitales. Se aplica al trabajo presencial, remoto, visitas y comunicaciones. La entidad responsable de un tratamiento se identifica en los instrumentos correspondientes.",
+            "La información se utiliza para fines legítimos, definidos y compatibles con la relación profesional. La consulta, transferencia y conservación consideran obligaciones legales, profesionales y contractuales. El aviso de privacidad aplicable mantiene su propio alcance, versión y medios para ejercer derechos."
+          ]
+        },
+        {
+          "id": "principios",
+          "titulo": "Principios y compromisos",
+          "parrafos": [
+            "Recabamos y compartimos la información pertinente para la finalidad autorizada. La confidencialidad continúa después de terminar el servicio o la relación. Los accesos se limitan a quienes los necesitan por función; la autorización de una herramienta no permite cargar cualquier expediente.",
+            "El uso de plataformas externas e inteligencia artificial considera datos, finalidad, conservación y condiciones del proveedor. La responsabilidad de E360 sobre el uso y la configuración se mantiene. Las certificaciones de un proveedor se identifican con su titular y alcance."
+          ]
+        },
+        {
+          "id": "aplicacion",
+          "titulo": "Cómo la aplicamos",
+          "parrafos": [
+            "Los permisos se autorizan y revisan ante cambios de función y se retiran al finalizar la relación. Los archivos se mantienen en repositorios autorizados y con control de versiones. Antes de enviar información se verifican destinatarios, adjuntos, clasificación y permisos de los enlaces.",
+            "Los dispositivos y el trabajo remoto requieren medidas de protección acordes con la información utilizada. Las publicaciones y ejemplos se preparan con datos autorizados o adecuadamente desidentificados, verificando que su combinación no permita reconstruir información reservada.",
+            "Ante una sospecha de incidente se informa de inmediato al líder y a la función de Tecnología o seguridad designada. Se contiene el riesgo, preserva evidencia y evalúa el alcance. Los responsables determinan las comunicaciones procedentes, recuperan la operación y comprueban las medidas correctivas."
+          ]
+        },
+        {
+          "id": "responsabilidades",
+          "titulo": "Responsabilidades y consultas",
+          "parrafos": [
+            "Cada persona protege la información bajo su acceso y comunica errores o accesos inusuales, incluso sin daño confirmado. Tecnología mantiene requisitos de herramientas, permisos y continuidad. Los responsables de cada tratamiento atienden sus obligaciones y coordinan la intervención de las funciones competentes.",
+            "Las solicitudes relacionadas con datos personales se atienden conforme al aviso aplicable y los medios institucionales habilitados. Los incidentes se investigan con acceso limitado, distinguiendo hechos confirmados y asuntos en revisión. Las comunicaciones a titulares, clientes o autoridades se determinan según las obligaciones del caso."
+          ]
+        },
+        {
+          "id": "documentos",
+          "titulo": "Documentos y vigencia",
+          "parrafos": [
+            "Esta síntesis deriva de los capítulos 6 y 7 del Manual institucional, versión 1.2. La conservación se define según el documento, finalidad y obligaciones; un requerimiento o investigación puede suspender una eliminación prevista.",
+            "La recuperación y los respaldos se definen y comprueban según el riesgo. La eliminación o devolución considera los compromisos aplicables y sus limitaciones técnicas. Los expedientes, configuraciones de seguridad y registros de incidentes permanecen reservados. Este texto no sustituye el aviso de privacidad."
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "personas-e-inclusion",
+      "titulo": "Personas e inclusión",
+      "icono": "personas",
+      "capitulos": [
+        8,
+        9
+      ],
+      "resumen": "Promovemos un entorno de trato digno, igualdad de oportunidades y desarrollo profesional. Organizamos el trabajo con expectativas claras, coordinación y respeto a los derechos, y atendemos reportes con confidencialidad, imparcialidad y protección frente a represalias.",
+      "introduccion": "Las personas sostienen la calidad del trabajo. Nuestras políticas orientan la incorporación, el desarrollo, la coordinación y la convivencia respetuosa en todas las modalidades de servicio.",
+      "consultas": [],
+      "documento": {
+        "ruta": "/documentos/gobierno/personas-e-inclusion-v0.1-borrador.pdf",
+        "version": "0.1",
+        "estado": "borrador"
+      },
+      "apartados": [
+        {
+          "id": "proposito",
+          "titulo": "Propósito y alcance",
+          "parrafos": [
+            "Esta política comprende al equipo profesional, administrativo y tecnológico conforme a su relación laboral o contractual. También orienta las interacciones con clientes y terceros vinculados al trabajo. Incluye selección, asignación, evaluación, formación y comunicaciones presenciales o digitales.",
+            "La incorporación identifica entidad contratante, función, líder, condiciones y obligaciones. La documentación se facilita para su comprensión y aceptación. Los acuerdos de confidencialidad y conducta acompañan los instrumentos de contratación que correspondan y los expedientes individuales mantienen acceso restringido."
+          ]
+        },
+        {
+          "id": "principios",
+          "titulo": "Principios y compromisos",
+          "parrafos": [
+            "Prohibimos discriminación, acoso, trabajo infantil, trabajo forzoso y represalias por reportes de buena fe. Las decisiones de desarrollo se basan en requisitos y evidencia pertinentes para la función. Las relaciones personales que puedan afectar decisiones se declaran y reciben una revisión imparcial.",
+            "Respetamos los derechos de descanso, permisos, maternidad, paternidad, lactancia y cuidados conforme al marco aplicable. Las necesidades de accesibilidad o ajustes se atienden mediante diálogo reservado. Las condiciones de trabajo se organizan con respeto a la privacidad y a las obligaciones de cada relación."
+          ]
+        },
+        {
+          "id": "aplicacion",
+          "titulo": "Cómo la aplicamos",
+          "parrafos": [
+            "Los líderes coordinan prioridades, entregables, disponibilidad y carga de trabajo. Los acuerdos de modalidad remota definen responsabilidades, condiciones y continuidad según el régimen aplicable. La coordinación de reuniones respeta la privacidad; la disponibilidad profesional se organiza dentro de las condiciones de trabajo.",
+            "La retroalimentación utiliza hechos concretos, criterios y acciones esperadas. La evaluación integral se realiza cada cuatro meses y considera complejidad, calidad, colaboración y apoyo disponible. La formación combina explicación y práctica revisada; su efecto se evalúa junto con evidencia de competencia.",
+            "Los reportes de acoso, discriminación o abuso se registran y se evalúan con imparcialidad. Cuando existe contacto seguro, se acusa recepción dentro de dos días hábiles. La valoración inicial se realiza dentro de diez días hábiles; el objetivo ordinario de atención es de treinta, con ampliaciones justificadas según complejidad y obligaciones aplicables."
+          ]
+        },
+        {
+          "id": "responsabilidades",
+          "titulo": "Responsabilidades y consultas",
+          "parrafos": [
+            "Cada persona contribuye al trato respetuoso y comunica hechos relevantes de buena fe. Los líderes atienden sobrecarga y necesidades de apoyo. Personas y administración acompañan las condiciones y los derechos; la función responsable de ética y personas recibe y registra reportes.",
+            "Si existe conflicto con el receptor habitual, la dirección asigna una vía alterna y un responsable imparcial. Los reportes anónimos se evalúan según la información disponible. Se protegen la confidencialidad, el derecho de respuesta y el acceso a autoridades, y se revisa que no existan represalias."
+          ]
+        },
+        {
+          "id": "documentos",
+          "titulo": "Documentos y vigencia",
+          "parrafos": [
+            "Esta síntesis deriva de los capítulos 8 y 9 del Manual institucional, versión 1.2. Su aplicación considera el régimen de cada relación y las obligaciones pertinentes. Las prestaciones adicionales se comunican cuando exista una regla aprobada y evidencia.",
+            "Los registros de contratación, formación, evaluaciones y atención de reportes se conservan con acceso limitado. La revisión de políticas incorpora cambios normativos, riesgos y aprendizajes, protegiendo los datos personales y las circunstancias individuales."
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "sustentabilidad",
+      "titulo": "Sustentabilidad y responsabilidad con el entorno",
+      "icono": "entorno",
+      "capitulos": [
+        11
+      ],
+      "resumen": "Orientamos nuestras prácticas al uso razonable de recursos, documentos, equipos y desplazamientos. Las decisiones consideran calidad, seguridad y vida útil; los resultados ambientales se comunican cuando cuentan con medición, alcance y evidencia verificables.",
+      "introduccion": "Como firma de servicios profesionales, concentramos nuestras prácticas en los recursos que utiliza la operación. Procuramos decisiones responsables y una comunicación ambiental sustentada.",
+      "consultas": [],
+      "documento": {
+        "ruta": "/documentos/gobierno/sustentabilidad-v0.1-borrador.pdf",
+        "version": "0.1",
+        "estado": "borrador"
+      },
+      "apartados": [
+        {
+          "id": "proposito",
+          "titulo": "Propósito y alcance",
+          "parrafos": [
+            "Esta política comprende equipos, documentos, plataformas, energía, agua, espacios y desplazamientos relacionados con la operación. Aplica al equipo y a los terceros conforme a su actividad y contrato, considerando qué controla directamente la firma y qué depende de instalaciones compartidas o proveedores.",
+            "Las prácticas se adaptan a las condiciones de cada servicio y lugar de trabajo. La seguridad de la información, la calidad profesional y las condiciones adecuadas para las personas se consideran al decidir cómo utilizar recursos o modificar una actividad."
+          ]
+        },
+        {
+          "id": "principios",
+          "titulo": "Principios y compromisos",
+          "parrafos": [
+            "Promovemos el uso razonable de energía, agua y materiales, la reducción de impresiones innecesarias y el aprovechamiento de la vida útil de los equipos. Las compras consideran necesidad, funcionalidad, duración, mantenimiento y reparación, junto con el costo y las condiciones de operación.",
+            "La comunicación distingue prácticas adoptadas de resultados medidos. El trabajo remoto puede modificar consumos y traslados; por sí solo no demuestra una reducción neta de emisiones. Las afirmaciones ambientales requieren metodología, periodo, universo y evidencia que permitan comprenderlas."
+          ]
+        },
+        {
+          "id": "aplicacion",
+          "titulo": "Cómo la aplicamos",
+          "parrafos": [
+            "Utilizamos expedientes digitales cuando el servicio y sus destinatarios lo permiten. Antes de imprimir revisamos necesidad, versión y número de copias. Los documentos confidenciales se recuperan de las áreas de impresión y se eliminan con las medidas de seguridad correspondientes.",
+            "Se promueve apagar o suspender equipos y utilizar iluminación y climatización de manera razonable. Las fugas y necesidades de mantenimiento se reportan al responsable de las instalaciones. En espacios de clientes o compartidos, las acciones se coordinan con quien los administra.",
+            "La baja de equipo contempla inventario, autorización, eliminación segura de datos y destino. Se conserva constancia de entrega y, cuando corresponde, del gestor apropiado para residuos electrónicos. Las visitas y viajes se deciden por necesidad profesional, evidencia, relación y costo; las reuniones remotas se utilizan cuando cumplen su propósito."
+          ]
+        },
+        {
+          "id": "responsabilidades",
+          "titulo": "Responsabilidades y consultas",
+          "parrafos": [
+            "Cada persona cuida los recursos a su alcance e informa incidencias. Los responsables de operación e instalaciones coordinan mantenimiento, compras y disposición. Tecnología participa en la protección de datos al reutilizar, transferir o retirar equipos. La dirección revisa mejoras y recursos necesarios.",
+            "La firma está definiendo planes y acciones para el registro de residuos y la eficiencia de recursos. Los indicadores deben identificar periodo, unidad, universo, fuente y responsable. La consolidación de datos permite establecer una línea base antes de fijar metas y comparar resultados equivalentes."
+          ]
+        },
+        {
+          "id": "documentos",
+          "titulo": "Documentos y vigencia",
+          "parrafos": [
+            "Esta síntesis deriva del capítulo 11 del Manual institucional, versión 1.2. La firma no reporta actualmente inventarios consolidados de emisiones, mediciones ambientales anuales ni metas ambientales cuantificadas con línea base y plazo. Los resultados se comunican una vez medidos y comprobados.",
+            "Las versiones de esta política conservan sus fechas y alcance. Las futuras iniciativas se evalúan conforme a prioridades y capacidad; cuando se adopten, identificarán responsables, recursos y evidencia. La revisión del contenido evita atribuir certificaciones, reducciones o impactos que no estén sustentados."
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "proveedores-y-aliados",
+      "titulo": "Proveedores y aliados",
+      "icono": "proveedores",
+      "capitulos": [
+        10,
+        3,
+        6
+      ],
+      "resumen": "Seleccionamos proveedores y aliados con criterios proporcionales al riesgo y acuerdos claros. La integridad, la calidad, la protección de información y el seguimiento orientan la contratación, la ejecución y el cierre de cada relación.",
+      "introduccion": "Las relaciones con terceros requieren claridad sobre lo que se contrata, quién responde y cómo se protege la información. La revisión se adapta al servicio y a sus riesgos.",
+      "consultas": [],
+      "documento": {
+        "ruta": "/documentos/gobierno/proveedores-y-aliados-v0.1-borrador.pdf",
+        "version": "0.1",
+        "estado": "borrador"
+      },
+      "apartados": [
+        {
+          "id": "proposito",
+          "titulo": "Propósito y alcance",
+          "parrafos": [
+            "Esta política comprende proveedores, especialistas, plataformas y aliados de negocio conforme al servicio contratado. Abarca identificación de la necesidad, selección, acuerdos, seguimiento y cierre. Una compra ordinaria requiere una revisión diferente de un especialista que interviene en una conclusión o una plataforma que procesa expedientes.",
+            "Los acuerdos distinguen presentación comercial, referencia, subcontratación y responsabilidad profesional. Se precisa quién contrata, ejecuta, revisa y responde frente al cliente. La intervención de un tercero conserva las responsabilidades profesionales que corresponden a E360."
+          ]
+        },
+        {
+          "id": "principios",
+          "titulo": "Principios y compromisos",
+          "parrafos": [
+            "La selección considera capacidad, calidad, costo total, seguridad y continuidad. Solicitamos información proporcional al riesgo y evaluamos conflictos de interés. Quien tiene una relación personal, económica o comercial que afecte la decisión la declara y se aparta de la decisión correspondiente.",
+            "Las relaciones relevantes incorporan expectativas de legalidad, integridad, trato digno y protección de información. Rechazamos corrupción, trabajo infantil y trabajo forzoso. Las acreditaciones ofrecidas por un tercero se comprueban según entidad, alcance y vigencia, sin atribuirlas como certificaciones propias de E360."
+          ]
+        },
+        {
+          "id": "aplicacion",
+          "titulo": "Cómo la aplicamos",
+          "parrafos": [
+            "La contratación documenta necesidad, recomendación y aprobación según facultades, incluyendo la justificación de contratación directa cuando procede. El acuerdo define servicio, entregables, plazos, precio, responsabilidades, confidencialidad, propiedad de productos, soporte y terminación. El tratamiento de datos se incorpora cuando corresponde.",
+            "Los servicios tecnológicos consideran accesos, subproveedores, incidentes, conservación y recuperación. Verificamos que las licencias permitan el uso previsto. El responsable comprueba entregas e incidencias, y reevalúa riesgos si cambia el desempeño o se amplían permisos o servicios.",
+            "Los cambios de cuenta bancaria se verifican por contacto conocido y una vía independiente. Los pagos deben corresponder a obligaciones y servicios reales. Ante incumplimientos se evalúan corrección, continuidad, suspensión o terminación. El cierre retira permisos, recupera activos y atiende devolución o eliminación de información conforme al acuerdo y demás obligaciones."
+          ]
+        },
+        {
+          "id": "responsabilidades",
+          "titulo": "Responsabilidades y consultas",
+          "parrafos": [
+            "El responsable de la contratación solicita información, documenta la evaluación y da seguimiento. Las funciones especializadas intervienen según el riesgo y las facultades aplicables. Para especialistas del encargo se definen objetivos e interacción, y el equipo evalúa la adecuación del trabajo recibido.",
+            "Proveedores y aliados pueden reportar desviaciones a la dirección o a la función responsable de ética por los medios institucionales. La atención sigue reglas de confidencialidad e imparcialidad. El uso del nombre o logotipo de E360 y la difusión de casos requieren autorización."
+          ]
+        },
+        {
+          "id": "documentos",
+          "titulo": "Documentos y vigencia",
+          "parrafos": [
+            "Esta síntesis deriva del capítulo 10 y de los principios pertinentes de los capítulos 3 y 6 del Manual institucional, versión 1.2. Las exigencias se ajustan a la actividad y capacidad del tercero y a las obligaciones del servicio.",
+            "La revisión de la relación conserva contratación, evaluaciones, pagos, incidencias y cierre en repositorios restringidos. La comunicación pública se limita a principios y procesos generales; protege precios, datos de contacto, evaluaciones individuales y otra información reservada de terceros."
+          ]
+        }
+      ]
+    }
+  ]
+}
