@@ -35,9 +35,9 @@ export function RutaGobierno({ titulo }) {
 }
 
 export function EstadoDocumento({ datos }) {
+  const fecha = new Intl.DateTimeFormat('es-CO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${datos.fechaEdicion}T00:00:00Z`));
   return <div className="gobierno-version">
-    <span className="inline-flex items-center gap-2 font-semibold"><span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-amber-600" />Borrador para revisión · v{datos.version}</span>
-    <span>Preparado el <time dateTime={datos.fechaPreparacion}>13 de noviembre de 2026</time></span>
-    <span>Vigencia pública pendiente de aprobación</span>
+    <span className="font-semibold">Versión {datos.version}</span>
+    <span>Fecha de edición: <time dateTime={datos.fechaEdicion}>{fecha}</time></span>
   </div>;
 }

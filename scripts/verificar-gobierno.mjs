@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { resolve, sep } from 'node:path';
 import { RUTAS_ESTATICAS } from './rutas.mjs';
@@ -12,7 +12,10 @@ assert.equal(versiones.contenidoSha256, sha(contenido), 'Regenerar PDFs: el cont
 assert.equal(datos.politicas.length, 7);
 assert.equal(new Set(datos.politicas.map((p) => p.slug)).size, 7);
 assert.equal(versiones.documentos.length, 7);
-assert.equal(datos.fechaVigencia, null, 'La vista previa no declara vigencia aprobada');
+assert.equal(datos.version, '1.0');
+assert.equal(datos.fechaEdicion, '2026-11-13');
+assert(!('estado' in datos) && !('fechaVigencia' in datos), 'El control editorial no se incorpora al contenido público');
+const editorial = /borrador para revisi[oó]n|borradores para revisi[oó]n|vista previa|pendiente de aprobaci[oó]n|vigencia p[uú]blica pendiente|descargar borrador|v0\.1-borrador\.pdf/i;
 const publica = resolve('public/documentos/gobierno');
 for (const p of datos.politicas) {
   assert.match(p.slug, /^[a-z]+(?:-[a-z]+)*$/);
@@ -30,10 +33,25 @@ for (const p of datos.politicas) {
   const registro = versiones.documentos.find((d) => d.tema === p.slug);
   assert.equal(registro.archivo, p.documento.ruta);
   assert.equal(registro.sha256, sha(pdf), `${p.slug}: PDF alterado`);
-  assert.equal(registro.fechaPublicacion, null);
-  assert.equal(registro.aprobacion, null);
+  assert.equal(registro.fechaEdicion, datos.fechaEdicion);
+  assert.equal(p.documento.version, '1.0');
+  assert.equal(p.documento.ruta, `/documentos/gobierno/${p.slug}-v1.0.pdf`);
+  assert(!('estado' in p.documento));
 }
 const texto = contenido.toString();
+assert(!editorial.test(texto), 'Advertencia editorial en el contenido público');
+assert.equal((await readdir(publica)).filter((n) => n.endsWith('.pdf')).length, 7);
+assert(!(await readdir(publica)).some((n) => n.includes('borrador')));
+const htaccess = await readFile('public/.htaccess', 'utf8');
+const redireccion = htaccess.split(/\r?\n/).find((l) => l.includes('-v0\\.1-borrador\\.pdf$'));
+assert(redireccion?.endsWith('[R=301,L]'), 'Falta redirección permanente de descargas anteriores');
+assert(htaccess.indexOf(redireccion) < htaccess.indexOf('RewriteCond %{REQUEST_FILENAME} -f'));
+const patron = new RegExp(redireccion.trim().split(/\s+/)[1]);
+for (const p of datos.politicas) {
+  const vieja = `documentos/gobierno/${p.slug}-v0.1-borrador.pdf`;
+  assert.equal(vieja.replace(patron, 'documentos/gobierno/$1-v1.0.pdf'), `documentos/gobierno/${p.slug}-v1.0.pdf`);
+}
+assert(!patron.test('documentos/gobierno/ajeno-v0.1-borrador.pdf'));
 assert(!/ASOFOM|Círculo de Proveedores|50%|50\/50|RFC|600,000|fimubac|sourcedoc|sharepoint|teams\.microsoft/i.test(texto), 'Contenido reservado, histórico o del expediente en la colección pública');
 const gobierno = datos.politicas.find((p) => p.slug === 'gobierno-y-responsabilidad');
 assert.match(JSON.stringify(gobierno), /cinco integrantes/);

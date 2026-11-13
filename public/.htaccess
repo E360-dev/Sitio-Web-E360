@@ -26,6 +26,10 @@ ErrorDocument 404 /_notfound/index.html
   RewriteCond %{HTTP_HOST} ^www\.e360\.pro$ [NC]
   RewriteRule ^(.*)$ https://e360.pro/$1 [R=301,L]
 
+  # Las descargas iniciales conservan compatibilidad incluso si rsync deja
+  # físicamente los archivos anteriores en el servidor.
+  RewriteRule ^documentos/gobierno/(etica-e-integridad|gobierno-y-responsabilidad|calidad-y-practica-profesional|privacidad-y-seguridad|personas-e-inclusion|sustentabilidad|proveedores-y-aliados)-v0\.1-borrador\.pdf$ /documentos/gobierno/$1-v1.0.pdf [R=301,L]
+
   # La shell privada arranca React sin contenido ni canónica de la portada.
   RewriteRule ^(?:admin|cliente|documento|login|registro|pendiente|crear-contrasena)(?:/.*)?$ /_private/index.html [L]
 

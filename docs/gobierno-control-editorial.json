@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "fechaEdicion": "2026-11-13",
+  "autorizacionEditorial": {
+    "fecha": "2026-11-13",
+    "origen": "Instrucción explícita de JD en esta conversación",
+    "alcance": "Presentar sitio, PDFs y video como materiales terminados; conservar control editorial interno."
+  },
+  "fechaPublicacionVerificada": null,
+  "pendientesInternos": [
+    "Confirmar aviso de privacidad y URL institucional",
+    "Confirmar canales de ética, personas e incidentes sin inventar mecanismos públicos"
+  ],
+  "historico": "gobierno-historico/v0.1/versiones.json"
+}

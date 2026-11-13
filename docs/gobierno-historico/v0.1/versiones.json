@@ -1,0 +1,76 @@
+{
+  "fuente": "Manual institucional de gobierno y práctica profesional de E360, versión 1.2",
+  "contenidoSha256": "0353e3647a6041d146f181923e818a3c3f4a1c097969857ac0b17446e52e64e8",
+  "documentos": [
+    {
+      "tema": "etica-e-integridad",
+      "archivo": "/documentos/gobierno/etica-e-integridad-v0.1-borrador.pdf",
+      "version": "0.1",
+      "estado": "borrador",
+      "fechaPreparacion": "2026-11-13",
+      "fechaPublicacion": null,
+      "aprobacion": null,
+      "sha256": "d71932ed4882c2bb7f1fdd48366ac51b22c13b2abfd9a780cc7c19cb9f9c7e0c"
+    },
+    {
+      "tema": "gobierno-y-responsabilidad",
+      "archivo": "/documentos/gobierno/gobierno-y-responsabilidad-v0.1-borrador.pdf",
+      "version": "0.1",
+      "estado": "borrador",
+      "fechaPreparacion": "2026-11-13",
+      "fechaPublicacion": null,
+      "aprobacion": null,
+      "sha256": "7512efbce3ac18c0489c1b0ad6272e37833f1f0ac858a957eeac78623250d57d"
+    },
+    {
+      "tema": "calidad-y-practica-profesional",
+      "archivo": "/documentos/gobierno/calidad-y-practica-profesional-v0.1-borrador.pdf",
+      "version": "0.1",
+      "estado": "borrador",
+      "fechaPreparacion": "2026-11-13",
+      "fechaPublicacion": null,
+      "aprobacion": null,
+      "sha256": "b880cfad5cb5d4401d68042b930dc39f663305a15469b540392186498c496ec7"
+    },
+    {
+      "tema": "privacidad-y-seguridad",
+      "archivo": "/documentos/gobierno/privacidad-y-seguridad-v0.1-borrador.pdf",
+      "version": "0.1",
+      "estado": "borrador",
+      "fechaPreparacion": "2026-11-13",
+      "fechaPublicacion": null,
+      "aprobacion": null,
+      "sha256": "13208f9bf94003371398ad041c0454536bedf3cfbf6a1707590c007ce54be832"
+    },
+    {
+      "tema": "personas-e-inclusion",
+      "archivo": "/documentos/gobierno/personas-e-inclusion-v0.1-borrador.pdf",
+      "version": "0.1",
+      "estado": "borrador",
+      "fechaPreparacion": "2026-11-13",
+      "fechaPublicacion": null,
+      "aprobacion": null,
+      "sha256": "6361c688776e604b8be862ee362193feca948c439de2412528a940f1a32f3386"
+    },
+    {
+      "tema": "sustentabilidad",
+      "archivo": "/documentos/gobierno/sustentabilidad-v0.1-borrador.pdf",
+      "version": "0.1",
+      "estado": "borrador",
+      "fechaPreparacion": "2026-11-13",
+      "fechaPublicacion": null,
+      "aprobacion": null,
+      "sha256": "0ea19ad9c1ce915322a72fa1397dd1d46e2e3e9d2f2bec811e3b947c60b4da9a"
+    },
+    {
+      "tema": "proveedores-y-aliados",
+      "archivo": "/documentos/gobierno/proveedores-y-aliados-v0.1-borrador.pdf",
+      "version": "0.1",
+      "estado": "borrador",
+      "fechaPreparacion": "2026-11-13",
+      "fechaPublicacion": null,
+      "aprobacion": null,
+      "sha256": "7974fb1f86c2a58f8187dda0b539d77b59cf3a5a216d4ba3b6f99abc743bdd9a"
+    }
+  ]
+}

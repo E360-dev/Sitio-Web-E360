@@ -1,76 +1,55 @@
 {
   "fuente": "Manual institucional de gobierno y práctica profesional de E360, versión 1.2",
-  "contenidoSha256": "0353e3647a6041d146f181923e818a3c3f4a1c097969857ac0b17446e52e64e8",
+  "contenidoSha256": "994d5d1ae62b52845283142697fbdd7c4e5a75ae80b5fda0d06888021b718529",
   "documentos": [
     {
       "tema": "etica-e-integridad",
-      "archivo": "/documentos/gobierno/etica-e-integridad-v0.1-borrador.pdf",
-      "version": "0.1",
-      "estado": "borrador",
-      "fechaPreparacion": "2026-11-13",
-      "fechaPublicacion": null,
-      "aprobacion": null,
-      "sha256": "d71932ed4882c2bb7f1fdd48366ac51b22c13b2abfd9a780cc7c19cb9f9c7e0c"
+      "archivo": "/documentos/gobierno/etica-e-integridad-v1.0.pdf",
+      "version": "1.0",
+      "fechaEdicion": "2026-11-13",
+      "sha256": "22d2886533b0be52ea41fea37a301f5c8584441cbe8f2df5184368c9cfe88966"
     },
     {
       "tema": "gobierno-y-responsabilidad",
-      "archivo": "/documentos/gobierno/gobierno-y-responsabilidad-v0.1-borrador.pdf",
-      "version": "0.1",
-      "estado": "borrador",
-      "fechaPreparacion": "2026-11-13",
-      "fechaPublicacion": null,
-      "aprobacion": null,
-      "sha256": "7512efbce3ac18c0489c1b0ad6272e37833f1f0ac858a957eeac78623250d57d"
+      "archivo": "/documentos/gobierno/gobierno-y-responsabilidad-v1.0.pdf",
+      "version": "1.0",
+      "fechaEdicion": "2026-11-13",
+      "sha256": "3a93d94bebbb869f150948e67547b2f4daf8529ff85a2972dfe9060a90001111"
     },
     {
       "tema": "calidad-y-practica-profesional",
-      "archivo": "/documentos/gobierno/calidad-y-practica-profesional-v0.1-borrador.pdf",
-      "version": "0.1",
-      "estado": "borrador",
-      "fechaPreparacion": "2026-11-13",
-      "fechaPublicacion": null,
-      "aprobacion": null,
-      "sha256": "b880cfad5cb5d4401d68042b930dc39f663305a15469b540392186498c496ec7"
+      "archivo": "/documentos/gobierno/calidad-y-practica-profesional-v1.0.pdf",
+      "version": "1.0",
+      "fechaEdicion": "2026-11-13",
+      "sha256": "96d61a37a8ecbac69e4a9330ec156f796c3fcd3cbf9cfb4fc79120728f98caaf"
     },
     {
       "tema": "privacidad-y-seguridad",
-      "archivo": "/documentos/gobierno/privacidad-y-seguridad-v0.1-borrador.pdf",
-      "version": "0.1",
-      "estado": "borrador",
-      "fechaPreparacion": "2026-11-13",
-      "fechaPublicacion": null,
-      "aprobacion": null,
-      "sha256": "13208f9bf94003371398ad041c0454536bedf3cfbf6a1707590c007ce54be832"
+      "archivo": "/documentos/gobierno/privacidad-y-seguridad-v1.0.pdf",
+      "version": "1.0",
+      "fechaEdicion": "2026-11-13",
+      "sha256": "044e20352bad721d1f3e0c3123e66dc966a9691357ff02f2e86446c1b6f314a0"
     },
     {
       "tema": "personas-e-inclusion",
-      "archivo": "/documentos/gobierno/personas-e-inclusion-v0.1-borrador.pdf",
-      "version": "0.1",
-      "estado": "borrador",
-      "fechaPreparacion": "2026-11-13",
-      "fechaPublicacion": null,
-      "aprobacion": null,
-      "sha256": "6361c688776e604b8be862ee362193feca948c439de2412528a940f1a32f3386"
+      "archivo": "/documentos/gobierno/personas-e-inclusion-v1.0.pdf",
+      "version": "1.0",
+      "fechaEdicion": "2026-11-13",
+      "sha256": "cdb2764e191a62b5ff287e580cb39749d8fc25a62211ba711deb45431118f3df"
     },
     {
       "tema": "sustentabilidad",
-      "archivo": "/documentos/gobierno/sustentabilidad-v0.1-borrador.pdf",
-      "version": "0.1",
-      "estado": "borrador",
-      "fechaPreparacion": "2026-11-13",
-      "fechaPublicacion": null,
-      "aprobacion": null,
-      "sha256": "0ea19ad9c1ce915322a72fa1397dd1d46e2e3e9d2f2bec811e3b947c60b4da9a"
+      "archivo": "/documentos/gobierno/sustentabilidad-v1.0.pdf",
+      "version": "1.0",
+      "fechaEdicion": "2026-11-13",
+      "sha256": "3b95517be0c47ec137894ffa2cf7783b2806512e9119200b60bbccf3a2167ee7"
     },
     {
       "tema": "proveedores-y-aliados",
-      "archivo": "/documentos/gobierno/proveedores-y-aliados-v0.1-borrador.pdf",
-      "version": "0.1",
-      "estado": "borrador",
-      "fechaPreparacion": "2026-11-13",
-      "fechaPublicacion": null,
-      "aprobacion": null,
-      "sha256": "7974fb1f86c2a58f8187dda0b539d77b59cf3a5a216d4ba3b6f99abc743bdd9a"
+      "archivo": "/documentos/gobierno/proveedores-y-aliados-v1.0.pdf",
+      "version": "1.0",
+      "fechaEdicion": "2026-11-13",
+      "sha256": "9c4b6259275a2471eaa4b084aa30c8c5d25e6441de3c65c2b3183d0f9cc24701"
     }
   ]
 }

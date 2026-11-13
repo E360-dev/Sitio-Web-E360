@@ -1,9 +1,6 @@
 {
   "titulo": "Gobierno de la firma",
-  "version": "0.1",
-  "estado": "borrador",
-  "fechaPreparacion": "2026-11-13",
-  "fechaVigencia": null,
+  "version": "1.0",
   "fuente": "Manual institucional de gobierno y práctica profesional de E360, versión 1.2",
   "politicas": [
     {
@@ -18,9 +15,8 @@
       "introduccion": "La confianza requiere decisiones sustentadas y una conducta coherente. La ética profesional guía nuestra relación con clientes, colaboradores, autoridades, proveedores y otras partes interesadas.",
       "consultas": [],
       "documento": {
-        "ruta": "/documentos/gobierno/etica-e-integridad-v0.1-borrador.pdf",
-        "version": "0.1",
-        "estado": "borrador"
+        "ruta": "/documentos/gobierno/etica-e-integridad-v1.0.pdf",
+        "version": "1.0"
       },
       "apartados": [
         {
@@ -77,9 +73,8 @@
       "introduccion": "Nuestro gobierno articula prioridades, capacidad y responsabilidad profesional. Las decisiones se toman con información suficiente, facultades definidas y seguimiento de los acuerdos.",
       "consultas": [],
       "documento": {
-        "ruta": "/documentos/gobierno/gobierno-y-responsabilidad-v0.1-borrador.pdf",
-        "version": "0.1",
-        "estado": "borrador"
+        "ruta": "/documentos/gobierno/gobierno-y-responsabilidad-v1.0.pdf",
+        "version": "1.0"
       },
       "apartados": [
         {
@@ -138,9 +133,8 @@
       "introduccion": "Trabajamos para que cada conclusión sea congruente con el alcance acordado y la evidencia obtenida. La calidad se construye durante todo el servicio y se revisa antes de liberar sus resultados.",
       "consultas": [],
       "documento": {
-        "ruta": "/documentos/gobierno/calidad-y-practica-profesional-v0.1-borrador.pdf",
-        "version": "0.1",
-        "estado": "borrador"
+        "ruta": "/documentos/gobierno/calidad-y-practica-profesional-v1.0.pdf",
+        "version": "1.0"
       },
       "apartados": [
         {
@@ -198,9 +192,8 @@
       "introduccion": "El cuidado de la información acompaña cada servicio y relación. Compartimos los principios de protección y uso responsable, preservando los detalles de seguridad y los expedientes de acceso restringido.",
       "consultas": [],
       "documento": {
-        "ruta": "/documentos/gobierno/privacidad-y-seguridad-v0.1-borrador.pdf",
-        "version": "0.1",
-        "estado": "borrador"
+        "ruta": "/documentos/gobierno/privacidad-y-seguridad-v1.0.pdf",
+        "version": "1.0"
       },
       "apartados": [
         {
@@ -258,9 +251,8 @@
       "introduccion": "Las personas sostienen la calidad del trabajo. Nuestras políticas orientan la incorporación, el desarrollo, la coordinación y la convivencia respetuosa en todas las modalidades de servicio.",
       "consultas": [],
       "documento": {
-        "ruta": "/documentos/gobierno/personas-e-inclusion-v0.1-borrador.pdf",
-        "version": "0.1",
-        "estado": "borrador"
+        "ruta": "/documentos/gobierno/personas-e-inclusion-v1.0.pdf",
+        "version": "1.0"
       },
       "apartados": [
         {
@@ -317,9 +309,8 @@
       "introduccion": "Como firma de servicios profesionales, concentramos nuestras prácticas en los recursos que utiliza la operación. Procuramos decisiones responsables y una comunicación ambiental sustentada.",
       "consultas": [],
       "documento": {
-        "ruta": "/documentos/gobierno/sustentabilidad-v0.1-borrador.pdf",
-        "version": "0.1",
-        "estado": "borrador"
+        "ruta": "/documentos/gobierno/sustentabilidad-v1.0.pdf",
+        "version": "1.0"
       },
       "apartados": [
         {
@@ -378,9 +369,8 @@
       "introduccion": "Las relaciones con terceros requieren claridad sobre lo que se contrata, quién responde y cómo se protege la información. La revisión se adapta al servicio y a sus riesgos.",
       "consultas": [],
       "documento": {
-        "ruta": "/documentos/gobierno/proveedores-y-aliados-v0.1-borrador.pdf",
-        "version": "0.1",
-        "estado": "borrador"
+        "ruta": "/documentos/gobierno/proveedores-y-aliados-v1.0.pdf",
+        "version": "1.0"
       },
       "apartados": [
         {
@@ -426,5 +416,6 @@
         }
       ]
     }
-  ]
+  ],
+  "fechaEdicion": "2026-11-13"
 }

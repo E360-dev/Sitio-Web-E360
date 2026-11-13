@@ -42,7 +42,7 @@ export default function PoliticaGobierno() {
             {apartado.id === 'responsabilidades' && politica.consultas.length > 0 && <ul>{politica.consultas.map((consulta) => <li key={consulta.url}><a href={consulta.url}>{consulta.titulo}</a></li>)}</ul>}
             {apartado.id === 'documentos' && <div className="gobierno-download not-prose">
               <DocumentTextIcon aria-hidden="true" className="h-8 w-8 shrink-0 text-e360-primary" />
-              <div className="min-w-0 flex-1"><h3 className="font-bold text-e360-dark">{politica.titulo}</h3><p className="mt-1 text-sm text-slate-600">Documento de consulta · PDF · v{politica.documento.version}<br />Borrador para revisión, sin vigencia pública aprobada.</p><a href={politica.documento.ruta} download className="gobierno-download-link mt-4 inline-flex items-center gap-2 text-sm font-bold text-e360-primary">Descargar borrador PDF <ArrowDownTrayIcon aria-hidden="true" className="h-4 w-4" /></a></div>
+              <div className="min-w-0 flex-1"><h3 className="font-bold text-e360-dark">{politica.titulo}</h3><p className="mt-1 text-sm text-slate-600">Documento de consulta · PDF · v{politica.documento.version}</p><a href={politica.documento.ruta} download className="gobierno-download-link mt-4 inline-flex items-center gap-2 text-sm font-bold text-e360-primary">Descargar PDF <ArrowDownTrayIcon aria-hidden="true" className="h-4 w-4" /></a></div>
             </div>}
           </section>)}
         </div>

@@ -1,3 +1,4 @@
 # Preserve PDF bytes and the canonical JSON hashed by the policy manifest.
 public/documentos/gobierno/*.pdf binary
+docs/gobierno-historico/**/*.pdf binary
 src/datos/gobierno.json text eol=lf

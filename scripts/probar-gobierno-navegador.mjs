@@ -22,6 +22,8 @@ try {
     assert.equal((await page.goto(base + ruta)).status(), 200);
     await page.waitForFunction((r) => document.head.dataset.seoPath === r && !document.getElementById('preloader'), {}, ruta);
     assert.equal(await page.$$eval('h1', (elements) => elements.length), 1);
+    const textoPublico = await page.$eval('main', (e) => e.innerText);
+    assert(!/borrador para revisi[oó]n|vista previa|pendiente de aprobaci[oó]n|descargar borrador/i.test(textoPublico), 'Marca editorial pública');
     assert.equal(await page.$eval('h1', (e) => document.activeElement === e), true, 'Foco en título al cambiar página');
   };
   for (const ancho of [1440, 900, 390, 320]) {
@@ -36,6 +38,8 @@ try {
       } else {
         assert.equal(await page.$$eval('.gobierno-prose > section', (e) => e.length), 5);
         const href = await page.$eval('.gobierno-download a', (e) => e.getAttribute('href'));
+        assert(href.endsWith('-v1.0.pdf'));
+        assert.equal(await page.$eval('.gobierno-download a', (e) => e.textContent.trim()), 'Descargar PDF');
         const response = await fetch(base + href);
         assert.equal(response.status, 200);
         assert.match(response.headers.get('content-type'), /application\/pdf/);
